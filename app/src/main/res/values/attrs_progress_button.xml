@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EasytrackProgressButton">
+        <attr name="android:text" />
+        <!--<attr name="android:textStyle" />-->
+        <attr name="android:textSize" />
+        <!--<attr name="android:textColor" />-->
+        <!--<attr name="android:textAllCaps" />-->
+        <!--<attr name="android:background" />-->
+        <!--<attr name="android:progressTint" />-->
+    </declare-styleable>
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/toolbar"
+            app:navigationIcon="@drawable/ic_arrow_back_white_36dp"
+            app:title="Add Parent"
+            app:titleTextColor="@color/colorWhite">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Parent's Phone"
+                    android:inputType="phone"
+                    android:id="@+id/et_parent_phone"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Parent's Name"
+                    android:inputType="textPersonName"
+                    android:id="@+id/et_parent_name"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Add Security Password"
+                    android:inputType="textPersonName"
+                    android:id="@+id/et_parent_password"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.faiteasytrack.views.EasytrackButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_16"
+        android:text="Add Parent"
+        android:id="@+id/btn_add_parent"/>
+
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/view_loader"
+        android:id="@+id/vs_loader" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

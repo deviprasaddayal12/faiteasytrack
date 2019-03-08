@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/z_activity_dashboard_user">
+
+    <group>
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:title="@string/action_dashboard" />
+        <!--<item-->
+            <!--android:id="@+id/nav_map"-->
+            <!--android:icon="@drawable/ic_chevron_right_black_24dp"-->
+            <!--android:title="@string/action_map" />-->
+        <item
+            android:id="@+id/nav_admins"
+            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:title="@string/action_admins" />
+        <item
+            android:id="@+id/nav_vendors"
+            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:title="@string/action_vendors" />
+        <!--<item-->
+            <!--android:id="@+id/nav_vehicles"-->
+            <!--android:icon="@drawable/ic_chevron_right_black_24dp"-->
+            <!--android:title="@string/action_vehicles" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_drivers"-->
+            <!--android:icon="@drawable/ic_chevron_right_black_24dp"-->
+            <!--android:title="@string/action_drivers" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_routes"-->
+            <!--android:icon="@drawable/ic_chevron_right_black_24dp"-->
+            <!--android:title="@string/action_routes" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_history"-->
+            <!--android:icon="@drawable/ic_chevron_right_black_24dp"-->
+            <!--android:title="@string/action_history" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_requests"-->
+            <!--android:icon="@drawable/ic_chevron_right_black_24dp"-->
+            <!--android:title="@string/action_requests" />-->
+    </group>
+
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_chevron_right_black_24dp"
+                android:title="@string/action_settings" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_chevron_right_black_24dp"
+                android:title="@string/action_logout" />
+        </menu>
+    </item>
+</menu>

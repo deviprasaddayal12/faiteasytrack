@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_nav_header">
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_16">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/authenticate"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                android:textSize="26sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:drawableTop="@drawable/ic_help_outline_white_48dp" />
+
+            <ProgressBar
+                android:layout_width="71dp"
+                android:layout_height="71dp"
+                android:id="@+id/progress_circular"
+                android:visibility="gone"
+                android:layout_margin="1dp"
+                android:translationZ="1dp"
+                android:indeterminateTint="@color/colorPrimary"
+                android:layout_gravity="top|center_horizontal" />
+
+        </FrameLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:padding="@dimen/margin_16"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/code_india"
+                    android:textColor="@color/colorText"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_phone"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    app:boxCollapsedPaddingTop="@dimen/margin_8"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_enter_number"
+                        android:hint="@string/hint_phone"
+                        android:inputType="phone"
+                        android:textSize="20sp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/z_layout_otp_receive"
+                android:id="@+id/layout_otp_requested"
+                android:visibility="visible"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/margin_8"
+                android:orientation="vertical"
+                android:id="@+id/layout_otp_prompt">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:fontFamily="serif"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:text="@string/phone_auth_prompt"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="fill_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:text="@string/charges_applied"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="fill_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:text="@string/agreed_t_and_c"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_chevron_right_black_36dp"
+        android:tint="@color/colorWhite"
+        android:id="@+id/fab_next"
+        app:fabSize="normal"
+        android:layout_margin="@dimen/margin_16"/>
+
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/view_loader"
+        android:id="@+id/vs_loader" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

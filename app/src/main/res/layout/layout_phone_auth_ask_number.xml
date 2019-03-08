@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/margin_8"
+            android:paddingEnd="@dimen/margin_8"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_4"
+                android:gravity="center"
+                android:text="@string/code_india"
+                android:textColor="@color/colorText"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="30dp"
+                android:layout_margin="@dimen/margin_4"
+                android:background="@drawable/separator_vertical_both_sided_primary"
+                android:elevation="2dp" />
+
+            <EditText
+                android:id="@+id/et_enter_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_4"
+                android:hint="@string/hint_phone"
+                android:inputType="phone"
+                android:textSize="20sp"
+                android:imeOptions="actionNext"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#cdcdcd"
+            android:layout_marginStart="@dimen/margin_8"
+            android:layout_marginEnd="@dimen/margin_8"/>
+
+    </LinearLayout>
+
+    <!--<com.faiteasytrack.views.EasytrackButton-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:text="Next"-->
+        <!--android:layout_margin="@dimen/margin_16"-->
+        <!--android:id="@+id/easyBtn_next"/>-->
+
+    <com.faiteasytrack.views.EasytrackButton
+        android:id="@+id/btn_send_otp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_16"
+        android:elevation="5dp"
+        android:text="NEXT"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16"
+        android:orientation="vertical">
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/phone_auth_prompt"/>-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/continual_policy_p1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:linksClickable="true"
+            android:textColorLink="@color/colorPrimary"
+            android:text="@string/continual_policy_p2"/>
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/margin_16"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textColor="@color/colorPrimary"-->
+            <!--android:text="@string/charges_applied"/>-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textColor="@color/colorPrimary"-->
+            <!--android:text="@string/agreed_t_and_c"/>-->
+
+    </LinearLayout>
+
+</LinearLayout>

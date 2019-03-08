@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="bottom"
+    android:animateLayoutChanges="true"
+    app:layout_behavior="@string/fab_transformation_sheet_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_share_my_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_8"
+            android:tint="@color/colorWhite"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/round_reply_white_24"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_track_friend_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_8"
+            android:tint="@color/colorWhite"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/round_search_white_24" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_my_current_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_8"
+            android:tint="@color/colorWhite"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/round_my_location_white_24" />
+
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_8"
+        app:cardCornerRadius="@dimen/margin_4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_8"
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_location_info"
+                android:id="@+id/layout_trip_info"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_network_info"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@android:color/holo_red_light"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/margin_16"
+                android:paddingEnd="@dimen/margin_16"
+                android:textColor="@color/colorWhite"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/toolbar"
+            app:navigationIcon="@drawable/ic_arrow_back_white_36dp"
+            app:title="Add Vehicle"
+            app:titleTextColor="@color/colorWhite"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:id="@+id/til_admin_phone"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:boxBackgroundMode="filled">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Vendor's Phone"
+                    android:inputType="none"
+                    android:id="@+id/et_vendor_phone"
+                    android:editable="false"
+                    android:maxLines="1"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:id="@+id/til_admin_name"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:boxBackgroundMode="filled">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Vendor's Name"
+                    android:inputType="none"
+                    android:id="@+id/et_vendor_name"
+                    android:editable="false"
+                    android:maxLines="1"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Vehicle Number"
+                    android:inputType="phone"
+                    android:id="@+id/et_vehicle_number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Vehicle Model"
+                    android:inputType="textPersonName"
+                    android:id="@+id/et_vehicle_model"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:id="@+id/spinner_vehicle_type">
+
+            </Spinner>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:counterEnabled="true"
+                app:counterMaxLength="500">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Add Vehicle Description"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:id="@+id/et_vehicle_description"
+                    android:minLines="3"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:text="Assign Driver"
+                android:id="@+id/btn_assign_driver"
+                android:enabled="false"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/til_assigned_driver"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Assigned Driver"
+                    android:inputType="none"
+                    android:id="@+id/et_assigned_driver"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:text="Assign Route"
+                android:id="@+id/btn_assign_route"
+                android:enabled="false"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/til_assigned_route"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Assigned Route"
+                    android:inputType="none"
+                    android:id="@+id/et_assigned_route"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:text="Add Vehicle"
+                android:id="@+id/btn_add_vehicle"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/view_loader"
+        android:id="@+id/vs_loader" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

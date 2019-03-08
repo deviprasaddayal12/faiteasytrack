@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/margin_16"
+        android:padding="@dimen/margin_8"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:id="@+id/tv_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp"
+            android:id="@+id/tv_location"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
+            android:id="@+id/tv_time"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:textSize="16sp"
+        android:id="@+id/tv_track_state"
+        android:visibility="visible"
+        android:layout_margin="@dimen/margin_16"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        android:tint="@color/colorWhite"
+        android:src="@drawable/round_close_white_24"
+        android:layout_gravity="end"
+        android:id="@+id/fab_close" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

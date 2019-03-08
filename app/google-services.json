@@ -1,0 +1,115 @@
+{
+  "project_info": {
+    "project_number": "219768573261",
+    "firebase_url": "https://easytrack-1540153664462.firebaseio.com",
+    "project_id": "easytrack-1540153664462",
+    "storage_bucket": "easytrack-1540153664462.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219768573261:android:78ed8ac904ed0675",
+        "android_client_info": {
+          "package_name": "com.easytrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219768573261-6bvdfcsupff32au7pe4u4iiml3ujqb4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.easytrack",
+            "certificate_hash": "b86eb481ccc46ff36a4739097a2f640a35c5c35a"
+          }
+        },
+        {
+          "client_id": "219768573261-845t205ijaila4hpjv3g5rr85tvdta22.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.easytrack",
+            "certificate_hash": "d2427739785f0d4a1c56e17931405f3cbf24fb29"
+          }
+        },
+        {
+          "client_id": "219768573261-a6uq0nav5rkg55trjvibs5fuba7ufbah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiQ6MVH-teofsvyJpZaM5KX7NJVwVntvc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219768573261-a6uq0nav5rkg55trjvibs5fuba7ufbah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219768573261:android:d34ea30e78642566",
+        "android_client_info": {
+          "package_name": "com.faiteasytrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219768573261-kfdi5pi188snl47tq48t99h9a0omu4bv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.faiteasytrack",
+            "certificate_hash": "b86eb481ccc46ff36a4739097a2f640a35c5c35a"
+          }
+        },
+        {
+          "client_id": "219768573261-4uj1mf8kupi0oi3df8ingrk3r15ehfjc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.faiteasytrack",
+            "certificate_hash": "d2427739785f0d4a1c56e17931405f3cbf24fb29"
+          }
+        },
+        {
+          "client_id": "219768573261-a6uq0nav5rkg55trjvibs5fuba7ufbah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiQ6MVH-teofsvyJpZaM5KX7NJVwVntvc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219768573261-a6uq0nav5rkg55trjvibs5fuba7ufbah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

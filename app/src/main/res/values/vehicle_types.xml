@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="vehicle_types">
+        <item>Bus(72 Seaters)</item>
+        <item>Bus(62 Seaters)</item>
+        <item>Bus(52 Seaters)</item>
+        <item>Cantor</item>
+        <item>Van</item>
+        <item>Car</item>
+        <item>Auto</item>
+        <item>Dedicated Vehicles</item>
+        <item>Rickshaw</item>
+    </string-array>
+</resources>

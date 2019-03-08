@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:id="@+id/toolbar"
+    android:elevation="@dimen/margin_4"
+    app:contentInsetStart="@dimen/margin_8"
+    app:contentInsetEnd="@dimen/margin_8"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/app_bar_dashboard">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_8"
+        android:layout_marginBottom="@dimen/margin_8"
+        app:cardCornerRadius="@dimen/margin_4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:background="?attr/selectableItemBackground"
+                android:padding="@dimen/margin_8"
+                android:src="@drawable/ic_menu_black_24dp"
+                android:tint="@color/colorGradientEnd"
+                android:id="@+id/iv_navigation"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_marginStart="@dimen/margin_16"
+                android:hint="@string/search_by_vehicle_number_phone_etc"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:background="?attr/selectableItemBackground"
+                android:paddingTop="@dimen/margin_8"
+                android:paddingBottom="@dimen/margin_8"
+                android:src="@drawable/ic_search_black_24dp"
+                android:tint="@color/colorGradientEnd"
+                android:id="@+id/iv_search"/>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingTop="@dimen/margin_8"
+                    android:paddingBottom="@dimen/margin_8"
+                    android:src="@drawable/ic_notifications_none_black_24dp"
+                    android:tint="@color/colorGradientEnd"
+                    android:id="@+id/iv_notifications" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_notifications"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="@dimen/margin_4"
+                    android:layout_margin="@dimen/margin_8"
+                    android:layout_gravity="end"/>
+
+            </FrameLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.appcompat.widget.Toolbar>

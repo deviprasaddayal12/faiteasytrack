@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:id="@+id/v_switcher_otp_response">
+
+    <include layout="@layout/layout_otp_response_success" />
+    <include layout="@layout/layout_otp_response_failure" />
+
+</ViewSwitcher>

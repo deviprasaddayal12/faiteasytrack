@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_launcher">
+
+    <!--<ImageView-->
+        <!--android:layout_width="120dp"-->
+        <!--android:layout_height="120dp"-->
+        <!--android:contentDescription="@null"-->
+        <!--android:src="@drawable/web_hi_res_512"-->
+        <!--android:layout_gravity="center"/>-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_gravity="center_horizontal|bottom"-->
+        <!--android:layout_marginBottom="56dp">-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/label_title_easy"-->
+                <!--android:textSize="50sp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:shadowColor="@color/colorBlack"-->
+                <!--android:shadowRadius="5"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/label_title_track"-->
+                <!--android:textStyle="normal"-->
+                <!--android:textSize="50sp"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:shadowColor="@color/colorBlack"-->
+                <!--android:shadowRadius="5"/>-->
+
+        <!--</LinearLayout>-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="2dp"-->
+            <!--android:background="@color/colorWhite"-->
+            <!--android:elevation="1dp"-->
+            <!--android:layout_marginStart="@dimen/margin_5"-->
+            <!--android:layout_marginEnd="@dimen/margin_5"/>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/label_co_title"-->
+                <!--android:textSize="@dimen/text_16"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:padding="@dimen/margin_4"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="3dp"-->
+                <!--android:text="n"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="italic"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:paddingTop="@dimen/margin_4"-->
+                <!--android:paddingBottom="@dimen/margin_4"-->
+                <!--android:paddingStart="1dp"-->
+                <!--android:paddingEnd="1dp"/>-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="16dp"-->
+                <!--android:layout_height="16dp"-->
+                <!--android:contentDescription="@null"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:tint="@color/colorWhite"-->
+                <!--android:src="@drawable/ic_my_location_black_18dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="w"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:textStyle="italic"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:paddingTop="@dimen/margin_4"-->
+                <!--android:paddingBottom="@dimen/margin_4"-->
+                <!--android:paddingStart="1dp"-->
+                <!--android:paddingEnd="1dp"/>-->
+
+        <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<ViewStub-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout="@layout/view_loader"-->
+        <!--android:id="@+id/vs_loader" />-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

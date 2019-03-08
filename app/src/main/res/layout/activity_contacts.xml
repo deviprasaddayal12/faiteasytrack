@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:liftOnScroll="true">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:contentInsetStart="@dimen/margin_16"
+            app:contentInsetEnd="@dimen/margin_16">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:cardCornerRadius="@dimen/margin_4">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_back_black_36dp"
+                        android:paddingTop="@dimen/margin_8"
+                        android:paddingBottom="@dimen/margin_8"
+                        android:paddingStart="@dimen/margin_4"
+                        android:paddingEnd="@dimen/margin_4"
+                        android:contentDescription="@null"
+                        android:id="@+id/iv_back"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/et_search_contact"
+                        android:inputType="text"
+                        android:hint="@string/hint_search_contact"
+                        android:imeOptions="actionSearch"
+                        android:background="@android:color/transparent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_search_black_24dp"
+                        android:paddingTop="@dimen/margin_8"
+                        android:paddingBottom="@dimen/margin_8"
+                        android:paddingStart="@dimen/margin_4"
+                        android:paddingEnd="@dimen/margin_4"
+                        android:contentDescription="@null"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!--<androidx.core.widget.NestedScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:fillViewport="true"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+<!---->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical">-->
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swipe_refresh_layout"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:id="@+id/recycler_contacts">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!--</LinearLayout>-->
+    <!--</androidx.core.widget.NestedScrollView>-->
+
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/view_loader"
+        android:id="@+id/vs_loader" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@null"
+        android:src="@drawable/round_error_outline_black_48"
+        android:tint="@android:color/holo_red_dark"
+        android:layout_margin="@dimen/margin_16"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_4"
+        android:text="@string/your_phone_has_been_couldnot_be_verified"
+        android:textSize="16sp" />
+
+    <com.faiteasytrack.views.EasytrackButton
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16"
+        android:text="@string/didn_t_get_a_code"
+        android:id="@+id/btn_resend_otp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="@color/colorGradientEnd" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/or"
+            android:layout_marginStart="@dimen/margin_8"
+            android:layout_marginEnd="@dimen/margin_8"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="@color/colorGradientEnd" />
+
+    </LinearLayout>
+
+    <com.faiteasytrack.views.EasytrackButton
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16"
+        android:text="@string/have_a_code"
+        android:id="@+id/btn_have_otp"/>
+
+</LinearLayout>

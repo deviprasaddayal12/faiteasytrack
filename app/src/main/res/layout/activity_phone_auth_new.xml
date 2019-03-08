@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_16"
+            android:text="@string/you_re_a_few_steps_away_from_an_amazing_experince"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_gravity="center"
+        android:animateLayoutChanges="true"
+        android:id="@+id/view_flipper_phn_auth">
+
+        <include layout="@layout/layout_phone_auth_ask_number" />
+        <include layout="@layout/layout_phone_auth_wait_for_otp" />
+        <include layout="@layout/layout_phone_auth_produce_response" />
+        <include layout="@layout/layout_phone_auth_manual_verify_otp" />
+
+    </ViewFlipper>
+
+    <include layout="@layout/view_loader_cont" />
+
+    <TextView
+        android:id="@+id/tv_network_info"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@android:color/holo_red_light"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16"
+        android:textColor="@color/colorWhite"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
