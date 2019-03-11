@@ -71,16 +71,19 @@ public class LocationService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Log.i(TAG, "onBind: ");
         return null;
     }
 
     @Override
     public void onRebind(Intent intent) {
+        Log.i(TAG, "onRebind: ");
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
+        Log.i(TAG, "onUnbind: ");
         return super.onUnbind(intent);
     }
 
