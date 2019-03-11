@@ -11,41 +11,30 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 
 import com.faiteasytrack.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-public class LocationService extends Service/* implements
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
-        GoogleApiClient.ConnectionCallbacks*/ {
+public class LocationService extends Service {
 
     public static final String TAG = "LocationService";
 
     private static final long INTERVAL = 3000;
     private static final long FASTEST_INTERVAL = INTERVAL / 6;
 
-//    private GoogleApiClient mGoogleApiClient;
-
     private static final String CHANNEL_ID = "channel_locationReceived";
     private static final int NOTIFICATION_ID = 12345678;
 
-    private NotificationManager mNotificationManager;
+    private NotificationManager notificationManager;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
@@ -56,16 +45,15 @@ public class LocationService extends Service/* implements
         super.onCreate();
 
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
-//        buildGoogleApiClient();
         createLocationRequest();
 
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.app_name);
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
-            mNotificationManager.createNotificationChannel(mChannel);
+            notificationManager.createNotificationChannel(mChannel);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -75,21 +63,26 @@ public class LocationService extends Service/* implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        if (!mGoogleApiClient.isConnected())
-//            mGoogleApiClient.connect();
-//        else
-//            startLocationUpdates();
+        startLocationUpdates();
 
         return START_STICKY;
     }
 
-//    protected synchronized void buildGoogleApiClient() {
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addOnConnectionFailedListener(this)
-//                .addConnectionCallbacks(this)
-//                .addApi(LocationServices.API)
-//                .build();
-//    }
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
 
     protected void createLocationRequest() {
         locationRequest = new LocationRequest();
@@ -107,10 +100,28 @@ public class LocationService extends Service/* implements
         };
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    private void startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            Log.i(TAG, "startLocationUpdates: ");
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        }
+    }
+
+    private void stopLocationUpdates(){
+        Log.i(TAG, "stopLocationUpdates: ");
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    public void onLocationChanged(Location location) {
+        Log.i(TAG, "onLocationChanged: " + location);
+
+        if (serviceIsRunningInForeground(this)) {
+            notificationManager.notify(NOTIFICATION_ID, getNotification());
+        }
     }
 
     private Notification getNotification() {
@@ -131,33 +142,6 @@ public class LocationService extends Service/* implements
         return builder.build();
     }
 
-    private void startLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            Log.i(TAG, "startLocationUpdates: ");
-
-//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-        }
-    }
-
-    private void stopLocationUpdates(){
-        Log.i(TAG, "stopLocationUpdates: ");
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-    }
-
-    /*@Override*/
-    public void onLocationChanged(Location location) {
-        Log.i(TAG, "onLocationChanged: " + location);
-
-        if (serviceIsRunningInForeground(this)) {
-            mNotificationManager.notify(NOTIFICATION_ID, getNotification());
-        }
-    }
-
     public boolean serviceIsRunningInForeground(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
@@ -170,19 +154,4 @@ public class LocationService extends Service/* implements
         }
         return false;
     }
-
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//        Log.e(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
-//    }
-//
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//        startLocationUpdates();
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//        Log.e(TAG, "onConnectionSuspended: " + i);
-//    }
 }
