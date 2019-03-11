@@ -5,9 +5,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class PushNotificationService extends FirebaseMessagingService {
+public class PushService extends FirebaseMessagingService {
 
-    public static final String TAG = "PushNotificationService";
+    public static final String TAG = "PushService";
 
     @Override
     public void onNewToken(String s) {

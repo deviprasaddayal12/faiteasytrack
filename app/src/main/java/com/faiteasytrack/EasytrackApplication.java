@@ -33,31 +33,6 @@ public class EasytrackApplication extends Application {
 
     public static final String TAG = "EasytrackApplication";
 
-    // A reference to the service used to get location updates.
-    private LocationChangeService locationChangeService = null;
-
-    // Tracks the bound state of the service.
-    private boolean isServiceBound = false;
-
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationChangeService.LocalBinder binder = (LocationChangeService.LocalBinder) service;
-            locationChangeService = binder.getService();
-
-            locationChangeService.requestLocationUpdates();
-            isServiceBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            locationChangeService = null;
-            isServiceBound = false;
-        }
-
-    };
-
     @Override
     public void onCreate() {
         super.onCreate();

@@ -40,7 +40,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class LocationChangeService extends Service {
 
-    private static final String PACKAGE_NAME = "com.easytrack";
+    private static final String PACKAGE_NAME = "com.faiteasytrack";
 
     private static final String TAG = LocationChangeService.class.getSimpleName();
 
