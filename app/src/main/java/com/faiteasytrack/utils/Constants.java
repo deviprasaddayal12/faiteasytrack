@@ -96,4 +96,26 @@ public class Constants {
         // preferences/(uid)/(push_key)
     }
 
+    public interface MultiPartRequest {
+
+        interface CallType {
+            int REQUISITION_FILES_UPLOAD = 580;
+            int DAILY_ISSUE_FILES_UPLOAD = 581;
+            int MRN_ADD_FILES_UPLOAD = 582;
+        }
+
+        interface Query {
+            String KEY_REQUEST_TYPE = "REQUEST_TYPE_SENT";
+            String KEY_FILES = "files[]";
+            String KEY_REQUISITION_ID = "requisition_id";
+            String KEY_DAILY_ISSUE_ID = "issue_slip_id";
+            String KEY_MRN_ADD_ID = "mrn_id";
+            String KEY_FILE = "file";
+        }
+
+        interface VolleyRetryPolicy {
+            int SOCKET_TIMEOUT = 1000 * 500;
+            int RETRIES = 0;
+        }
+    }
 }

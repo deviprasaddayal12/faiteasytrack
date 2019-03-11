@@ -42,13 +42,19 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
-    implementation 'com.google.firebase:firebase-database:16.0.6'
+    implementation 'com.google.firebase:firebase-database:16.1.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     implementation 'com.google.firebase:firebase-messaging:17.4.0'
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'co.uk.rushorm:rushandroid:1.2.0'
     implementation 'com.github.tosslife:pullloadview:1.1.0'
+
+    implementation 'cz.msebera.android:httpclient:4.4.1.1'
+    implementation 'com.github.barteksc:pdfium-android:1.4.0'
+    implementation('id.zelory:compressor:1.0.4') {
+        exclude group: 'io.reactivex', module: 'rxjava'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
