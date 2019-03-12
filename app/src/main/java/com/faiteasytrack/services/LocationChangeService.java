@@ -79,7 +79,7 @@ public class LocationChangeService extends Service {
      */
     private boolean mChangingConfiguration = false;
 
-    private NotificationManager mNotificationManager;
+    private NotificationManager notificationManager;
 
     /**
      * Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderClient}.
@@ -124,7 +124,7 @@ public class LocationChangeService extends Service {
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
         mServiceHandler = new Handler(handlerThread.getLooper());
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Android O requires a Notification Channel.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -132,7 +132,7 @@ public class LocationChangeService extends Service {
             // Create the channel for the notification
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
             // Set the Notification Channel for the Notification Manager.
-            mNotificationManager.createNotificationChannel(mChannel);
+            notificationManager.createNotificationChannel(mChannel);
         }
     }
 
@@ -212,7 +212,7 @@ public class LocationChangeService extends Service {
             /*
             // (developer). If targeting O, use the following code.
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-                mNotificationManager.startServiceInForeground(new Intent(this, LocationChangeService.class), NOTIFICATION_ID, getNotification());
+                notificationManager.startServiceInForeground(new Intent(this, LocationChangeService.class), NOTIFICATION_ID, getNotification());
             } else {
                 startForeground(NOTIFICATION_ID, getNotification());
             }
@@ -344,7 +344,7 @@ public class LocationChangeService extends Service {
 
         // Update notification content if running as a foreground service.
         if (serviceIsRunningInForeground(this)) {
-            mNotificationManager.notify(NOTIFICATION_ID, getNotification());
+            notificationManager.notify(NOTIFICATION_ID, getNotification());
         }
     }
 
