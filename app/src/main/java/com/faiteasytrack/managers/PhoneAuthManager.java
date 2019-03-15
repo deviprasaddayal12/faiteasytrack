@@ -1,6 +1,7 @@
 package com.faiteasytrack.managers;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.faiteasytrack.broadcasts.OTPReceiver;
 import com.faiteasytrack.enums.Error;
@@ -33,25 +34,30 @@ public class PhoneAuthManager implements PhoneAuthListener {
             = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            Log.i(TAG, "onVerificationCompleted: ");
             isVerificationSuccess = true;
             onVerificationComplete(phoneAuthCredential);
         }
 
         @Override
         public void onVerificationFailed(FirebaseException e) {
+            Log.e(TAG, "onVerificationFailed: " + e.getMessage());
             if (e instanceof FirebaseAuthInvalidCredentialsException) {
                 onVerificationListener.onError(Error.ErrorStatus.INVALID_AUTH_CREDENTIALS);
-            }
+            } else
+                onVerificationListener.onError(Error.ErrorStatus.ERROR_NOT_DEFINED);
         }
 
         @Override
         public void onCodeAutoRetrievalTimeOut(String s) {
+            Log.i(TAG, "onCodeAutoRetrievalTimeOut: ");
             if (!isVerificationSuccess)
                 onVerificationListener.onCodeTimeout();
         }
 
         @Override
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            Log.i(TAG, "onCodeSent: ");
             verificationId = s;
             resendToken = forceResendingToken;
 

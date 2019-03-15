@@ -114,4 +114,5 @@
     <string name="label_assign_vehicle">Assign Vehicle</string>
     <string name="add_route_description">Add Route Description</string>
     <string name="add_waypoints">Add WayPoints</string>
+    <string name="edit">Edit</string>
 </resources>

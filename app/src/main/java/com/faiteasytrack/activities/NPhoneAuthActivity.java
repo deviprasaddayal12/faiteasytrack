@@ -28,6 +28,7 @@ import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.Utils;
 import com.faiteasytrack.utils.ViewUtils;
 import com.faiteasytrack.views.EasytrackButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -48,7 +49,7 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
     private TextView tvNetworkInfo;
 
     private EditText etPhoneNumber, etManualOTP;
-    private EasytrackButton btnSendOtp, btnLetsGo, btnResendOtp, btnHaveOtp, btnVerifyOtp;
+    private MaterialButton btnSendOtp, btnLetsGo, btnResendOtp, btnHaveOtp, btnVerifyOtp;
     private Chronometer chronometerOTPCDown;
     private ProgressDialog progressDialog;
 
@@ -202,8 +203,10 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
             Log.i(TAG, "onCodeSent: ");
             ViewUtils.hideViews(loader);
 
+            // Following represents timer layout
             phnAuthFlipper.showNext();
-            chronometerOTPCDown.start();
+
+            resetChronometerAndStart();
             lastUiState = UI_STATE.WAITING_FOR_OTP;
         }
 
@@ -212,8 +215,11 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
             // update ui state to timeout, resend code, enter code manually
             Log.i(TAG, "onCodeTimeout: ");
 
+            // Following represents response layout
             phnAuthFlipper.showNext();
+            // Following represents error layout of response layout
             otpResponseSwitcher.showNext();
+
             chronometerOTPCDown.stop();
             lastUiState = UI_STATE.WAITING_FAILED_BY_TIMEOUT;
         }
@@ -223,37 +229,45 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
             // update ui state to verified
             // check if user already exists in app
             Log.i(TAG, "onCodeVerified: ");
-            if (lastUiState == UI_STATE.PROVIDE_NUMBER_FOR_OTP){
-                ViewUtils.hideViews(loader);
 
-                chronometerOTPCDown.start();
+            if (lastUiState == UI_STATE.VERIFYING_MANUALLY){
+                // Following represents that we're in response layout by default
+                // Following represents success layout of response layout from error layout
+                otpResponseSwitcher.showPrevious();
+
+            } else {
+                if (lastUiState == UI_STATE.PROVIDE_NUMBER_FOR_OTP) {
+                    // Following represents verified without otp bcoz verification was done recently and cached
+                    // So this if ensures it travels through the proper ui transformation
+
+                    onCodeSent();
+                }
+                // Following represents verified with otp
+
+                // Following represents response layout
                 phnAuthFlipper.showNext();
+                // Following represents success layout of response layout by default
+                chronometerOTPCDown.stop();
+                lastUiState = UI_STATE.WAITING_SUCCEED_BY_AUTO_VERIFY;
             }
-            phnAuthFlipper.showNext();
-            chronometerOTPCDown.stop();
-            lastUiState = UI_STATE.WAITING_SUCCEED_BY_AUTO_VERIFY;
         }
 
         @Override
         public void onNewUser() {
-            // goto profile activity
-//            Log.i(TAG, "onNewUser: ");
-//            progressDialog.dismiss();
-//
-//            startActivity(new Intent(NPhoneAuthActivity.this, NUserProfileActivity.class));
-//            finish();
+
         }
 
         @Override
         public void onUserExists(UserModel userModel, boolean hasProfile) {
-            // goto dashboard
-//            Log.i(TAG, "onUserExists: ");
-//            progressDialog.dismiss();
-//
-//            startActivity(new Intent(NPhoneAuthActivity.this, NMapActivity.class));
-//            finish();
+
         }
     };
+
+    private void resetChronometerAndStart(){
+        chronometerOTPCDown.setBase(SystemClock.elapsedRealtime());
+        chronometerOTPCDown.stop();
+        chronometerOTPCDown.start();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

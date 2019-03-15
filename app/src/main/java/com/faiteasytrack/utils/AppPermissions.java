@@ -17,6 +17,9 @@ public class AppPermissions {
         int ACCESS_MESSAGE_READ_REQUEST = 2;
         int ACCESS_NETWORK_STATE_REQUEST = 3;
         int ACCESS_READ_CONTACTS = 4;
+        int ACCESS_CAMERA_REQUEST = 5;
+        int ACCESS_GALLERY_REQUEST = 6;
+        int ACCESS_FILE_BROWSER_REQUEST = 7;
     }
 
     public static boolean checkReadConactsPermission(final Activity context) {
@@ -118,6 +121,73 @@ public class AppPermissions {
                         }).create().show();
             } else {
                 ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, AppPermissions.REQUESTS.ACCESS_LOCATION_REQUEST);
+            }
+            return false;
+        } else
+            return true;
+    }
+
+    public static boolean checkCameraPermission(final Activity context) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.CAMERA)) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Camera Permission Needed")
+                        .setMessage("Easytrack needs to access your camera.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.CAMERA}, REQUESTS.ACCESS_CAMERA_REQUEST);
+                            }
+                        }).create().show();
+            } else {
+                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.CAMERA}, REQUESTS.ACCESS_CAMERA_REQUEST);
+            }
+            return false;
+        } else
+            return true;
+    }
+
+    public static boolean checkGalleryPermission(final Activity context) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Gallery Permission Needed")
+                        .setMessage("Easytrack needs to access your gallery.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        REQUESTS.ACCESS_GALLERY_REQUEST);
+                            }
+                        }).create().show();
+            } else {
+                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUESTS.ACCESS_GALLERY_REQUEST);
+            }
+            return false;
+        } else
+            return true;
+    }
+
+    public static boolean checkFileBrowserPermission(final Activity context) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                new AlertDialog.Builder(context)
+                        .setTitle("File Browser Permission Needed")
+                        .setMessage("Easytrack needs to access your file browser.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        REQUESTS.ACCESS_FILE_BROWSER_REQUEST);
+                            }
+                        }).create().show();
+            } else {
+                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUESTS.ACCESS_FILE_BROWSER_REQUEST);
             }
             return false;
         } else

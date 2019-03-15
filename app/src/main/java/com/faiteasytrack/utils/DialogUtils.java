@@ -117,4 +117,23 @@ public class DialogUtils {
             e.printStackTrace();
         }
     }
+
+    public static AlertDialog showFileSourceChooserDialog(Context context, final String[] sourceTitles,
+                                                          final onListDialogClickListener listener) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Choose source:");
+        builder.setItems(sourceTitles, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (listener != null)
+                    listener.onItemSelected(i, sourceTitles[i]);
+            }
+        });
+        builder.setCancelable(true);
+        return builder.create();
+    }
+
+    public interface onListDialogClickListener {
+        void onItemSelected(int position, String itemTitle);
+    }
 }
