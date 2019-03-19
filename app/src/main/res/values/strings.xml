@@ -7,7 +7,7 @@
     <string name="label_title_track">track</string>
     <string name="label_co_title_2">to track</string>
     <string name="label_co_title_1">it\'s easy</string>
-    <string name="phone_auth_prompt">We will send you a text message containing one time password(OTP) to the this number.</string>
+    <string name="phone_auth_prompt">OTP will be sent to the this number.</string>
     <string name="charges_applied">*Charges may apply!</string>
     <string name="or_connect_with">or connect with</string>
     <string name="sign_in_with_google">SignIn with Google</string>
@@ -75,12 +75,12 @@
     <string name="let_s_go">Let\'s Go</string>
     <string name="resend">Resend</string>
     <string name="your_phone_has_been_couldnot_be_verified">Your phone number couldn\'t be verified!</string>
-    <string name="enter_code_manually">Already have a code? Enter code manually.</string>
+    <string name="enter_code_manually">Enter code manually.</string>
     <string name="verify">Verify</string>
     <string name="enter_6_digit_otp">Enter 6 digit OTP</string>
     <string name="didn_t_get_a_code">Didn\'t get a code!</string>
     <string name="or">OR</string>
-    <string name="have_a_code">Have a code!</string>
+    <string name="have_a_code">Have a code?</string>
     <string name="update">Update</string>
     <string name="action_requests">Requests</string>
     <string name="action_history">History</string>
@@ -115,4 +115,10 @@
     <string name="add_route_description">Add Route Description</string>
     <string name="add_waypoints">Add WayPoints</string>
     <string name="edit">Edit</string>
+    <string name="success">Success!</string>
+    <string name="cheers">Cheers!</string>
+    <string name="sorry">Sorry!</string>
+    <string name="whats_your_phone">What\'s your number?</string>
+    <string name="send">Send</string>
+    <string name="patience">Patience!</string>
 </resources>

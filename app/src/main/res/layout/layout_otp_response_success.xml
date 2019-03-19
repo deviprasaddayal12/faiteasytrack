@@ -1,32 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="@null"
-        android:src="@drawable/round_check_circle_outline_black_48"
-        android:tint="@android:color/holo_green_dark"/>
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_4"
-        android:text="@string/your_phone_has_been_successfully_verified"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:layout_margin="@dimen/margin_16">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:contentDescription="@null"
+            android:src="@drawable/round_check_circle_outline_black_48"
+            android:tint="@android:color/holo_green_dark"
+            android:layout_marginTop="@dimen/margin_16"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_4"
+            android:text="@string/cheers"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="@dimen/margin_32"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_4"
+            android:text="@string/your_phone_has_been_successfully_verified"
+            android:textSize="14sp"/>
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_margin="@dimen/margin_16"
         android:text="@string/let_s_go"
         android:id="@+id/btn_lets_go"
         app:cornerRadius="@dimen/margin_16"
-        android:textSize="12sp"/>
+        android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</RelativeLayout>
