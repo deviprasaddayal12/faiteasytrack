@@ -1022,7 +1022,7 @@ public class ODashboardActivity extends BaseActivity
         }
 
         @Override
-        public void onRequestSendFailed(RequestModel requestModel, Error.ErrorStatus errorStatusMessage) {
+        public void onRequestSendFailed(RequestModel requestModel, Error.ErrorType errorTypeMessage) {
 
         }
 
@@ -1037,7 +1037,7 @@ public class ODashboardActivity extends BaseActivity
         }
 
         @Override
-        public void onCreteRequestFailed(Error.ErrorStatus s) {
+        public void onCreteRequestFailed(Error.ErrorType s) {
 
         }
 
@@ -1047,7 +1047,7 @@ public class ODashboardActivity extends BaseActivity
         }
 
         @Override
-        public void onRequestsFetchFailed(Error.ErrorStatus message) {
+        public void onRequestsFetchFailed(Error.ErrorType message) {
 
         }
 
@@ -1062,7 +1062,7 @@ public class ODashboardActivity extends BaseActivity
         }
 
         @Override
-        public void onStatusUpdateFailed(Error.ErrorStatus message) {
+        public void onStatusUpdateFailed(Error.ErrorType message) {
 
         }
     };

@@ -170,8 +170,8 @@ public class OFriendsActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onFriendAddFailed(Error.ErrorStatus errorStatusMessage) {
-        ViewUtils.makeToast(this, errorStatusMessage.toString());
+    public void onFriendAddFailed(Error.ErrorType errorTypeMessage) {
+        ViewUtils.makeToast(this, errorTypeMessage.toString());
         checkEmptyList();
     }
 

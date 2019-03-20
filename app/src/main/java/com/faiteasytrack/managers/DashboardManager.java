@@ -77,8 +77,8 @@ public class DashboardManager {
         }
 
         @Override
-        public void onLastTripFetchFailure(Error.ErrorStatus errorStatus) {
-            dashboardListener.onTripFetchFailed(errorStatus.toString());
+        public void onLastTripFetchFailure(Error.ErrorType errorType) {
+            dashboardListener.onTripFetchFailed(errorType.toString());
         }
 
         @Override
@@ -104,7 +104,7 @@ public class DashboardManager {
         }
 
         @Override
-        public void onRequestSendFailed(RequestModel requestModel, Error.ErrorStatus errorStatusMessage) {
+        public void onRequestSendFailed(RequestModel requestModel, Error.ErrorType errorTypeMessage) {
 
         }
 
@@ -119,7 +119,7 @@ public class DashboardManager {
         }
 
         @Override
-        public void onCreteRequestFailed(Error.ErrorStatus s) {
+        public void onCreteRequestFailed(Error.ErrorType s) {
 
         }
 
@@ -129,7 +129,7 @@ public class DashboardManager {
         }
 
         @Override
-        public void onRequestsFetchFailed(Error.ErrorStatus message) {
+        public void onRequestsFetchFailed(Error.ErrorType message) {
 
         }
 
@@ -144,7 +144,7 @@ public class DashboardManager {
         }
 
         @Override
-        public void onStatusUpdateFailed(Error.ErrorStatus message) {
+        public void onStatusUpdateFailed(Error.ErrorType message) {
 
         }
     };

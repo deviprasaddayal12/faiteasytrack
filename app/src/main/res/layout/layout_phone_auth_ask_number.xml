@@ -11,8 +11,8 @@
         android:layout_margin="@dimen/margin_16">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/image_header_size"
+            android:layout_height="@dimen/image_header_size"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_smartphone_24px"
             android:tint="@color/colorPrimaryLight"
@@ -21,9 +21,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_4"
             android:text="@string/whats_your_phone"
-            android:textSize="24sp"
+            android:textSize="@dimen/text_header_size"
             android:textStyle="bold"
             android:textColor="@color/colorBlack"
             android:layout_marginTop="@dimen/margin_32"/>
@@ -31,9 +30,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_4"
             android:text="@string/phone_auth_prompt"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_sub_header_size"/>
     </LinearLayout>
 
     <LinearLayout
@@ -58,7 +56,7 @@
                 android:gravity="center"
                 android:text="@string/code_india"
                 android:textColor="@color/colorBlack"
-                android:textSize="16sp" />
+                android:textSize="@dimen/text_input_size" />
 
             <View
                 android:layout_width="4dp"
@@ -74,7 +72,7 @@
                 android:layout_margin="@dimen/margin_4"
                 android:hint="@string/hint_phone"
                 android:inputType="phone"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_input_size"
                 android:imeOptions="actionSend"
                 android:background="@android:color/transparent"/>
 
@@ -116,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/continual_policy_p1"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/text_sub_header_size"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -125,7 +123,7 @@
                 android:linksClickable="true"
                 android:textColorLink="@color/colorPrimary"
                 android:text="@string/continual_policy_p2"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/text_sub_header_size"/>
 
         </LinearLayout>
     </LinearLayout>

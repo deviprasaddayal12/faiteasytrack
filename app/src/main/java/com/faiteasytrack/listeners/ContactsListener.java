@@ -24,13 +24,13 @@ public interface ContactsListener {
     interface OnContactsGetListener{
         void onContactsRetrieved(ArrayList<ContactModel> savedContactModels);
 
-        void onContactsNotFound(Error.ErrorStatus errorStatus);
+        void onContactsNotFound(Error.ErrorType errorType);
     }
 
     interface OnContactsSearchListener {
         void onSearchSuccess(ArrayList<ContactModel> listOfSearchedContacts);
 
-        void onSearchFailure(Error.ErrorStatus errorStatus);
+        void onSearchFailure(Error.ErrorType errorType);
 
         void onSearchReset(ArrayList<ContactModel> listOfAllContacts);
     }
@@ -38,12 +38,12 @@ public interface ContactsListener {
     interface OnContactsSyncListener {
         void onFoundOnServer(ContactModel contactModel, boolean userExists);
 
-        void onNotFoundOnServer(Error.ErrorStatus errorStatus);
+        void onNotFoundOnServer(Error.ErrorType errorType);
     }
 
     interface OnSyncWithMeListener{
         void onSyncedWithMe(ContactModel contactModel, Request.Status status);
 
-        void onSyncingFailed(Error.ErrorStatus errorStatus);
+        void onSyncingFailed(Error.ErrorType errorType);
     }
 }

@@ -48,7 +48,7 @@ public class FriendHelper {
                 friendModels.add(friendModel);
                 friendListener.onNewFriendAdded(friendModel, friendModels);
             } else
-                friendListener.onFriendAddFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                friendListener.onFriendAddFailed(Error.ErrorType.ERROR_NOT_DEFINED);
         }
 
         @Override
@@ -68,7 +68,7 @@ public class FriendHelper {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            friendListener.onFriendAddFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            friendListener.onFriendAddFailed(Error.ErrorType.ERROR_NOT_DEFINED);
         }
     };
 
@@ -130,7 +130,7 @@ public class FriendHelper {
                 if (!dataSnapshot.exists()){
                     addMeAsFriend(requestModel);
                 } else {
-                    friendListener.onFriendAddFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    friendListener.onFriendAddFailed(Error.ErrorType.ERROR_NOT_DEFINED);
                 }
             }
 
@@ -146,7 +146,7 @@ public class FriendHelper {
                 if (!dataSnapshot.exists()){
                     addAsMyFriend(requestModel);
                 } else {
-                    friendListener.onFriendAddFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    friendListener.onFriendAddFailed(Error.ErrorType.ERROR_NOT_DEFINED);
                 }
             }
 

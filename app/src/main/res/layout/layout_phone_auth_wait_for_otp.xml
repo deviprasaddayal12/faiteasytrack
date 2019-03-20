@@ -11,8 +11,8 @@
         android:layout_margin="@dimen/margin_16">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/image_header_size"
+            android:layout_height="@dimen/image_header_size"
             android:contentDescription="@null"
             android:src="@drawable/ic_round_access_time_24px"
             android:tint="@color/colorPrimaryLight"
@@ -21,9 +21,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_4"
             android:text="@string/patience"
-            android:textSize="24sp"
+            android:textSize="@dimen/text_header_size"
             android:textStyle="bold"
             android:textColor="@color/colorBlack"
             android:layout_marginTop="@dimen/margin_32"/>
@@ -31,9 +30,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_4"
             android:text="@string/otp_reading_prompt"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_sub_header_size"/>
     </LinearLayout>
 
     <Chronometer

@@ -167,9 +167,9 @@ public class ContactsHelper implements ContactsListener {
             }
 
             @Override
-            public void onUserNotFound(Error.ErrorStatus errorStatus) {
+            public void onUserNotFound(Error.ErrorType errorType) {
                 for (OnContactsSyncListener onContactsSyncListener : onContactsSyncListeners)
-                    onContactsSyncListener.onNotFoundOnServer(errorStatus);
+                    onContactsSyncListener.onNotFoundOnServer(errorType);
             }
         });
         userHelper.checkUserExists(contactModel);

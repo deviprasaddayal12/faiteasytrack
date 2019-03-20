@@ -29,13 +29,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="@dimen/margin_8"
+            android:paddingBottom="@dimen/margin_8"
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_8"
-                app:cardElevation="4dp">
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:cardElevation="@dimen/elevate_1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -49,13 +54,14 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:text="@string/share_my_location"
-                        android:textSize="16sp"/>
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/colorBlack"/>
 
                     <Switch
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_4"
-                        android:id="@+id/switch_share_location"/>
+                        android:id="@+id/swt_share_location" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -63,8 +69,11 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_8"
-                app:cardElevation="4dp">
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:cardElevation="@dimen/elevate_1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,7 +85,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/share_my_location_to"
-                        android:textSize="16sp"/>
+                        android:textSize="@dimen/text_sub_header_size"/>
 
                     <RadioGroup
                         android:layout_width="match_parent"
@@ -105,14 +114,26 @@
 
                     </RadioGroup>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/save_preference"
+                        android:layout_margin="@dimen/margin_8"
+                        android:id="@+id/btn_share_location_to"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_8"
-                app:cardElevation="4dp">
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                app:cardElevation="@dimen/elevate_1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -124,31 +145,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/want_to_change_your_password"
-                        android:textSize="16sp"/>
+                        android:textSize="@dimen/text_sub_header_size"/>
 
                     <com.google.android.material.button.MaterialButton
-                        android:layout_width="wrap_content"
+                        android:id="@+id/btn_change_password"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:text="@string/change_my_password"
                         android:layout_margin="@dimen/margin_8"
-                        android:id="@+id/btn_register_as_vendor"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                        android:text="@string/change_my_password" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/save_preference"
-                android:layout_margin="@dimen/margin_8"
-                android:id="@+id/btn_save_location_pref"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -54,7 +54,7 @@ public class TrackingHelper {
                     startListeningToLocationChanges();
                     trackingListener.onLastTripFetchSuccess(lastTripModel, lastTripModel.isTripOngoing());
                 } else
-                    trackingListener.onLastTripFetchFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    trackingListener.onLastTripFetchFailure(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 break;
             }
@@ -64,7 +64,7 @@ public class TrackingHelper {
         public void onCancelled(@NonNull DatabaseError databaseError) {
             Log.e(TAG, "valueEventListener_forLastTripInDbRef.onCancelled: " + databaseError.getMessage());
 
-            trackingListener.onLastTripFetchFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            trackingListener.onLastTripFetchFailure(Error.ErrorType.ERROR_NOT_DEFINED);
         }
     };
 

@@ -121,7 +121,7 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:text="@string/or_register_with"
-            android:textSize="@dimen/text_12"/>
+            android:textSize="@dimen/text_sub_header_size"/>
 
         <View
             android:layout_width="0dp"

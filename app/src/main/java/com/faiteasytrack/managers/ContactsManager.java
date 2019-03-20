@@ -156,7 +156,7 @@ public class ContactsManager implements ContactsListener.OnContactsLoadListener,
     }
 
     @Override
-    public void onSearchFailure(Error.ErrorStatus errorStatus) {
+    public void onSearchFailure(Error.ErrorType errorType) {
 
     }
 
@@ -175,7 +175,7 @@ public class ContactsManager implements ContactsListener.OnContactsLoadListener,
     }
 
     @Override
-    public void onNotFoundOnServer(Error.ErrorStatus errorStatus) {
+    public void onNotFoundOnServer(Error.ErrorType errorType) {
 
     }
 }

@@ -22,6 +22,10 @@ import androidx.annotation.NonNull;
 public class PhoneAuthManager implements PhoneAuthListener {
 
     public static final String TAG = "PhoneAuthManager";
+    public static final String TEST_PHONE_NUMBER = "7776665432";
+    public static final String TEST_OTP = "123456";
+
+    private static final long CODE_TIMEOUT = 30;
 
     private Activity context;
     private OnVerificationListener onVerificationListener;
@@ -43,9 +47,11 @@ public class PhoneAuthManager implements PhoneAuthListener {
         public void onVerificationFailed(FirebaseException e) {
             Log.e(TAG, "onVerificationFailed: " + e.getMessage());
             if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                onVerificationListener.onError(Error.ErrorStatus.INVALID_AUTH_CREDENTIALS);
-            } else
-                onVerificationListener.onError(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                onVerificationListener.onError(Error.getError(Error.ErrorType.INVALID_AUTH_CREDENTIALS.ordinal()));
+            } else {
+                Error error = new Error(Error.ERROR_CODE_UNDEFINED, e.getMessage());
+                onVerificationListener.onError(error);
+            }
         }
 
         @Override
@@ -70,14 +76,17 @@ public class PhoneAuthManager implements PhoneAuthListener {
         this.onVerificationListener = onVerificationListener;
     }
 
-    public void onRequestVerification(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-        PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+phoneNumber, 120, TimeUnit.SECONDS, context, gVerificationCallbacks);
+    public void onRequestVerification(String phoneNumberWithoutCode) {
+        this.phoneNumber = "+91" + phoneNumberWithoutCode;
+
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, CODE_TIMEOUT,
+                TimeUnit.SECONDS, context, gVerificationCallbacks);
         isVerificationInProgress = true;
     }
 
     public void onReRequestVerification() {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 120, TimeUnit.SECONDS, context, gVerificationCallbacks, resendToken);
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, CODE_TIMEOUT, TimeUnit.SECONDS,
+                context, gVerificationCallbacks, resendToken);
         isVerificationInProgress = true;
     }
 
@@ -86,9 +95,18 @@ public class PhoneAuthManager implements PhoneAuthListener {
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
             if (credential.getSmsCode() != null && credential.getSmsCode().equals(code))
                 onVerificationComplete(credential);
-
+            else {
+                Error error = new Error(Error.ERROR_CODE_UNDEFINED, "");
+                if (credential.getSmsCode() == null)
+                    error.setErrorMsg("Unable to find sms token.");
+                else if (!credential.getSmsCode().equals(code))
+                    error.setErrorMsg("Wrong code used.");
+                onVerificationListener.onError(error);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            Error error = new Error(Error.ERROR_CODE_UNDEFINED, e.getMessage());
+            onVerificationListener.onError(error);
         }
     }
 
@@ -103,7 +121,8 @@ public class PhoneAuthManager implements PhoneAuthListener {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        onVerificationListener.onError(Error.ErrorStatus.AUTH_VERIFICATION_FAILED);
+                        Error error = new Error(Error.ERROR_CODE_UNDEFINED, e.getMessage());
+                        onVerificationListener.onError(error);
                     }
                 });
     }

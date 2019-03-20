@@ -160,8 +160,8 @@ public class Utils {
     public static PreferenceModel getDefaultPreference(){
         PreferenceModel preferenceModel = new PreferenceModel();
 
-        preferenceModel.setShareLocationWith(Preferences.ShareLocation.TO_ANYONE);
-        preferenceModel.setShouldShareLocation(true);
+        preferenceModel.setShareLocationTo(Preferences.ShareLocation.TO_ANYONE);
+        preferenceModel.setDoShareLocation(true);
 
         return preferenceModel;
     }

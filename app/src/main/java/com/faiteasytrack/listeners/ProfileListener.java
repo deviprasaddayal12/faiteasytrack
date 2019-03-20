@@ -7,11 +7,11 @@ public interface ProfileListener {
 
     void onProfileRetrieveSuccess(ProfileModel profileModel);
 
-    void onProfileRetrieveFailure(Error.ErrorStatus errorStatus);
+    void onProfileRetrieveFailure(Error.ErrorType errorType);
 
     void onProfileUpdateSuccess(ProfileModel profileModel);
 
-    void onProfileUpdateFailure(Error.ErrorStatus errorStatus);
+    void onProfileUpdateFailure(Error.ErrorType errorType);
 
     void onTaskComplete();
 }

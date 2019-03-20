@@ -6,7 +6,7 @@ import com.faiteasytrack.models.UserModel;
 public interface PhoneAuthListener {
 
     interface OnVerificationListener {
-        void onError(Error.ErrorStatus errorStatus);
+        void onError(Error error);
 
         void onCodeSent();
 

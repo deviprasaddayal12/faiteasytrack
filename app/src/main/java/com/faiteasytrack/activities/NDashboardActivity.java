@@ -100,7 +100,7 @@ public class NDashboardActivity extends BaseActivity
         UserModel userModel = SharePreferences.getUserModel(this);
         if (userModel == null)
             return;
-        switch (userModel.getI_am()){
+        switch (userModel.getI_am()) {
             case User.TYPE_ADMIN:
                 navigationView.inflateMenu(R.menu.menu_nav_admin);
                 break;
@@ -148,7 +148,7 @@ public class NDashboardActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
@@ -225,7 +225,8 @@ public class NDashboardActivity extends BaseActivity
             return;
         if (navigationView.getCheckedItem() != null)
             navigationView.getCheckedItem().setChecked(false);
-        navigationView.getMenu().getItem(0).setChecked(true);
+        if (navigationView.getMenu().size() > 0)
+            navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override

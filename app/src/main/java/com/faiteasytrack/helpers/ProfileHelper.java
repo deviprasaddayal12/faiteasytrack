@@ -45,12 +45,12 @@ public class ProfileHelper {
             if (profileModel != null)
                 profileListener.onProfileRetrieveSuccess(profileModel);
             else
-                profileListener.onProfileRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                profileListener.onProfileRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            profileListener.onProfileRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            profileListener.onProfileRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
         }
     };
 
@@ -62,12 +62,12 @@ public class ProfileHelper {
             if (profileModel != null)
                 profileListener.onProfileUpdateSuccess(profileModel);
             else
-                profileListener.onProfileUpdateFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                profileListener.onProfileUpdateFailure(Error.ErrorType.ERROR_NOT_DEFINED);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            profileListener.onProfileUpdateFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            profileListener.onProfileUpdateFailure(Error.ErrorType.ERROR_NOT_DEFINED);
         }
     };
 
@@ -119,14 +119,14 @@ public class ProfileHelper {
                 if (profileModel != null)
                     profileListener.onProfileRetrieveSuccess(profileModel);
                 else
-                    profileListener.onProfileRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    profileListener.onProfileRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 databaseReference.removeEventListener(this);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                profileListener.onProfileRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                profileListener.onProfileRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 databaseReference.removeEventListener(this);
             }

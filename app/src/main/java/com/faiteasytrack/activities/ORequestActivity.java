@@ -153,7 +153,7 @@ public class ORequestActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onRequestsFetchFailed(Error.ErrorStatus errorStatus) {
+    public void onRequestsFetchFailed(Error.ErrorType errorType) {
 
     }
 
@@ -169,7 +169,7 @@ public class ORequestActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onCreteRequestFailed(Error.ErrorStatus errorStatus) {
+    public void onCreteRequestFailed(Error.ErrorType errorType) {
 
     }
 
@@ -179,7 +179,7 @@ public class ORequestActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onRequestSendFailed(RequestModel requestModel, Error.ErrorStatus errorStatus) {
+    public void onRequestSendFailed(RequestModel requestModel, Error.ErrorType errorType) {
 
     }
 
@@ -200,7 +200,7 @@ public class ORequestActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onStatusUpdateFailed(Error.ErrorStatus errorStatus) {
+    public void onStatusUpdateFailed(Error.ErrorType errorType) {
 
     }
 
@@ -222,7 +222,7 @@ public class ORequestActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onFriendAddFailed(Error.ErrorStatus errorStatus) {
+    public void onFriendAddFailed(Error.ErrorType errorType) {
 
     }
 

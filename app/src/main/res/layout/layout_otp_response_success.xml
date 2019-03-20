@@ -12,8 +12,8 @@
         android:layout_margin="@dimen/margin_16">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/image_header_size"
+            android:layout_height="@dimen/image_header_size"
             android:contentDescription="@null"
             android:src="@drawable/round_check_circle_outline_black_48"
             android:tint="@android:color/holo_green_dark"
@@ -22,9 +22,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_4"
             android:text="@string/cheers"
-            android:textSize="24sp"
+            android:textSize="@dimen/text_header_size"
             android:textStyle="bold"
             android:textColor="@color/colorBlack"
             android:layout_marginTop="@dimen/margin_32"/>
@@ -32,9 +31,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_4"
             android:text="@string/your_phone_has_been_successfully_verified"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_sub_header_size"/>
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

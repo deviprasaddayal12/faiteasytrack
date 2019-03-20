@@ -10,11 +10,11 @@ public interface UserListener {
 
     void onUserRetrieveSuccess(UserModel userModel);
 
-    void onUserRetrieveFailure(Error.ErrorStatus errorStatus);
+    void onUserRetrieveFailure(Error.ErrorType errorType);
 
     void onUserUpdateSuccess(UserModel userModel);
 
-    void onUserUpdateFailure(Error.ErrorStatus errorStatus);
+    void onUserUpdateFailure(Error.ErrorType errorType);
 
     void onChildUpdated(DataSnapshot dataSnapshot, String key);
 
@@ -25,6 +25,6 @@ public interface UserListener {
     interface onFindUserListener{
         void onUserFound(boolean exists, String u_id);
 
-        void onUserNotFound(Error.ErrorStatus errorStatus);
+        void onUserNotFound(Error.ErrorType errorType);
     }
 }

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.faiteasytrack.activities.NDashboardActivity;
+import com.faiteasytrack.enums.Preferences;
 import com.faiteasytrack.exceptions.UserModelNotFound;
 import com.faiteasytrack.models.ContactModel;
 import com.faiteasytrack.models.PreferenceModel;
@@ -390,7 +391,7 @@ public class SharePreferences {
             return gson.fromJson(getString(context, KEYS.PREFERENCE_MODEL), type);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new PreferenceModel(false, Preferences.ShareLocation.TO_ANYONE);
         }
     }
 

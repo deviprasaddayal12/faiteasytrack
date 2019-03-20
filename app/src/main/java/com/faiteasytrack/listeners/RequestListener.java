@@ -11,21 +11,21 @@ public interface RequestListener {
 
     void onRequestSendSuccess(RequestModel requestModel);
 
-    void onRequestSendFailed(RequestModel requestModel, Error.ErrorStatus errorStatus);
+    void onRequestSendFailed(RequestModel requestModel, Error.ErrorType errorType);
 
     void onRequestSending(RequestModel requestModel);
 
     void onRequestStatusUpdated(RequestModel requestModel);
 
-    void onCreteRequestFailed(Error.ErrorStatus errorStatus);
+    void onCreteRequestFailed(Error.ErrorType errorType);
 
     void onNewRequestsCounted(int count);
 
-    void onRequestsFetchFailed(Error.ErrorStatus errorStatus);
+    void onRequestsFetchFailed(Error.ErrorType errorType);
 
     void onAllReceivedRequestsFetched(ArrayList<RequestModel> requestModels);
 
     void onAllSentRequestsFetched(ArrayList<RequestModel> requestModels);
 
-    void onStatusUpdateFailed(Error.ErrorStatus errorStatus);
+    void onStatusUpdateFailed(Error.ErrorType errorType);
 }

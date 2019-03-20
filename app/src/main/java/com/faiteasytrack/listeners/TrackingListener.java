@@ -9,7 +9,7 @@ public interface TrackingListener {
 
     void onLastTripFetchSuccess(TripModel lastTripModel, boolean isOngoing);
 
-    void onLastTripFetchFailure(Error.ErrorStatus errorStatus);
+    void onLastTripFetchFailure(Error.ErrorType errorType);
 
     void onNewLocationReceived(TripModel tripModel, ETLatLng newLatLng);
 

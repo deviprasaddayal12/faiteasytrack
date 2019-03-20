@@ -148,7 +148,7 @@ public class RequestHelper {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                requestListener.onRequestsFetchFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                requestListener.onRequestsFetchFailed(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 gDbRefBaseRequestsRcvd.removeEventListener(this);
             }
@@ -170,14 +170,14 @@ public class RequestHelper {
                 if (!dataSnapshot.exists())
 
 //                else
-                    requestListener.onStatusUpdateFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    requestListener.onStatusUpdateFailed(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 myRefInFriendSentDb.removeEventListener(this);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                requestListener.onStatusUpdateFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                requestListener.onStatusUpdateFailed(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 myRefInFriendSentDb.removeEventListener(this);
             }
@@ -197,14 +197,14 @@ public class RequestHelper {
                 if (requestModel != null)
                     requestListener.onRequestStatusUpdated(requestModel);
                 else
-                    requestListener.onStatusUpdateFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    requestListener.onStatusUpdateFailed(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 frndRefInMyRcvdDb.removeEventListener(this);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                requestListener.onStatusUpdateFailed(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                requestListener.onStatusUpdateFailed(Error.ErrorType.ERROR_NOT_DEFINED);
 
                 frndRefInMyRcvdDb.removeEventListener(this);
             }
@@ -225,14 +225,14 @@ public class RequestHelper {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e(TAG, "createNewRequest:gDbRefBaseRequestsSend:onDataChange: " + dataSnapshot);
                 if (dataSnapshot.exists()){
-                    requestListener.onRequestSendFailed(requestModel, Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    requestListener.onRequestSendFailed(requestModel, Error.ErrorType.ERROR_NOT_DEFINED);
                 } else {
                     gDbRefBaseRequestsRcvd.child(profileModel.getAuthorizationId()).child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.e(TAG, "createNewRequest:gDbRefBaseRequestsRcvd:onDataChange: " + dataSnapshot);
                             if (dataSnapshot.exists()){
-                                requestListener.onRequestSendFailed(requestModel, Error.ErrorStatus.ERROR_NOT_DEFINED);
+                                requestListener.onRequestSendFailed(requestModel, Error.ErrorType.ERROR_NOT_DEFINED);
                             } else {
                                 updateRequestToFriendReceivedDb(requestModel);
                             }
@@ -260,7 +260,7 @@ public class RequestHelper {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e(TAG, "updateRequestToFriendReceivedDb:onDataChange: " + dataSnapshot);
                 if (!dataSnapshot.exists()) {
-                    requestListener.onRequestSendFailed(requestModel, Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    requestListener.onRequestSendFailed(requestModel, Error.ErrorType.ERROR_NOT_DEFINED);
                 } else {
                     updateRequestToMySentDb(requestModel);
                 }
@@ -274,7 +274,7 @@ public class RequestHelper {
 
                 requestModel.setRequestStatusModel(requestStatusModel);
                 updateRequestToMySentDb(requestModel);
-                requestListener.onRequestSendFailed(requestModel, Error.ErrorStatus.ERROR_NOT_DEFINED);
+                requestListener.onRequestSendFailed(requestModel, Error.ErrorType.ERROR_NOT_DEFINED);
 
                 myRefInFriendReceivedDb.removeEventListener(this);
             }
@@ -294,7 +294,7 @@ public class RequestHelper {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e(TAG, "updateRequestToMySentDb:onDataChange: " + dataSnapshot);
                 if (!dataSnapshot.exists()) {
-                    requestListener.onRequestSendFailed(requestModel, Error.ErrorStatus.ERROR_NOT_DEFINED);
+                    requestListener.onRequestSendFailed(requestModel, Error.ErrorType.ERROR_NOT_DEFINED);
                 } else
                     requestListener.onRequestSendSuccess(requestModel);
                 frndRefInMySentDb.removeEventListener(this);

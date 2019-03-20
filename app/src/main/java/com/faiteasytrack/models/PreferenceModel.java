@@ -2,25 +2,40 @@ package com.faiteasytrack.models;
 
 public class PreferenceModel {
 
-    private boolean shouldShareLocation;
-    private int shareLocationWith;
+    private boolean doShareLocation;
+    private int shareLocationTo;
+//    private String lastSavedPassword;
 
     public PreferenceModel() {
+
     }
 
-    public boolean isShouldShareLocation() {
-        return shouldShareLocation;
+    public PreferenceModel(boolean doShareLocation, int shareLocationTo) {
+        this.doShareLocation = doShareLocation;
+        this.shareLocationTo = shareLocationTo;
     }
 
-    public void setShouldShareLocation(boolean shouldShareLocation) {
-        this.shouldShareLocation = shouldShareLocation;
+    public boolean isDoShareLocation() {
+        return doShareLocation;
     }
 
-    public int getShareLocationWith() {
-        return shareLocationWith;
+    public void setDoShareLocation(boolean doShareLocation) {
+        this.doShareLocation = doShareLocation;
     }
 
-    public void setShareLocationWith(int shareLocationWith) {
-        this.shareLocationWith = shareLocationWith;
+    public int getShareLocationTo() {
+        return shareLocationTo;
     }
+
+    public void setShareLocationTo(int shareLocationTo) {
+        this.shareLocationTo = shareLocationTo;
+    }
+
+//    public String getLastSavedPassword() {
+//        return lastSavedPassword;
+//    }
+//
+//    public void setLastSavedPassword(String lastSavedPassword) {
+//        this.lastSavedPassword = lastSavedPassword;
+//    }
 }

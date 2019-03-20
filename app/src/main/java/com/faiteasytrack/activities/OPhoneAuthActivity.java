@@ -458,7 +458,7 @@ public class OPhoneAuthActivity extends BaseActivity implements View.OnClickList
             }
 
             @Override
-            public void onProfileRetrieveFailure(Error.ErrorStatus ERROR_Status_NOT_DEFINED) {
+            public void onProfileRetrieveFailure(Error.ErrorType ERROR_Status_NOT_DEFINED) {
 
             }
 
@@ -468,7 +468,7 @@ public class OPhoneAuthActivity extends BaseActivity implements View.OnClickList
             }
 
             @Override
-            public void onProfileUpdateFailure(Error.ErrorStatus ERROR_Status_NOT_DEFINED) {
+            public void onProfileUpdateFailure(Error.ErrorType ERROR_Status_NOT_DEFINED) {
 
             }
 
@@ -491,7 +491,7 @@ public class OPhoneAuthActivity extends BaseActivity implements View.OnClickList
         }
 
         @Override
-        public void onUserRetrieveFailure(Error.ErrorStatus ERROR_Status_NOT_DEFINED) {
+        public void onUserRetrieveFailure(Error.ErrorType ERROR_Status_NOT_DEFINED) {
 //            hideProgressDialog();
 
 //            makeSnackbar(fabNext, "" + ERROR_Status_NOT_DEFINED);
@@ -514,7 +514,7 @@ public class OPhoneAuthActivity extends BaseActivity implements View.OnClickList
         }
 
         @Override
-        public void onUserUpdateFailure(Error.ErrorStatus ERROR_Status_NOT_DEFINED) {
+        public void onUserUpdateFailure(Error.ErrorType ERROR_Status_NOT_DEFINED) {
 //            hideProgressDialog();
 
 //            makeSnackbar(fabNext, "" + ERROR_Status_NOT_DEFINED);

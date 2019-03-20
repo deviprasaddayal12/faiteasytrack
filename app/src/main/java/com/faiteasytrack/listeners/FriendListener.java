@@ -11,5 +11,5 @@ public interface FriendListener {
 
     void onNewFriendAdded(FriendModel friendModel, ArrayList<FriendModel> friendModels);
 
-    void onFriendAddFailed(Error.ErrorStatus errorStatus);
+    void onFriendAddFailed(Error.ErrorType errorType);
 }

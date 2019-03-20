@@ -147,14 +147,14 @@ public class UserHelper {
             if (userModel != null)
                 userListener.onUserRetrieveSuccess(userModel);
             else
-                userListener.onUserRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                userListener.onUserRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
 
             databaseThisUser.removeEventListener(valueEventListener_getUser);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            userListener.onUserRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            userListener.onUserRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
             databaseThisUser.removeEventListener(valueEventListener_getUser);
         }
     };
@@ -166,7 +166,7 @@ public class UserHelper {
             if (dataSnapshot.exists()) {
                 onFindUserListener.onUserFound(true, dataSnapshot.getValue().toString());
             } else
-                onFindUserListener.onUserNotFound(Error.ErrorStatus.CONTACT_NOT_REGISTERED);
+                onFindUserListener.onUserNotFound(Error.ErrorType.CONTACT_NOT_REGISTERED);
 
 //            userListener.onCheckedUser(dataSnapshot.exists());
             databaseThisUser.removeEventListener(valueEventListener_checkUser);
@@ -174,7 +174,7 @@ public class UserHelper {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            onFindUserListener.onUserNotFound(Error.ErrorStatus.OPERATION_WAS_CANCELLED);
+            onFindUserListener.onUserNotFound(Error.ErrorType.OPERATION_WAS_CANCELLED);
 
 //            userListener.onUserRetrieveFailure(databaseError.getMessage());
             databaseThisUser.removeEventListener(valueEventListener_checkUser);
@@ -190,7 +190,7 @@ public class UserHelper {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            userListener.onUserRetrieveFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            userListener.onUserRetrieveFailure(Error.ErrorType.ERROR_NOT_DEFINED);
             databaseThisUser.removeEventListener(valueEventListener_checkUserWithNumber);
         }
     };
@@ -203,14 +203,14 @@ public class UserHelper {
             if (userModel != null)
                 userListener.onUserUpdateSuccess(userModel);
             else
-                userListener.onUserUpdateFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+                userListener.onUserUpdateFailure(Error.ErrorType.ERROR_NOT_DEFINED);
 
             databaseThisUser.removeEventListener(valueEventListener_updateUser);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            userListener.onUserUpdateFailure(Error.ErrorStatus.ERROR_NOT_DEFINED);
+            userListener.onUserUpdateFailure(Error.ErrorType.ERROR_NOT_DEFINED);
             databaseThisUser.removeEventListener(valueEventListener_updateUser);
         }
     };

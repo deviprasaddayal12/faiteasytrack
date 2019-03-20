@@ -27,9 +27,7 @@ import com.faiteasytrack.utils.AppPermissions;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.Utils;
 import com.faiteasytrack.utils.ViewUtils;
-import com.faiteasytrack.views.EasytrackButton;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +36,7 @@ import androidx.core.content.ContextCompat;
 
 public class NPhoneAuthActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final String TAG = "";
+    public static final String TAG = "NPhoneAuthActivity";
 
     private PhoneAuthManager phoneAuthManager;
 
@@ -143,58 +141,89 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
     }
 
     private String phoneNumber;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_send_otp:{
-                if (!isOnline){
+        switch (v.getId()) {
+            case R.id.btn_send_otp: {
+                if (!isOnline) {
                     DialogUtils.showSorryAlert(this, "We can't process your request! " +
                             "Please try after some time, when we have a working network connection.", null);
                     return;
                 }
-                if (isRequestValid()) {
+
+                if (etPhoneNumber.getText().toString().equals("")) {
+                    etPhoneNumber.setError("Please enter phone number!");
+                } else if (etPhoneNumber.getText().length() < 10) {
+                    etPhoneNumber.setError("Please enter a valid number.");
+                } else {
+
+                    // current layout is : "Whats your number?"
                     phoneNumber = etPhoneNumber.getText().toString();
 
                     Utils.hideSoftKeyboard(this);
                     ViewUtils.showViews(loader);
+
+                    lastUiState = UI_STATE.SEND_OTP;
                     phoneAuthManager.onRequestVerification(etPhoneNumber.getText().toString());
                 }
-            } break;
-            case R.id.btn_lets_go:{
+            }
+            break;
+            case R.id.btn_lets_go: {
+                // current layout is : "Cheers!"
+
                 Intent profileIntent = new Intent(NPhoneAuthActivity.this, NUserProfileActivity.class);
                 profileIntent.putExtra("CALLED_FROM", NUserProfileActivity.CALLED_FROM_PHONE_AUTH);
                 startActivity(profileIntent);
                 finish();
-            } break;
-            case R.id.btn_resend_otp:{
+            }
+            break;
+            case R.id.btn_resend_otp: {
+                // current layout is : "Sorry!"
 
-                lastUiState = UI_STATE.REQUESTED_OTP_RESEND;
-                phnAuthFlipper.showPrevious();
-                lastUiState = UI_STATE.WAITING_FOR_OTP;
+                lastUiState = UI_STATE.RESEND_OTP;
 
+                ViewUtils.showViews(loader);
                 phoneAuthManager.onReRequestVerification();
-            } break;
-            case R.id.btn_have_otp:{
-
+            }
+            break;
+            case R.id.btn_have_otp: {
+                // current layout is : "Sorry!"
+                // Following ensures response layout is set to default(success layout) to maintain the order
+                otpResponseSwitcher.showPrevious();
+                lastUiState = UI_STATE.HAVE_OTP;
                 phnAuthFlipper.showNext();
-                lastUiState = UI_STATE.VERIFYING_MANUALLY;
-            } break;
-            case R.id.btn_verify_manual_otp:{
+            }
+            break;
+            case R.id.btn_verify_manual_otp: {
+                // current layout is : "Have an otp?"
 
-                phoneAuthManager.onManualCodeVerification(etManualOTP.getText().toString());
-            } break;
+                if (etManualOTP.getText().toString().equals("")) {
+                    etManualOTP.setError("Please enter an otp!");
+                } else if (etManualOTP.getText().length() < 6) {
+                    etManualOTP.setError("Please enter a valid otp.");
+                } else {
+
+                    Utils.hideSoftKeyboard(this);
+                    ViewUtils.showViews(loader);
+                    phoneAuthManager.onManualCodeVerification(etManualOTP.getText().toString());
+                }
+            }
+            break;
         }
     }
 
-    private int lastUiState = UI_STATE.PROVIDE_NUMBER_FOR_OTP;
+    private int lastUiState = UI_STATE.DEFAULT;
+    private boolean isAutoVerified = true;
+
     private PhoneAuthListener.OnVerificationListener onVerificationListener = new PhoneAuthListener.OnVerificationListener() {
         @Override
-        public void onError(Error.ErrorStatus errorStatus) {
-            // handle errorStatus
-            Log.i(TAG, "onError: " + errorStatus.name() + errorStatus.ordinal());
+        public void onError(Error error) {
+            // handle error
+            Log.i(TAG, "onError: " + error.getErrorMsg());
 
-//            ViewUtils.hideViews(loader);
-            Snackbar.make(etPhoneNumber, "" + errorStatus.name(), Snackbar.LENGTH_LONG).show();
+            ViewUtils.hideViews(loader);
+            DialogUtils.showSorryAlert(NPhoneAuthActivity.this, error.getErrorMsg(), null);
         }
 
         @Override
@@ -203,52 +232,52 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
             Log.i(TAG, "onCodeSent: ");
             ViewUtils.hideViews(loader);
 
-            // Following represents timer layout
-            phnAuthFlipper.showNext();
+            isAutoVerified = false;
+            // Following changes to timer layout
+            if (lastUiState == UI_STATE.RESEND_OTP) {
+                // Following ensures response layout is set to default(success layout) to maintain the order
+                otpResponseSwitcher.showPrevious();
+                // Following changes to timer layout from response layout
+                phnAuthFlipper.showPrevious();
+
+            } else if (lastUiState == UI_STATE.SEND_OTP) {
+                // Following changes to timer layout from default(whats your number) layout
+                phnAuthFlipper.showNext();
+            }
 
             resetChronometerAndStart();
-            lastUiState = UI_STATE.WAITING_FOR_OTP;
         }
 
         @Override
         public void onCodeTimeout() {
             // update ui state to timeout, resend code, enter code manually
             Log.i(TAG, "onCodeTimeout: ");
+            ViewUtils.hideViews(loader);
 
-            // Following represents response layout
+            // Following changes to response layout
             phnAuthFlipper.showNext();
-            // Following represents error layout of response layout
+            // Following changes to error layout of response layout
             otpResponseSwitcher.showNext();
 
             chronometerOTPCDown.stop();
-            lastUiState = UI_STATE.WAITING_FAILED_BY_TIMEOUT;
         }
 
         @Override
         public void onCodeVerified() {
-            // update ui state to verified
-            // check if user already exists in app
             Log.i(TAG, "onCodeVerified: ");
+            ViewUtils.hideViews(loader);
 
-            if (lastUiState == UI_STATE.VERIFYING_MANUALLY){
-                // Following represents that we're in response layout by default
-                // Following represents success layout of response layout from error layout
-                otpResponseSwitcher.showPrevious();
-
-            } else {
-                if (lastUiState == UI_STATE.PROVIDE_NUMBER_FOR_OTP) {
-                    // Following represents verified without otp bcoz verification was done recently and cached
-                    // So this if ensures it travels through the proper ui transformation
-
-                    onCodeSent();
-                }
-                // Following represents verified with otp
-
-                // Following represents response layout
+            if (isAutoVerified) {
+                // In case auto verification, onCodeSent is not invoked
+                // Following ensures the traversal through timer layout
                 phnAuthFlipper.showNext();
-                // Following represents success layout of response layout by default
                 chronometerOTPCDown.stop();
-                lastUiState = UI_STATE.WAITING_SUCCEED_BY_AUTO_VERIFY;
+            }
+            // Following changes to success layout of response layout
+            if (lastUiState == UI_STATE.HAVE_OTP) {
+                phnAuthFlipper.showPrevious();
+            } else if (lastUiState == UI_STATE.SEND_OTP || lastUiState == UI_STATE.RESEND_OTP) {
+                phnAuthFlipper.showNext();
             }
         }
 
@@ -263,7 +292,7 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
         }
     };
 
-    private void resetChronometerAndStart(){
+    private void resetChronometerAndStart() {
         chronometerOTPCDown.setBase(SystemClock.elapsedRealtime());
         chronometerOTPCDown.stop();
         chronometerOTPCDown.start();
@@ -284,6 +313,7 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
 
     private Handler handlerUIThread = new Handler();
     private boolean isOnline = true;
+
     @Override
     public void updateInternetError(boolean isOnlineNow) {
         isOnline = isOnlineNow;
@@ -308,19 +338,17 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
     }
 
     private boolean isRequestValid() {
-        if(etPhoneNumber.getText().length() < 10){
+        if (etPhoneNumber.getText().length() < 10) {
             etPhoneNumber.setError("Invalid phone");
             return false;
         }
         return true;
     }
 
-    public interface UI_STATE{
-        int PROVIDE_NUMBER_FOR_OTP = 0;
-        int WAITING_FOR_OTP = 1;
-        int WAITING_FAILED_BY_TIMEOUT = 2;
-        int WAITING_SUCCEED_BY_AUTO_VERIFY = 3;
-        int REQUESTED_OTP_RESEND = 4;
-        int VERIFYING_MANUALLY = 5;
+    public static class UI_STATE {
+        public static final int DEFAULT = 0;
+        public static final int SEND_OTP = 1;
+        public static final int RESEND_OTP = 2;
+        public static final int HAVE_OTP = 3;
     }
 }
