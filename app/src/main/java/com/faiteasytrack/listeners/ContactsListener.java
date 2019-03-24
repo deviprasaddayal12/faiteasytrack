@@ -1,7 +1,7 @@
 package com.faiteasytrack.listeners;
 
-import com.faiteasytrack.enums.Error;
-import com.faiteasytrack.enums.Request;
+import com.faiteasytrack.constants.Error;
+import com.faiteasytrack.constants.Request;
 import com.faiteasytrack.models.ContactModel;
 
 import java.util.ArrayList;

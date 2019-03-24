@@ -2,150 +2,59 @@ package com.faiteasytrack.managers;
 
 import android.content.Context;
 
-import com.faiteasytrack.enums.Error;
-import com.faiteasytrack.helpers.RequestHelper;
-import com.faiteasytrack.helpers.TrackingHelper;
-import com.faiteasytrack.listeners.RequestListener;
-import com.faiteasytrack.listeners.TrackingListener;
-import com.faiteasytrack.classess.ETLatLng;
-import com.faiteasytrack.models.FriendModel;
-import com.faiteasytrack.models.RequestModel;
-import com.faiteasytrack.models.TripModel;
+import com.faiteasytrack.constants.Dashboard;
+import com.faiteasytrack.listeners.OnStatisticsFetchListener;
+import com.faiteasytrack.models.DashboardModel;
 
-import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
 
 public class DashboardManager {
 
     public static final String TAG = "DashboardManager";
 
-    public interface DashboardListener{
-        void onNewRequestReceived();
+    private static DashboardManager dashboardManager = null;
 
-        void onNewTripStarted(TripModel newTripModel);
+    private Context context;
+    private OnStatisticsFetchListener statisticsFetchListener;
 
-        void onTripFetchSuccess(TripModel lastTripModel, boolean isOngoing);
+    public static DashboardManager getInstance(Context context){
+        if (dashboardManager == null)
+            dashboardManager = new DashboardManager(context);
 
-        void onNewLatLngReceived(TripModel currentTripModel, ETLatLng newLatLng);
-
-        void onTripFetchFailed(String error);
-
-        void onTripFinished();
+        return dashboardManager;
     }
 
-    private DashboardListener dashboardListener;
-    private Context gContext;
-
-    public DashboardManager(Context gContext, DashboardListener dashboardListener) {
-        this.gContext = gContext;
-        this.dashboardListener = dashboardListener;
-        initInteractors();
+    private DashboardManager(Context context) {
+        this.context = context;
     }
 
-    private RequestHelper requestHelper;
+    public void getStatisticsReport(){
+        DashboardModel dashboardModelDefault = new DashboardModel();
+        dashboardModelDefault.setStatisticsInfoType(Dashboard.StatisticsType.TYPE_DEFAULT);
 
-    private TrackingHelper trackingHelper;
+        if (statisticsFetchListener != null)
+            statisticsFetchListener.onFetchingStarted(dashboardModelDefault);
 
-    private void initInteractors(){
-        requestHelper = new RequestHelper(gContext, requestListener);
-//        requestHelper.initRequestDatabases();
-//        requestHelper.countNewRequest();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                DashboardModel dashboardModel = new DashboardModel();
+                dashboardModel.setStatisticsInfoType(Dashboard.StatisticsType.TYPE_CHILDREN_FOR_PARENT);
+                dashboardModel.setContainsData(false);
 
-        trackingHelper = new TrackingHelper(gContext, trackingListener);
+                if (statisticsFetchListener != null)
+                    statisticsFetchListener.onFetchComplete(dashboardModel);
+            }
+        }, 5000);
     }
 
-    public void startTracking(FriendModel friendModel){
-        trackingHelper.startTracking(friendModel);
+    public OnStatisticsFetchListener getStatisticsFetchListener() {
+        return statisticsFetchListener;
     }
 
-    public void stopTracking(){
-        trackingHelper.stopTracking();
+    public void setStatisticsFetchListener(OnStatisticsFetchListener statisticsFetchListener) {
+        this.statisticsFetchListener = statisticsFetchListener;
     }
-
-    public void refreshTracking(FriendModel friendModel){
-        trackingHelper.refreshTrackingToNewTrip(friendModel);
-    }
-
-    private TrackingListener trackingListener = new TrackingListener() {
-        @Override
-        public void onNewTripStarted(TripModel newTripModel) {
-            dashboardListener.onNewTripStarted(newTripModel);
-        }
-
-        @Override
-        public void onLastTripFetchSuccess(TripModel lastTripModel, boolean isOngoing) {
-            dashboardListener.onTripFetchSuccess(lastTripModel, isOngoing);
-        }
-
-        @Override
-        public void onLastTripFetchFailure(Error.ErrorType errorType) {
-            dashboardListener.onTripFetchFailed(errorType.toString());
-        }
-
-        @Override
-        public void onNewLocationReceived(TripModel tripModel, ETLatLng newLatLng) {
-            dashboardListener.onNewLatLngReceived(tripModel, newLatLng);
-        }
-
-        @Override
-        public void onTripFinished(TripModel tripModel) {
-            dashboardListener.onTripFinished();
-        }
-    };
-
-    private RequestListener requestListener = new RequestListener() {
-        @Override
-        public void onNewRequestReceived(RequestModel requestModel) {
-
-        }
-
-        @Override
-        public void onRequestSendSuccess(RequestModel requestModel) {
-
-        }
-
-        @Override
-        public void onRequestSendFailed(RequestModel requestModel, Error.ErrorType errorTypeMessage) {
-
-        }
-
-        @Override
-        public void onRequestSending(RequestModel requestModel) {
-
-        }
-
-        @Override
-        public void onRequestStatusUpdated(RequestModel requestModel) {
-
-        }
-
-        @Override
-        public void onCreteRequestFailed(Error.ErrorType s) {
-
-        }
-
-        @Override
-        public void onNewRequestsCounted(int count) {
-
-        }
-
-        @Override
-        public void onRequestsFetchFailed(Error.ErrorType message) {
-
-        }
-
-        @Override
-        public void onAllReceivedRequestsFetched(ArrayList<RequestModel> requestModels) {
-
-        }
-
-        @Override
-        public void onAllSentRequestsFetched(ArrayList<RequestModel> requestModels) {
-
-        }
-
-        @Override
-        public void onStatusUpdateFailed(Error.ErrorType message) {
-
-        }
-    };
 }

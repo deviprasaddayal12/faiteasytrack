@@ -32,12 +32,12 @@ import android.widget.Toast;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.broadcasts.NetworkStateReceiver;
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.helpers.FirebaseHelper;
 import com.faiteasytrack.helpers.RequestHelper;
 import com.faiteasytrack.listeners.RequestListener;
 import com.faiteasytrack.exceptions.UserModelNotFound;
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.models.FriendModel;
 import com.faiteasytrack.models.ProfileModel;
 import com.faiteasytrack.models.RequestModel;

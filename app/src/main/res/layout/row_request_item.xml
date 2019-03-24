@@ -4,15 +4,13 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:foreground="?attr/selectableItemBackground">
+    android:background="?attr/selectableItemBackground">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_margin="@dimen/margin_8"
-        app:civ_border_width="2dp"
         android:layout_gravity="center_vertical"
-        app:civ_border_color="@color/colorPrimary"
         android:id="@+id/iv_friend_pic"
         android:background="@drawable/circle_image_dummy"
         android:elevation="10dp"/>

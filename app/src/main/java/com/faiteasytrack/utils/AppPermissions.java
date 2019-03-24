@@ -4,22 +4,26 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class AppPermissions {
+    public static final String TAG = AppPermissions.class.getSimpleName();
 
-    public interface REQUESTS {
-        int ACCESS_LOCATION_REQUEST = 0;
-        int ACCESS_INTERNET_REQUEST = 1;
-        int ACCESS_MESSAGE_READ_REQUEST = 2;
-        int ACCESS_NETWORK_STATE_REQUEST = 3;
-        int ACCESS_READ_CONTACTS = 4;
-        int ACCESS_CAMERA_REQUEST = 5;
-        int ACCESS_GALLERY_REQUEST = 6;
-        int ACCESS_FILE_BROWSER_REQUEST = 7;
+    public static class REQUESTS {
+        public static final int ACCESS_LOCATION_REQUEST = 0;
+        public static final int ACCESS_INTERNET_REQUEST = 1;
+        public static final int ACCESS_MESSAGE_READ_REQUEST = 2;
+        public static final int ACCESS_NETWORK_STATE_REQUEST = 3;
+        public static final int ACCESS_READ_CONTACTS = 4;
+        public static final int ACCESS_CAMERA_REQUEST = 5;
+        public static final int ACCESS_GALLERY_REQUEST = 6;
+        public static final int ACCESS_FILE_BROWSER_REQUEST = 7;
+
+        public static final int REQUEST_FOR_UPDATE_USER_DETAILS = 8;
     }
 
     public static boolean checkReadConactsPermission(final Activity context) {
@@ -128,6 +132,7 @@ public class AppPermissions {
     }
 
     public static boolean checkCameraPermission(final Activity context) {
+        Log.i(TAG, "checkCameraPermission: ");
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.CAMERA)) {
                 new AlertDialog.Builder(context)

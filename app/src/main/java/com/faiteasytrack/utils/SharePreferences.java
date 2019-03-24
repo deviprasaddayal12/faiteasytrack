@@ -5,8 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.faiteasytrack.activities.NDashboardActivity;
-import com.faiteasytrack.enums.Preferences;
+import com.faiteasytrack.constants.Preferences;
 import com.faiteasytrack.exceptions.UserModelNotFound;
 import com.faiteasytrack.models.ContactModel;
 import com.faiteasytrack.models.PreferenceModel;

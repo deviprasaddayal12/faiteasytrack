@@ -12,24 +12,22 @@ import com.faiteasytrack.services.LocationChangeService;
 import java.util.ArrayList;
 
 public class LocationChangeReceiver extends BroadcastReceiver {
-
     public static final String TAG = "LocationChangeReceiver";
 
-    private ArrayList<OnLocationChangedListener> onLocationChangedListeners = new ArrayList<>();
+    private OnLocationChangedListener onLocationChangedListener;
 
-    public LocationChangeReceiver(OnLocationChangedListener onLocationChangedListener) {
-        this.onLocationChangedListeners.add(onLocationChangedListener);
+    public boolean bindListener(OnLocationChangedListener locationChangedListener){
+        onLocationChangedListener = locationChangedListener;
+        return true;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Location location = intent.getParcelableExtra(LocationChangeService.EXTRA_LOCATION);
-        updateAllListeners(location);
-    }
+        if (intent.getAction() != null && intent.getAction().equals(LocationChangeService.ACTION_BROADCAST)){
+            Location location = intent.getParcelableExtra(LocationChangeService.EXTRA_LOCATION);
 
-    private void updateAllListeners(Location location) {
-        for (int i = 0; i < onLocationChangedListeners.size(); i++){
-            onLocationChangedListeners.get(i).onLocationChanged(location);
+            if (onLocationChangedListener != null)
+                onLocationChangedListener.onLocationChanged(location);
         }
     }
 }

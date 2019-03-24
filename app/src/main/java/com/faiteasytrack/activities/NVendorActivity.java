@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.adapters.VendorAdapter;
-import com.faiteasytrack.enums.FirebaseKeys;
+import com.faiteasytrack.constants.FirebaseKeys;
 import com.faiteasytrack.models.VendorModel;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.ViewUtils;

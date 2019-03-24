@@ -16,8 +16,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.classess.ETLatLng;
-import com.faiteasytrack.enums.Preferences;
+import com.faiteasytrack.customclasses.ETLatLng;
+import com.faiteasytrack.constants.Preferences;
 import com.faiteasytrack.models.PreferenceModel;
 
 import java.io.IOException;
@@ -110,6 +110,12 @@ public class Utils {
 
     public static InputFilter[] getLengthFilter(int size) {
         return new InputFilter[]{new InputFilter.LengthFilter(size)};
+    }
+
+    public static String getValidString(String text) {
+        if (text == null)
+            text = "";
+        return text;
     }
 
     public void showSoftKeyboard(Context context, View view){

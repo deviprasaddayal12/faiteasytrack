@@ -2,7 +2,7 @@ package com.faiteasytrack.helpers;
 
 import android.content.Context;
 
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.listeners.ProfileListener;
 import com.faiteasytrack.models.ProfileModel;
 import com.faiteasytrack.utils.SharePreferences;

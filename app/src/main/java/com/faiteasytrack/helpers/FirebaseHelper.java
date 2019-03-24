@@ -5,7 +5,7 @@ import android.content.Context;
 import com.faiteasytrack.exceptions.EasyTrackDatabaseError;
 import com.faiteasytrack.exceptions.UserModelNotFound;
 import com.faiteasytrack.exceptions.UserNotFoundException;
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.models.ProfileModel;
 import com.faiteasytrack.models.TripModel;
 import com.google.firebase.auth.FirebaseAuth;

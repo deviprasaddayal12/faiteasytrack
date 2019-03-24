@@ -1,4 +1,4 @@
-package com.faiteasytrack.enums;
+package com.faiteasytrack.constants;
 
 public class FirebaseKeys {
 

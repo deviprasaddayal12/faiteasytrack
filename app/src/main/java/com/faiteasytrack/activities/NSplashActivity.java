@@ -25,8 +25,6 @@ public class NSplashActivity extends BaseActivity implements View.OnClickListene
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        FirebaseApp.initializeApp(this);
     }
 
     @Override

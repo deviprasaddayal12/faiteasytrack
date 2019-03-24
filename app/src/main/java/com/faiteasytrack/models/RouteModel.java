@@ -3,7 +3,7 @@ package com.faiteasytrack.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 
 import java.util.List;
 

@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:gContext=".activities.DashboardActivity"
     tools:showIn="@layout/app_bar_dashboard">
 
-    <include layout="@layout/activity_maps" />
+    <!--<include layout="@layout/activity_maps" />-->
 
 </FrameLayout>

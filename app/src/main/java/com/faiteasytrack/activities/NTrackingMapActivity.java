@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.helpers.FirebaseHelper;
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.models.FriendModel;
 import com.faiteasytrack.models.TripModel;
 import com.faiteasytrack.services.LocationChangeService;

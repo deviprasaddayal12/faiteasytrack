@@ -9,7 +9,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.Preferences;
+import com.faiteasytrack.constants.Preferences;
 import com.faiteasytrack.models.PreferenceModel;
 import com.faiteasytrack.utils.SharePreferences;
 import com.faiteasytrack.utils.ViewUtils;
@@ -49,6 +49,8 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
         progressDialog = new ProgressDialog(this);
 
         btnShareLocationTo = findViewById(R.id.btn_share_location_to);
+        ViewUtils.hideViews(btnShareLocationTo);
+
         btnChangePassword = findViewById(R.id.btn_change_password);
         swtShareLocation = findViewById(R.id.swt_share_location);
         rgShareLocationTo = findViewById(R.id.rg_location_pref);
@@ -82,6 +84,7 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
                                 shareLocationTo = Preferences.ShareLocation.TO_ANYONE;
                                 break;
                         }
+                        onShareLocationToPreferenceChanged();
                     }
                 });
     }
@@ -139,7 +142,7 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
         } else {
             doShareLocationChanged = true;
             changedPreferenceModel.setDoShareLocation(b);
-            ViewUtils.makeToast(this, "Preferences updated.");
+//            ViewUtils.makeToast(this, "Preferences updated.");
         }
     }
 
@@ -149,7 +152,7 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
         } else {
             doShareLocationToChanged = true;
             changedPreferenceModel.setShareLocationTo(shareLocationTo);
-            ViewUtils.makeToast(this, "Preferences updated.");
+//            ViewUtils.makeToast(this, "Preferences updated.");
         }
     }
 
@@ -176,6 +179,10 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void saveChangedPreferences(OnPreferencesSaveListener listener) {
+        if (!doShareLocationToChanged && lastPreferenceModel.getShareLocationTo() == 0)
+            changedPreferenceModel.setShareLocationTo(Preferences.ShareLocation.TO_ANYONE);
+        if (!doShareLocationChanged)
+            changedPreferenceModel.setDoShareLocation(lastPreferenceModel.isDoShareLocation());
         SharePreferences.savePreferenceModel(this, changedPreferenceModel);
         // todo : upload preferences to firebase database
 

@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-public class OTPReceiver extends BroadcastReceiver {
+public class OneTimePasswordReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "OTPReceiver";
+    private static final String TAG = "OneTimePasswordReceiver";
 
     private static SMSReceivedListener smsReceivedListener;
 

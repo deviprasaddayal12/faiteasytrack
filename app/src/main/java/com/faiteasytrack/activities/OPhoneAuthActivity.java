@@ -20,8 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.broadcasts.OTPReceiver;
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.broadcasts.OneTimePasswordReceiver;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.helpers.FirebaseHelper;
 import com.faiteasytrack.helpers.ProfileHelper;
 import com.faiteasytrack.helpers.UserHelper;
@@ -119,7 +119,7 @@ public class OPhoneAuthActivity extends BaseActivity implements View.OnClickList
     }
 
     private void registerSMSBroadcast() {
-        OTPReceiver.bindListener(new OTPReceiver.SMSReceivedListener() {
+        OneTimePasswordReceiver.bindListener(new OneTimePasswordReceiver.SMSReceivedListener() {
             @Override
             public void onOTPReceived(final String otp) {
                 otpCode = otp;

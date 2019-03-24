@@ -2,7 +2,7 @@ package com.faiteasytrack.models;
 
 import android.content.Context;
 
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.utils.SharePreferences;
 
 import java.util.ArrayList;

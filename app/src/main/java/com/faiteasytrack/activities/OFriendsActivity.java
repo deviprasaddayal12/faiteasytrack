@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.adapters.FriendAdapter;
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.helpers.FriendHelper;
 import com.faiteasytrack.listeners.FriendListener;
 import com.faiteasytrack.models.FriendModel;

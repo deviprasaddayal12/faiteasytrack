@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.faiteasytrack.enums.Error;
-import com.faiteasytrack.enums.Request;
+import com.faiteasytrack.constants.Error;
+import com.faiteasytrack.constants.Request;
 import com.faiteasytrack.listeners.ContactsListener;
 import com.faiteasytrack.listeners.UserListener;
 import com.faiteasytrack.models.ContactModel;

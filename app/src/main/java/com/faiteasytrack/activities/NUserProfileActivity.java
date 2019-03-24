@@ -7,11 +7,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.InputType;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faiteasytrack.BuildConfig;
@@ -22,17 +28,17 @@ import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.FileUtils;
 import com.faiteasytrack.utils.Utils;
 import com.faiteasytrack.utils.ViewUtils;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,18 +53,21 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     public static final int REQUEST_FOR_CAMERA = 201, REQUEST_FOR_GALLERY = 202, REQUEST_FOR_FILE_BROWSER = 203;
 
     private FloatingActionButton fabUploadPhoto;
-    private TextInputEditText etUserName, etUserEmail, etUserPhone;
+    private EditText etUserName, etUserEmail, etUserPhone;
+    private CircularImageView civProfilePic;
 
     private View loader;
-    private MaterialButton btnEdit, btnSkip;
+    private MaterialButton btnSkip;
 
-    private String name, email;
     private FirebaseUser firebaseUser;
 
-    private boolean isCalledFromAuth;
+    private boolean isCalledFromAuth, isUploadingPic = false, isUpdatingName = false, isUpdatingEmail = false;
+    private boolean isProfileUpdated = false;
 
     private Uri photoURI;
     private String imagePathForProfilePic;
+
+    private Handler handlerProfileViewLoad;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +76,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         isCalledFromAuth = getIntent().getIntExtra("CALLED_FROM",
                 CALLED_FROM_NAVIGATION) == CALLED_FROM_PHONE_AUTH;
+        handlerProfileViewLoad = new Handler();
         setContentView(R.layout.activity_user_profile);
     }
 
@@ -84,35 +94,69 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
         ViewUtils.hideViews(loader);
 
-        etUserName = findViewById(R.id.et_user_name);
-        etUserEmail = findViewById(R.id.et_user_email);
-        etUserPhone = findViewById(R.id.et_user_phone);
+        civProfilePic = findViewById(R.id.civ_profile_pic);
+
+        etUserName = findViewById(R.id.et_name);
+        etUserEmail = findViewById(R.id.et_email);
+        etUserPhone = findViewById(R.id.et_phone);
 
         fabUploadPhoto = findViewById(R.id.fab_upload_photo);
 
-        btnEdit = findViewById(R.id.btn_edit);
         btnSkip = findViewById(R.id.btn_skip);
 
         if (!isCalledFromAuth)
             ViewUtils.hideViews(btnSkip);
-        fabUploadPhoto.hide();
     }
 
     @Override
     public void setUpListeners() {
-        btnEdit.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
         fabUploadPhoto.setOnClickListener(this);
+
+        etUserName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String nameWritten = etUserName.getText().toString();
+                if (!nameWritten.isEmpty()) {
+                    if (!nameWritten.equals(firebaseUser.getDisplayName())) {
+                        updateName(nameWritten);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        etUserEmail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String emailWritten = etUserEmail.getText().toString();
+                if (!emailWritten.isEmpty()) {
+                    if (!emailWritten.equals(firebaseUser.getEmail())) {
+                        updateEmail(emailWritten);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     @Override
     public void setUpData() {
-        if (firebaseUser.getPhoneNumber() != null)
-            etUserPhone.setText(String.format(Locale.getDefault(), "%s", firebaseUser.getPhoneNumber()));
-        if (firebaseUser.getDisplayName() != null)
-            etUserName.setText(String.format(Locale.getDefault(), "%s", firebaseUser.getDisplayName()));
-        if (firebaseUser.getEmail() != null)
-            etUserEmail.setText(String.format(Locale.getDefault(), "%s", firebaseUser.getEmail()));
+        etUserName.setText(Utils.getValidString(firebaseUser.getDisplayName()));
+        etUserEmail.setText(Utils.getValidString(firebaseUser.getEmail()));
+        etUserPhone.setText(Utils.getValidString(firebaseUser.getPhoneNumber()));
+        etUserPhone.setInputType(InputType.TYPE_NULL);
+
+        if (firebaseUser.getPhotoUrl() != null) {
+            Log.i(TAG, "setUpData:firebaseUser.getPhotoUrl = " + firebaseUser.getPhotoUrl());
+            handlerProfileViewLoad.post(new Runnable() {
+                @Override
+                public void run() {
+                    civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
+                }
+            });
+        }
     }
 
     @Override
@@ -122,13 +166,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_edit) {
-            etUserName.requestFocus();
-            fabUploadPhoto.show();
-
-        } else if (v.getId() == R.id.btn_skip) {
-            startActivity(new Intent(this, NIAmActivity.class));
-            finish();
+        if (v.getId() == R.id.btn_skip) {
+            onBackPressed();
 
         } else if (v.getId() == R.id.fab_upload_photo) {
             showFileSourcePickerDialog();
@@ -191,7 +230,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     private void requestGallery() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (AppPermissions.checkCameraPermission(this))
+            if (AppPermissions.checkGalleryPermission(this))
                 startGallery();
         } else
             startGallery();
@@ -200,7 +239,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     private void startGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
             intent.setType("image/*");
             startActivityForResult(intent, REQUEST_FOR_GALLERY);
         } else {
@@ -210,22 +249,23 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     private void requestFileBrowser() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (AppPermissions.checkCameraPermission(this))
+            if (AppPermissions.checkFileBrowserPermission(this))
                 startFileBrowser();
         } else
             startFileBrowser();
     }
 
     private void startFileBrowser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
         startActivityForResult(intent, REQUEST_FOR_FILE_BROWSER);
     }
 
     private File createImageFile() throws IOException {
         File storageFolder = getExternalFilesDir(Environment.DIRECTORY_DCIM);
 
-        String name = firebaseUser.getDisplayName().split(" ")[0];
+        String name = "PROFILE_IMG_";
         String timeStamp = DateUtils.getImageTimeStamp();
         String prefix = String.format("%s_%s", name, timeStamp);
 
@@ -237,30 +277,38 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAG, "onRequestPermissionsResult: ");
 
-        if (requestCode == REQUEST_FOR_FILE_BROWSER) {
-            startFileBrowser();
-        } else if (requestCode == REQUEST_FOR_GALLERY) {
-            startGallery();
-        } else if (requestCode == REQUEST_FOR_CAMERA) {
-            startCamera();
-        }
+        if (grantResults.length > 0) {
+            if (requestCode == REQUEST_FOR_FILE_BROWSER) {
+                startFileBrowser();
+            } else if (requestCode == REQUEST_FOR_GALLERY) {
+                startGallery();
+            } else if (requestCode == REQUEST_FOR_CAMERA) {
+                startCamera();
+            }
+        } else
+            ViewUtils.makeToast(this, "Please grant permissions to enjoy more features.");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-
-            if (requestCode == REQUEST_FOR_CAMERA)
-                setUpImageToImageView();
-
-            else if (requestCode == REQUEST_FOR_GALLERY)
+            if (requestCode == REQUEST_FOR_CAMERA) {
+                setUpImageToImageView(true);
+            } else if (requestCode == REQUEST_FOR_GALLERY) {
                 attachFile(data);
-
-            else if (requestCode == REQUEST_FOR_FILE_BROWSER)
+            } else if (requestCode == REQUEST_FOR_FILE_BROWSER) {
+                takePersistablePermissions(data);
                 attachFile(data);
+            }
         }
+    }
+
+    private void takePersistablePermissions(Intent intent) {
+        final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        if (intent.getData() != null)
+            getContentResolver().takePersistableUriPermission(intent.getData(), takeFlags);
     }
 
     private void attachFile(Intent data) {
@@ -278,45 +326,26 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                     }
                 }
                 if (!imagePath.equals(imagePathForProfilePic)) {
-                    setUpImageToImageView();
+                    imagePathForProfilePic = imagePath;
+                    photoURI = data.getData();
+                    setUpImageToImageView(false);
 
                 } else {
                     Toast.makeText(this, "File already chosen.", Toast.LENGTH_SHORT).show();
                 }
             }
-//            else if (data.getClipData() != null) {
-//                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-//                    String imagePath = FileUtils.getInternalStoragePath(this, data.getClipData().getItemAt(i).getUri());
-//                    if (imagePath == null) {
-//                        DialogUtils.showSorryAlert(this, "Unable to fetch file from SDCard." +
-//                                "\nMove the file into Device Memory and retry.", null);
-//                        return;
-//                    }
-//                    if (!imagePath.equals(imagePathForProfilePic)) {
-//                        setUpImageToImageView();
-//
-//                    }
-//                }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void setUpImageToImageView(){
-//        ivImageView.setImageBitmap(BitmapFactory.decodeFile(
-//                (FileUtils.getCompressedFile(this, imagePathForProfilePic)).getAbsolutePath()));
+    private void setUpImageToImageView(boolean isCameraClicked) {
+        civProfilePic.setImageBitmap(BitmapFactory.decodeFile(
+                /*(FileUtils.getCompressedFile(this, imagePathForProfilePic)).getAbsolutePath()*/ imagePathForProfilePic));
+        updateProfilePic();
     }
 
-    private boolean isNameUpdated = false, isEmailUpdated = false;
-
-//    private void updateUserProfile() {
-//        updateName();
-//        updateEmail();
-//        updateProfilePic();
-//    }
-
-    private void updateName() {
+    private void updateName(String name) {
         if (/*!Pattern.compile("[a-zA-Z]").matcher(name).matches()*/ name.isEmpty()) {
             etUserName.setError("Invalid name!");
             etUserName.requestFocus();
@@ -325,33 +354,36 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         if (firebaseUser.getDisplayName() != null && name.equals(firebaseUser.getDisplayName()))
             return;
 
+        etUserName.clearFocus();
+        Utils.hideSoftKeyboard(this);
         ViewUtils.showViews(loader);
+        isUpdatingName = true;
 
         UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
         builder.setDisplayName(name);
 
-        firebaseUser.updateProfile(builder.build()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                ViewUtils.hideViews(loader);
-                ViewUtils.makeToast(NUserProfileActivity.this, "Your name updated successfully.");
-
-                isNameUpdated = true;
-
-                if (isEmailUpdated)
-                    gotoDashboard();
-            }
-        });
+        firebaseUser.updateProfile(builder.build())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        isProfileUpdated = true;
+                        ViewUtils.hideViews(loader);
+                        isUpdatingName = false;
+                        ViewUtils.makeToast(NUserProfileActivity.this, "Your name updated successfully.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        etUserName.setText(Utils.getValidString(firebaseUser.getDisplayName()));
+                        ViewUtils.hideViews(loader);
+                        isUpdatingName = false;
+                        DialogUtils.showSorryAlert(NUserProfileActivity.this, "" + e.getMessage(), null);
+                    }
+                });
     }
 
-    private void gotoDashboard() {
-        if (getIntent().getIntExtra("CALLED_FROM", CALLED_FROM_NAVIGATION) == CALLED_FROM_PHONE_AUTH)
-            startActivity(new Intent(this, NDashboardActivity.class));
-        else
-            onBackPressed();
-    }
-
-    private void updateEmail() {
+    private void updateEmail(String email) {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etUserEmail.setError("Invalid email!");
             etUserEmail.requestFocus();
@@ -360,36 +392,57 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         if (firebaseUser.getEmail() != null && email.equals(firebaseUser.getEmail()))
             return;
 
+        etUserEmail.clearFocus();
+        Utils.hideSoftKeyboard(this);
         ViewUtils.showViews(loader);
+        isUpdatingEmail = true;
 
-        firebaseUser.updateEmail(email).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                ViewUtils.hideViews(loader);
-                ViewUtils.makeToast(NUserProfileActivity.this, "Your email updated successfully.");
-
-                isEmailUpdated = true;
-
-                if (isNameUpdated)
-                    gotoDashboard();
-            }
-        });
+        firebaseUser.updateEmail(email)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        isProfileUpdated = true;
+                        ViewUtils.hideViews(loader);
+                        isUpdatingEmail = false;
+                        ViewUtils.makeToast(NUserProfileActivity.this, "Your email updated successfully.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        etUserEmail.setText(Utils.getValidString(firebaseUser.getEmail()));
+                        ViewUtils.hideViews(loader);
+                        isUpdatingEmail = false;
+                        DialogUtils.showSorryAlert(NUserProfileActivity.this, "" + e.getMessage(), null);
+                    }
+                });
     }
 
     private void updateProfilePic() {
         ViewUtils.showViews(loader);
+        isUploadingPic = true;
 
         UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
-        Uri photoUri = new Uri.Builder().build();
-        builder.setPhotoUri(photoUri);
+        builder.setPhotoUri(photoURI);
 
-        firebaseUser.updateProfile(builder.build()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                ViewUtils.hideViews(loader);
-                ViewUtils.makeToast(NUserProfileActivity.this, "Your profile photo updated successfully.");
-            }
-        });
+        firebaseUser.updateProfile(builder.build())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        isProfileUpdated = true;
+                        ViewUtils.hideViews(loader);
+                        isUploadingPic = false;
+                        ViewUtils.makeToast(NUserProfileActivity.this, "Your profile photo updated successfully.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        ViewUtils.hideViews(loader);
+                        isUploadingPic = false;
+                        DialogUtils.showSorryAlert(NUserProfileActivity.this, "" + e.getMessage(), null);
+                    }
+                });
     }
 
     @Override
@@ -404,5 +457,23 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isUpdatingName || isUploadingPic || isUpdatingEmail) {
+            ViewUtils.makeToast(this, "Please wait while changes are updated...");
+        } else {
+            if (getIntent().getIntExtra("CALLED_FROM", CALLED_FROM_NAVIGATION) == CALLED_FROM_PHONE_AUTH) {
+                startActivity(new Intent(this, NIAmActivity.class));
+                finish();
+            } else {
+                if (isProfileUpdated)
+                    setResult(RESULT_OK);
+                else
+                    setResult(RESULT_CANCELED);
+                super.onBackPressed();
+            }
+        }
     }
 }

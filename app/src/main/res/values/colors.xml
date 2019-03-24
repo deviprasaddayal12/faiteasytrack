@@ -3,33 +3,26 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
 
-    <color name="colorGradientStart">#1c313a</color>
-    <color name="colorGradientCenter">#455a64</color>
-    <color name="colorGradientEnd">#718792</color>
-
-    <!--<color name="colorPrimary">#673ab7</color>-->
-    <!--<color name="colorPrimaryLight">#e3daf3</color>-->
-    <!--<color name="colorPrimaryDark">#10091c</color>-->
-    <!---->
-    <!--<color name="colorAccent">#673ab7</color>-->
-    <!--<color name="colorAccentLight">#ff7e55</color>-->
-    <!--<color name="colorAccentDark">#ee3900</color>-->
+    <color name="colorGradientStart">#22344955</color>
+    <color name="colorGradientCenter">#44344955</color>
+    <color name="colorGradientEnd">#66344955</color>
 
     <color name="colorPrimary">#344955</color>
     <color name="colorPrimaryLight">#4A6572</color>
     <color name="colorPrimaryDark">#232F34</color>
 
-    <color name="colorAccentTranslucent">#77F9AA33</color>
+    <color name="colorNavBackground">#e1e8eb</color> <!--90% of colorPrimary-->
+
     <color name="colorAccent">#F9AA33</color>
     <color name="colorAccentLight">#ff7e55</color>
     <color name="colorAccentDark">#ee3900</color>
 
-    <color name="primaryTextColor">#ffffff</color>
-    <color name="secondaryTextColor">#000000</color>
-
     <color name="colorStatusBar">#66000000</color>
     <color name="colorToast">#bb000000</color>
     <color name="colorText">#cdcdcd</color>
-    <color name="colorToolbarTranslucent">#77344955</color>
+
+    <color name="colorMapOverLayToolbar">#77344955</color>
+    <color name="colorMapOverLayAccent">#11F9AA33</color>
+    <color name="colorMapOverLayWhite">#bbffffff</color>
 
 </resources>

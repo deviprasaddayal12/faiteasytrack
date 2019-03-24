@@ -3,8 +3,8 @@ package com.faiteasytrack.managers;
 import android.app.Activity;
 import android.util.Log;
 
-import com.faiteasytrack.broadcasts.OTPReceiver;
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.broadcasts.OneTimePasswordReceiver;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.listeners.PhoneAuthListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -128,7 +128,7 @@ public class PhoneAuthManager implements PhoneAuthListener {
     }
 
     public void registerSMSBroadcast() {
-        OTPReceiver.bindListener(new OTPReceiver.SMSReceivedListener() {
+        OneTimePasswordReceiver.bindListener(new OneTimePasswordReceiver.SMSReceivedListener() {
             @Override
             public void onOTPReceived(String otp) {
 

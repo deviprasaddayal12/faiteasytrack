@@ -1,4 +1,4 @@
-package com.faiteasytrack.classess;
+package com.faiteasytrack.customclasses;
 
 import android.os.Parcel;
 import android.os.Parcelable;

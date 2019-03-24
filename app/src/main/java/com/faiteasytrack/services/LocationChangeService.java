@@ -22,7 +22,7 @@ import com.faiteasytrack.R;
 import com.faiteasytrack.activities.NMapActivity;
 import com.faiteasytrack.helpers.FirebaseHelper;
 import com.faiteasytrack.helpers.TracingHelper;
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.models.TripModel;
 import com.faiteasytrack.utils.SharePreferences;
 import com.faiteasytrack.utils.Utils;
@@ -47,7 +47,7 @@ public class LocationChangeService extends Service {
     /**
      * The name of the channel for notifications.
      */
-    private static final String CHANNEL_ID = PACKAGE_NAME + "channel_01";
+    private static final String CHANNEL_ID = PACKAGE_NAME + "_uploading_location";
 
     public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
     public static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
@@ -101,10 +101,9 @@ public class LocationChangeService extends Service {
     /**
      * The current location.
      */
-    private Location mLocation, mLastAccLocation;
+    private Location mLocation;
 
-    public LocationChangeService() {
-    }
+    public LocationChangeService() {}
 
     @Override
     public void onCreate() {
@@ -123,6 +122,7 @@ public class LocationChangeService extends Service {
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
+
         mServiceHandler = new Handler(handlerThread.getLooper());
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -133,130 +133,6 @@ public class LocationChangeService extends Service {
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
             // Set the Notification Channel for the Notification Manager.
             notificationManager.createNotificationChannel(mChannel);
-        }
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Service started");
-        boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION, false);
-
-        // We got here because the user decided to removeChildListeners location updates from the notification.
-        if (startedFromNotification) {
-
-            if (SharePreferences.isTracingOngoing(this)) {
-
-                String currentTripKey = SharePreferences.getKeyForLastUnfinishedTrip(this);
-
-                if (!currentTripKey.equals(SharePreferences.DefValues.STRING_NOT_FOUND)) {
-
-                    TripModel.getInstance(this).setTripEndTime(Utils.getMillisAtNow());
-                    TripModel.getInstance(this).setTripDest(Utils.getMyLatLng(mLocation));
-                    TripModel.getInstance(this).setTripOngoing(false);
-
-                    TracingHelper.endMyTrip(this, currentTripKey);
-
-                    SharePreferences.removeLastUnfinishedTripModel(this);
-                    SharePreferences.saveTripModelFinishedFromBackground(this, TripModel.getInstance(this));
-                    SharePreferences.setOngoingTripFinishedWhileInBackground(this, true);
-                    SharePreferences.setOngoingTripExists(this, false);
-                }
-            }
-            removeLocationUpdates();
-            stopSelf();
-        }
-        // Tells the system to not try to recreate the service after it has been killed.
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mChangingConfiguration = true;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        // Called when a client (MainActivity in case of this sample) comes to the foreground
-        // and binds with this service. The service should cease to be a foreground service
-        // when that happens.
-        Log.i(TAG, "in onBind()");
-//        stopForeground(true);
-//        mChangingConfiguration = false;
-
-        startForeground(NOTIFICATION_ID, getNotification());
-        return mBinder;
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        // Called when a client (MainActivity in case of this sample) returns to the foreground
-        // and binds once again with this service. The service should cease to be a foreground
-        // service when that happens.
-        Log.i(TAG, "in onRebind()");
-//        stopForeground(true);
-//        mChangingConfiguration = false;
-        startForeground(NOTIFICATION_ID, getNotification());
-        super.onRebind(intent);
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.i(TAG, "Last client unbound from service" + SharePreferences.requestingLocationUpdates(this));
-
-        // Called when the last client (MainActivity in case of this sample) unbinds from this
-        // service. If this method is called due to a configuration change in MainActivity, we
-        // do nothing. Otherwise, we make this service a foreground service.
-//        if (!mChangingConfiguration && SharePreferences.requestingLocationUpdates(this)) {
-//            Log.i(TAG, "Starting foreground service");
-            /*
-            // (developer). If targeting O, use the following code.
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-                notificationManager.startServiceInForeground(new Intent(this, LocationChangeService.class), NOTIFICATION_ID, getNotification());
-            } else {
-                startForeground(NOTIFICATION_ID, getNotification());
-            }
-             */
-//            startForeground(NOTIFICATION_ID, getNotification());
-//        }
-        startForeground(NOTIFICATION_ID, getNotification());
-        return true; // Ensures onRebind() is called when a client re-binds.
-    }
-
-    @Override
-    public void onDestroy() {
-        mServiceHandler.removeCallbacksAndMessages(null);
-    }
-
-    /**
-     * Makes a request for location updates. Note that in this sample we merely log the
-     * {@link SecurityException}.
-     */
-    public void requestLocationUpdates() {
-        Log.i(TAG, "Requesting location updates");
-        startService(new Intent(getApplicationContext(), LocationChangeService.class));
-        try {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-            SharePreferences.setRequestingLocationUpdates(this, true);
-        } catch (SecurityException unlikely) {
-            SharePreferences.setRequestingLocationUpdates(this, false);
-            Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
-        }
-    }
-
-    /**
-     * Removes location updates. Note that in this sample we merely log the
-     * {@link SecurityException}.
-     */
-    public void removeLocationUpdates() {
-        Log.i(TAG, "Removing location updates");
-        try {
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            SharePreferences.setRequestingLocationUpdates(this, false);
-            stopSelf();
-        } catch (SecurityException unlikely) {
-            SharePreferences.setRequestingLocationUpdates(this, true);
-            Log.e(TAG, "Lost location permission. Could not removeChildListeners updates. " + unlikely);
         }
     }
 
@@ -294,6 +170,50 @@ public class LocationChangeService extends Service {
         return builder.build();
     }
 
+    /**
+     * Sets the location request parameters.
+     */
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(SMALLEST_DISPLACEMENT);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+//        Log.i(TAG, "Service started");
+        boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION, false);
+
+        // We got here because the user decided to removeChildListeners location updates from the notification.
+        if (startedFromNotification) {
+
+            if (SharePreferences.isTracingOngoing(this)) {
+
+                // todo : handle location removal
+            }
+            removeLocationUpdates();
+        }
+        // Tells the system to not try to recreate the service after it has been killed.
+        return START_NOT_STICKY;
+    }
+
+    /**
+     * Makes a request for location updates. Note that in this sample we merely log the
+     * {@link SecurityException}.
+     */
+    public void requestLocationUpdates() {
+//        Log.i(TAG, "Requesting location updates");
+        startService(new Intent(getApplicationContext(), LocationChangeService.class));
+        try {
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        } catch (SecurityException unlikely) {
+            SharePreferences.setRequestingLocationUpdates(this, false);
+//            Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
+        }
+    }
+
     private void getLastLocation() {
         try {
             mFusedLocationClient.getLastLocation()
@@ -313,9 +233,7 @@ public class LocationChangeService extends Service {
     }
 
     private void onNewLocation(Location location) {
-        Log.e(TAG, "New location: " + location);
-
-//        SharePreferences.setRequestingLocationUpdates(this, true);
+//        Log.i(TAG, "New location: " + location);
 
         boolean ongoingTripExists = SharePreferences.isTracingOngoing(this);
 
@@ -325,22 +243,12 @@ public class LocationChangeService extends Service {
         if (mLocation == null)
             getLastLocation();
 
-        String currentTripKey = SharePreferences.getKeyForLastUnfinishedTrip(this);
-
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);
         intent.putExtra(EXTRA_LOCATION, mLocation);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
-        if (ongoingTripExists && !currentTripKey.equals(SharePreferences.DefValues.STRING_NOT_FOUND)) {
-
-            ETLatLng ETLatLng = new ETLatLng(mLocation.getLatitude(), mLocation.getLongitude(), Utils.getMillisAtNow(), mLocation.getSpeed(), mLocation.getAccuracy());
-
-            TripModel.getInstance(this).setWayPoints(ETLatLng);
-
-            SharePreferences.saveLastUnfinishedTripModel(this, TripModel.getInstance(this));
-            FirebaseHelper.uploadMyLocationToServer(this, currentTripKey, ETLatLng);
-        }
+        // todo : handle location upload
 
         // Update notification content if running as a foreground service.
         if (serviceIsRunningInForeground(this)) {
@@ -349,14 +257,69 @@ public class LocationChangeService extends Service {
     }
 
     /**
-     * Sets the location request parameters.
+     * Removes location updates. Note that in this sample we merely log the
+     * {@link SecurityException}.
      */
-    private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(SMALLEST_DISPLACEMENT);
+    public void removeLocationUpdates() {
+//        Log.i(TAG, "Removing location updates");
+        try {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            stopSelf();
+        } catch (SecurityException unlikely) {
+            SharePreferences.setRequestingLocationUpdates(this, true);
+//            Log.e(TAG, "Lost location permission. Could not removeChildListeners updates. " + unlikely);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mChangingConfiguration = true;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // Called when a client (NMapActivity in this case) comes to the foreground
+        // and binds with this service. The service should cease to be a foreground service
+        // when that happens.
+//        Log.i(TAG, "in onBind()");
+        stopForeground(true);
+        mChangingConfiguration = false;
+
+        return mBinder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        // Called when a client (NMapActivity in this case) returns to the foreground
+        // and binds once again with this service. The service should cease to be a foreground
+        // service when that happens.
+//        Log.i(TAG, "in onRebind()");
+        stopForeground(true);
+        mChangingConfiguration = false;
+
+        super.onRebind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+//        Log.i(TAG, "Last client unbound from service" + SharePreferences.requestingLocationUpdates(this));
+
+        // Called when the last client (NMapActivity in this case) unbinds from this
+        // service. If this method is called due to a configuration change in MainActivity, we
+        // do nothing. Otherwise, we make this service a foreground service.
+        if (!mChangingConfiguration && SharePreferences.requestingLocationUpdates(this)) {
+//            Log.i(TAG, "Starting foreground service");
+
+            startForeground(NOTIFICATION_ID, getNotification());
+        }
+
+        return true; // Ensures onRebind() is called when a client re-binds.
+    }
+
+    @Override
+    public void onDestroy() {
+        mServiceHandler.removeCallbacksAndMessages(null);
     }
 
     /**
@@ -385,5 +348,4 @@ public class LocationChangeService extends Service {
         }
         return false;
     }
-
 }

@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.Request;
+import com.faiteasytrack.constants.Request;
 import com.faiteasytrack.models.RequestModel;
 import com.faiteasytrack.utils.Utils;
 

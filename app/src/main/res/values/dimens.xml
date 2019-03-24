@@ -39,4 +39,14 @@
     <dimen name="text_sub_header_size">12sp</dimen>
     <dimen name="text_input_size">16sp</dimen>
     <dimen name="image_header_size">80dp</dimen>
+    <dimen name="image_row_size">40dp</dimen>
+    <dimen name="image_nav_size">80dp</dimen>
+    <dimen name="status_bar_height">24dp</dimen>
+    <dimen name="status_bar_height_plus_16">40dp</dimen>
+    <dimen name="nav_header_size">16sp</dimen>
+    <dimen name="elevate_12">12dp</dimen>
+    <dimen name="bottom_bar_height">48dp</dimen>
+    <dimen name="radius_8">8dp</dimen>
+    <dimen name="elevate_4">4dp</dimen>
+    <dimen name="radius_4">4dp</dimen>
 </resources>

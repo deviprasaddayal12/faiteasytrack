@@ -3,8 +3,8 @@ package com.faiteasytrack.helpers;
 import android.content.Context;
 import android.util.Log;
 
-import com.faiteasytrack.enums.Error;
-import com.faiteasytrack.enums.Request;
+import com.faiteasytrack.constants.Error;
+import com.faiteasytrack.constants.Request;
 import com.faiteasytrack.listeners.RequestListener;
 import com.faiteasytrack.models.ProfileModel;
 import com.faiteasytrack.models.RequestModel;

@@ -36,10 +36,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_4"
                 app:cardElevation="@dimen/elevate_1">
 
                 <LinearLayout
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_margin="@dimen/margin_8">
+                    android:padding="@dimen/margin_8">
 
                     <TextView
                         android:layout_width="0dp"
@@ -60,7 +60,7 @@
                     <Switch
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_4"
                         android:id="@+id/swt_share_location" />
 
                 </LinearLayout>
@@ -69,29 +69,31 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_4"
                 app:cardElevation="@dimen/elevate_1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="@dimen/margin_8">
+                    android:paddingStart="@dimen/margin_8"
+                    android:paddingEnd="@dimen/margin_8">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/share_my_location_to"
-                        android:textSize="@dimen/text_sub_header_size"/>
+                        android:textSize="@dimen/text_sub_header_size"
+                        android:layout_marginTop="@dimen/margin_16"/>
 
                     <RadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/rg_location_pref"
-                        android:layout_margin="@dimen/margin_8">
+                        android:padding="@dimen/margin_8">
 
                         <RadioButton
                             android:layout_width="match_parent"
@@ -115,13 +117,12 @@
                     </RadioGroup>
 
                     <com.google.android.material.button.MaterialButton
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:text="@string/save_preference"
-                        android:layout_margin="@dimen/margin_8"
                         android:id="@+id/btn_share_location_to"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -129,31 +130,32 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_4"
                 app:cardElevation="@dimen/elevate_1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="@dimen/margin_8">
+                    android:paddingStart="@dimen/margin_8"
+                    android:paddingEnd="@dimen/margin_8">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/want_to_change_your_password"
-                        android:textSize="@dimen/text_sub_header_size"/>
+                        android:textSize="@dimen/text_sub_header_size"
+                        android:layout_marginTop="@dimen/margin_16"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_change_password"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:layout_margin="@dimen/margin_8"
                         android:text="@string/change_my_password" />
 
                 </LinearLayout>

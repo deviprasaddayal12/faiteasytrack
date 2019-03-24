@@ -10,6 +10,41 @@ public class DialogUtils {
 
     private static final String TAG = "DialogUtils";
 
+    public static void showLogoutDialog(Context context, final Runnable logoutRunnable, final Runnable cancelRunnable){
+        try {
+            if (context != null) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialogCustom);
+                dialog.setTitle("Logout?");
+                dialog.setMessage("Logging out will erase all your saved preferences and data!");
+                dialog.setCancelable(true);
+                dialog.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (logoutRunnable != null) {
+                            logoutRunnable.run();
+                        }
+                    }
+                });
+                if (cancelRunnable != null){
+                    dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            cancelRunnable.run();
+                        }
+                    });
+
+                }
+                dialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showSorryAlert(Context context, String message, final Runnable handler) {
         showSorryAlert(context, message, "OK", null, handler, null);
     }

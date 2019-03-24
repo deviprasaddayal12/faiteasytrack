@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.RadioGroup;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.FirebaseKeys;
-import com.faiteasytrack.enums.User;
+import com.faiteasytrack.constants.FirebaseKeys;
+import com.faiteasytrack.constants.User;
 import com.faiteasytrack.models.AdminModel;
 import com.faiteasytrack.models.DriverModel;
 import com.faiteasytrack.models.LoginModel;
@@ -111,9 +111,10 @@ public class NIAmActivity extends BaseActivity implements View.OnClickListener {
     };
 
     private void checkUserType(@NonNull UserModel userModel) {
-        if (userModel.getI_am() == User.TYPE_PARENT)
+        if (userModel.getI_am() == User.TYPE_PARENT) {
+            SharePreferences.saveUserModel(this, userModel);
             gotoDashboard();
-        else
+        } else
             askForCredentials(userModel);
     }
 

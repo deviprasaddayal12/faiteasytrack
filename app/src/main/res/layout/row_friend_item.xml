@@ -10,10 +10,7 @@
         android:id="@+id/iv_friend_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_8"
-        app:civ_border_color="@color/colorPrimary"
-        app:civ_border_width="1dp"
-        app:civ_fill_color="@color/colorWhite" />
+        android:layout_margin="@dimen/margin_8" />
 
     <LinearLayout
         android:layout_width="0dp"

@@ -19,7 +19,7 @@ import android.widget.ViewFlipper;
 import android.widget.ViewSwitcher;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.listeners.PhoneAuthListener;
 import com.faiteasytrack.managers.PhoneAuthManager;
 import com.faiteasytrack.models.UserModel;

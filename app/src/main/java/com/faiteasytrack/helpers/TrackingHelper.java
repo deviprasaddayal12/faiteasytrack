@@ -3,9 +3,9 @@ package com.faiteasytrack.helpers;
 import android.content.Context;
 import android.util.Log;
 
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.listeners.TrackingListener;
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.models.FriendModel;
 import com.faiteasytrack.models.TripModel;
 import com.google.firebase.database.ChildEventListener;

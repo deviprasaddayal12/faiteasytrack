@@ -3,40 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_header"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:layout_marginTop="24dp"
-    android:background="@color/colorPrimary"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <ImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/nav_header_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/background_nav_image"
-        android:contentDescription="@string/nav_header_desc"
-        android:padding="16dp"
-        android:visibility="gone" />
+        android:layout_width="@dimen/image_nav_size"
+        android:layout_height="@dimen/image_nav_size"
+        android:layout_marginTop="@dimen/status_bar_height_plus_16"
+        android:layout_marginStart="@dimen/margin_16"
+        android:src="@drawable/ic_person_black_24dp"
+        android:tint="@color/colorGradientStart"
+        app:civ_border="true"
+        app:civ_border_color="#98b1bc"
+        app:civ_border_width="4dp"
+        app:civ_shadow="true"
+        app:civ_shadow_color="#98b1bc"
+        app:civ_shadow_radius="4" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_16"
-        android:orientation="vertical"
-        android:background="@drawable/background_fill_easytrack_button">
+        android:paddingStart="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16"
+        android:paddingTop="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_8"
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/nav_header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="@dimen/nav_header_size"
             android:textStyle="bold"
-            android:layout_marginTop="@dimen/nav_header_vertical_spacing"
-            android:layout_marginStart="@dimen/margin_28"
-            android:layout_marginEnd="@dimen/margin_28"
-            android:gravity="start"
-            android:text="Dayal Deviprasad Das"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorBlack" />
 
@@ -44,14 +44,15 @@
             android:id="@+id/nav_header_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_28"
-            android:layout_marginEnd="@dimen/margin_28"
-            android:layout_marginBottom="@dimen/margin_8"
-            android:gravity="start"
-            android:text="+917008517232"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorBlack" />
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryLight"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_16" />
 </LinearLayout>

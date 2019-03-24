@@ -1,67 +1,101 @@
 package com.faiteasytrack.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.User;
+import com.faiteasytrack.adapters.DashboardAdapter;
+import com.faiteasytrack.constants.User;
+import com.faiteasytrack.listeners.OnStatisticsFetchListener;
+import com.faiteasytrack.managers.DashboardManager;
+import com.faiteasytrack.models.DashboardModel;
 import com.faiteasytrack.models.UserModel;
+import com.faiteasytrack.utils.AppPermissions;
+import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.SharePreferences;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.faiteasytrack.utils.ViewUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class NDashboardActivity extends BaseActivity
-        implements
-        NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback, View.OnClickListener {
+public class NDashboardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener {
 
     public static final String TAG = "NDashboardActivity";
+    public static final int REQUEST_FOR_TRACKING = 1;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private GoogleMap googleMap;
+    private FloatingActionButton fabLetsTrack;
 
-    private Toolbar toolbar;
-    private ImageView ivNavigation, ivNotifications;
+    private RecyclerView recyclerDashboard;
+    private DashboardAdapter adapterDashboard;
+    private ArrayList<DashboardModel> dashboardModels;
 
     private FirebaseUser firebaseUser;
+    private Handler handlerDashboardViewUpdates;
+
+    private UserModel userModel;
+
+    private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.SimpleDrawerListener() {
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            super.onDrawerOpened(drawerView);
+
+            updateUserDetailsInNavView();
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            super.onDrawerClosed(drawerView);
+
+            if (drawerClosedRunnable != null)
+                handlerDashboardViewUpdates.postDelayed(drawerClosedRunnable, NAV_DRAWER_CLOSE_WAIT_TIME);
+        }
+    };
+
+    private Runnable drawerClosedRunnable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        userModel = SharePreferences.getUserModel(this);
+        handlerDashboardViewUpdates = new Handler();
+
         setContentView(R.layout.activity_dashboard);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_navigation: {
-                updateUserDetailsInNavView();
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-            break;
-            case R.id.iv_notifications: {
-                startActivity(new Intent(this, NRequestsActivity.class));
-            }
-            break;
             case R.id.navigation_header: {
                 drawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(new Intent(this, NUserProfileActivity.class));
+                startActivityForResult(new Intent(this, NUserProfileActivity.class),
+                        AppPermissions.REQUESTS.REQUEST_FOR_UPDATE_USER_DETAILS);
+            }
+            break;
+            case R.id.fab_lets_track: {
+                startActivityForResult(new Intent(this, NMapActivity.class), REQUEST_FOR_TRACKING);
             }
             break;
         }
@@ -69,26 +103,25 @@ public class NDashboardActivity extends BaseActivity
 
     @Override
     public void setUpActionBar() {
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
     public void initUI() {
         drawerLayout = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar);
-        ivNavigation = findViewById(R.id.iv_navigation);
-        ivNotifications = findViewById(R.id.iv_notifications);
         navigationView = findViewById(R.id.nav_view);
+        fabLetsTrack = findViewById(R.id.fab_lets_track);
     }
 
     @Override
     public void setUpListeners() {
         drawerLayout.addDrawerListener(drawerListener);
-        toolbar.setOnClickListener(this);
-        ivNavigation.setOnClickListener(this);
-        ivNotifications.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getHeaderView(0).setOnClickListener(this);
+        fabLetsTrack.setOnClickListener(this);
     }
 
     @Override
@@ -96,123 +129,198 @@ public class NDashboardActivity extends BaseActivity
         setUpNavigationMenu();
     }
 
-    private void setUpNavigationMenu() {
-        UserModel userModel = SharePreferences.getUserModel(this);
-        if (userModel == null)
-            return;
-        switch (userModel.getI_am()) {
-            case User.TYPE_ADMIN:
-                navigationView.inflateMenu(R.menu.menu_nav_admin);
-                break;
-            case User.TYPE_VENDOR:
-                navigationView.inflateMenu(R.menu.menu_nav_vendor);
-                break;
-            case User.TYPE_DRIVER:
-                navigationView.inflateMenu(R.menu.menu_nav_driver);
-                break;
-            default:
-                navigationView.inflateMenu(R.menu.menu_nav_parent);
-                break;
-        }
-
-        updateUserDetailsInNavView();
-    }
-
-    private void updateUserDetailsInNavView() {
-        resetNavigationSelection();
-        View navHeader = navigationView.getHeaderView(0);
-//        ImageView userProfilePic = navHeader.findViewById(R.id.nav_header_icon);
-        TextView userName = navHeader.findViewById(R.id.nav_header_title);
-        TextView userContactInfo = navHeader.findViewById(R.id.nav_header_subtitle);
-        try {
-            userName.setText(firebaseUser.getDisplayName());
-            String phoneNumber = firebaseUser.getPhoneNumber();
-            String email = firebaseUser.getEmail();
-
-            /*if (phoneNumber != null && email != null)
-                userContactInfo.setText(String.format("%s\n%s", phoneNumber, email));
-            else */
-            if (phoneNumber != null)
-                userContactInfo.setText(phoneNumber);
-            else if (email != null)
-                userContactInfo.setText(email);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-    }
-
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START);
+            updateUserDetailsInNavView();
+            handlerDashboardViewUpdates.post(new Runnable() {
+                @Override
+                public void run() {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            });
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void setUpNavigationMenu() {
+//        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.colorStatusBar));
+        UserModel userModel = SharePreferences.getUserModel(this);
+        if (userModel == null)
+            return;
+        switch (userModel.getI_am()) {
+            case User.TYPE_ADMIN:
+                handlerDashboardViewUpdates.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        navigationView.inflateMenu(R.menu.menu_nav_admin);
+                    }
+                });
+                break;
+            case User.TYPE_VENDOR:
+                handlerDashboardViewUpdates.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        navigationView.inflateMenu(R.menu.menu_nav_vendor);
+                    }
+                });
+                break;
+            case User.TYPE_DRIVER:
+                handlerDashboardViewUpdates.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        navigationView.inflateMenu(R.menu.menu_nav_driver);
+                    }
+                });
+                break;
+            default:
+                handlerDashboardViewUpdates.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        navigationView.inflateMenu(R.menu.menu_nav_parent);
+                    }
+                });
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AppPermissions.REQUESTS.REQUEST_FOR_UPDATE_USER_DETAILS) {
+            if (resultCode == RESULT_OK)
+                updateUserDetailsInNavView();
+        }
+    }
+
+    private void updateUserDetailsInNavView() {
+        View navHeader = navigationView.getHeaderView(0);
+        final CircularImageView userProfilePic = navHeader.findViewById(R.id.nav_header_icon);
+        final TextView userName = navHeader.findViewById(R.id.nav_header_title);
+        final TextView userContactInfo = navHeader.findViewById(R.id.nav_header_subtitle);
+        try {
+            final Uri photoUri = firebaseUser.getPhotoUrl();
+            final String name = firebaseUser.getDisplayName();
+            final String phoneNumber = firebaseUser.getPhoneNumber();
+            final String email = firebaseUser.getEmail();
+
+            handlerDashboardViewUpdates.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (photoUri != null)
+                        userProfilePic.setImageURI(photoUri);
+                }
+            });
+            handlerDashboardViewUpdates.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (name == null || name.isEmpty())
+                        userName.setHint("Add your name");
+                    else {
+                        userName.setText(name);
+                    }
+                }
+            });
+            handlerDashboardViewUpdates.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (phoneNumber != null)
+                        userContactInfo.setText(phoneNumber);
+                    else if (email != null)
+                        userContactInfo.setText(email);
+                }
+            });
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    private static final long NAV_DRAWER_CLOSE_WAIT_TIME = 300;
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        drawerClosedRunnable = null;
         drawerLayout.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
             case R.id.nav_dashboard: {
-//                startActivity(new Intent(this, NDashboardActivity.class));
+
             }
             return true;
-//            case R.id.nav_map: {
-//                startActivity(new Intent(this, NMapActivity.class));
-//            }
-//            return true;
             case R.id.nav_admins: {
-                startActivity(new Intent(this, NAdminActivity.class));
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(NDashboardActivity.this, NAdminActivity.class));
+                    }
+                };
+
+//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_vendors: {
-                startActivity(new Intent(this, NVendorActivity.class));
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(NDashboardActivity.this, NVendorActivity.class));
+                    }
+                };
+
+//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_vehicles: {
-                startActivity(new Intent(this, NVehicleActivity.class));
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(NDashboardActivity.this, NVehicleActivity.class));
+                    }
+                };
+
+//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_drivers: {
-                startActivity(new Intent(this, NDriverActivity.class));
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(NDashboardActivity.this, NDriverActivity.class));
+                    }
+                };
+
+//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_routes: {
-                startActivity(new Intent(this, NRouteActivity.class));
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(NDashboardActivity.this, NRouteActivity.class));
+                    }
+                };
+
+//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
-//            case R.id.nav_history: {
-//                startActivity(new Intent(this, NHistoryActivity.class));
-//            }
-//            return true;
-//            case R.id.nav_requests: {
-//                startActivity(new Intent(this, NRequestsActivity.class));
-//            }
-//            return true;
-//            case R.id.nav_friends: {
-//                startActivity(new Intent(this, NFriendsActivity.class));
-//            }
-//            return true;
-//            case R.id.nav_contacts: {
-//                startActivity(new Intent(this, NContactsActivity.class));
-//            }
-//            return true;
             case R.id.nav_settings: {
-                startActivity(new Intent(this, NSettingsActivity.class));
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(NDashboardActivity.this, NSettingsActivity.class));
+                    }
+                };
+
+//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_logout: {
-                FirebaseAuth.getInstance().signOut();
-                SharePreferences.userLoggedOut(this);
-                startActivity(new Intent(this, NPhoneAuthActivity.class));
-                finish();
+                onLogoutRequested();
             }
             return true;
             default:
@@ -220,27 +328,56 @@ public class NDashboardActivity extends BaseActivity
         }
     }
 
-    public void resetNavigationSelection() {
-        if (navigationView == null)
-            return;
-        if (navigationView.getCheckedItem() != null)
-            navigationView.getCheckedItem().setChecked(false);
-        if (navigationView.getMenu().size() > 0)
-            navigationView.getMenu().getItem(0).setChecked(true);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    private void onLogoutRequested() {
+        DialogUtils.showLogoutDialog(this,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        FirebaseAuth.getInstance().signOut();
+                        SharePreferences.userLoggedOut(NDashboardActivity.this);
+                        startActivity(new Intent(NDashboardActivity.this, NPhoneAuthActivity.class));
+                        finish();
+                    }
+                }, null);
     }
 
     @Override
     public void setUpRecycler() {
+        dashboardModels = new ArrayList<>();
 
+        recyclerDashboard = findViewById(R.id.recycler_dashboard);
+        recyclerDashboard.setLayoutManager(new LinearLayoutManager(this));
+
+        adapterDashboard = new DashboardAdapter(this, dashboardModels, new DashboardAdapter.OnDashboardSelectedListener() {
+            @Override
+            public void onDashboardItemSelected(int position, DashboardModel dashboardModel) {
+
+            }
+        });
+
+        recyclerDashboard.setAdapter(adapterDashboard);
+
+        DashboardManager dashboardManager = DashboardManager.getInstance(this);
+        dashboardManager.setStatisticsFetchListener(new OnStatisticsFetchListener() {
+            @Override
+            public void onFetchingStarted(DashboardModel dashboardModel) {
+                dashboardModels.add(dashboardModel);
+                adapterDashboard.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFetchComplete(DashboardModel dashboardModel) {
+                dashboardModels.remove(0);
+                dashboardModels.add(dashboardModel);
+                handlerDashboardViewUpdates.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapterDashboard.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+        dashboardManager.getStatisticsReport();
     }
 
     @Override
@@ -248,26 +385,36 @@ public class NDashboardActivity extends BaseActivity
 
     }
 
-    private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener() {
-        @Override
-        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
+    private void getDashboardModels() {
+        switch (userModel.getI_am()) {
+            case User.TYPE_ADMIN: {
+                // todo: getAdminStatisticsModels
+            }
+            break;
+            case User.TYPE_VENDOR: {
+                // todo: getVendorStatisticsModels
+            }
+            break;
+            case User.TYPE_DRIVER: {
+                // todo: getDriverStatisticsModels
+            }
+            break;
+            case User.TYPE_PARENT: {
+                // todo: getParentStatisticsModels
+            }
+            break;
+            case User.TYPE_USER: {
+                // todo: getUserStatisticsModels
+            }
+            break;
         }
+    }
 
-        @Override
-        public void onDrawerOpened(@NonNull View drawerView) {
-
-        }
-
-        @Override
-        public void onDrawerClosed(@NonNull View drawerView) {
-
-        }
-
-        @Override
-        public void onDrawerStateChanged(int newState) {
-            if (newState == DrawerLayout.STATE_IDLE)
-                updateUserDetailsInNavView();
-        }
-    };
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else
+            super.onBackPressed();
+    }
 }

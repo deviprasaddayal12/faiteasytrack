@@ -3,7 +3,7 @@ package com.faiteasytrack.managers;
 import android.content.Context;
 import android.os.Handler;
 
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.helpers.ContactsHelper;
 import com.faiteasytrack.listeners.ContactsListener;
 import com.faiteasytrack.models.ContactModel;

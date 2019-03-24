@@ -1,7 +1,7 @@
 package com.faiteasytrack.listeners;
 
-import com.faiteasytrack.enums.Error;
-import com.faiteasytrack.classess.ETLatLng;
+import com.faiteasytrack.constants.Error;
+import com.faiteasytrack.customclasses.ETLatLng;
 import com.faiteasytrack.models.TripModel;
 
 public interface TrackingListener {

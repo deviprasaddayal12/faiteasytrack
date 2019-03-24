@@ -10,16 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.FirebaseKeys;
+import com.faiteasytrack.constants.FirebaseKeys;
 import com.faiteasytrack.models.VendorModel;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.Utils;
-import com.faiteasytrack.utils.ViewUtils;
-import com.faiteasytrack.views.EasytrackButton;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

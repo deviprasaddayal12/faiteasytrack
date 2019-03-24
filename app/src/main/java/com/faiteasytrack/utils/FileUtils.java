@@ -19,8 +19,10 @@ import com.shockwave.pdfium.PdfiumCore;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import androidx.core.content.ContextCompat;
 import id.zelory.compressor.Compressor;
@@ -31,14 +33,16 @@ import id.zelory.compressor.Compressor;
 
 public class FileUtils {
     public static final String TAG = "FileUtils";
+    private static final int THUMBNAIL_SIZE = 64;
 
-    public static String getFileRealName(String filepath){
+    public static String getFileRealName(String filepath) {
         String[] fileNameParts = filepath.split("/");
-        return fileNameParts[fileNameParts.length-1];
+        return fileNameParts[fileNameParts.length - 1];
     }
 
     /**
      * This method is called to create one, if file does not exist
+     *
      * @param directory name for the folder to be created
      */
     private static File mkDir(File directory) {
@@ -61,13 +65,50 @@ public class FileUtils {
             e.printStackTrace();
             DialogUtils.showSorryAlert(context, "File Compression Error:\n" + e.getLocalizedMessage(), null);
         }
-        Log.i("FileUtils",""+imgFile.getAbsolutePath());
+        Log.i("FileUtils", "" + imgFile.getAbsolutePath());
         return compressedFile;
     }
 
-    public static void createImageThumbnail(Context context, Uri uri, File file) {
+    public static Bitmap getThumbnail(Context context, Uri uri) throws FileNotFoundException, IOException {
+        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inDither = true;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(inputStream, null, onlyBoundsOptions);
+
+        if (inputStream != null)
+            inputStream.close();
+
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true; //optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
+        inputStream = context.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, bitmapOptions);
+
+        if (inputStream != null)
+            inputStream.close();
+        return bitmap;
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
+    }
+
+    public static Bitmap createImageThumbnail(Context context, Uri uri) {
         try {
-            final int THUMBNAIL_SIZE = 64;
             File compressedFile = getCompressedFile(context, uri.getPath());
 
             FileInputStream fis = new FileInputStream(compressedFile.getAbsolutePath());
@@ -77,6 +118,17 @@ public class FileUtils {
             Float height = (float) imageBitmap.getHeight();
             Float ratio = width / height;
             imageBitmap = Bitmap.createScaledBitmap(imageBitmap, (int) (THUMBNAIL_SIZE * ratio), THUMBNAIL_SIZE, false);
+
+            return imageBitmap;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void createImageThumbnail(Context context, Uri uri, File file) {
+        try {
+            Bitmap imageBitmap = createImageThumbnail(context, uri);
 
             saveThumbnail(file, imageBitmap);
         } catch (Exception ex) {
@@ -158,10 +210,10 @@ public class FileUtils {
 
     public static String getInternalStoragePath(final Context context, final Uri uri) throws IOException {
         //check here to KITKAT or new version
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        final boolean isKitKat = /*Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT*/ true;
 
         // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+        if (/*isKitKat &&*/ DocumentsContract.isDocumentUri(context, uri)) {
 
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {

@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.enums.Request;
+import com.faiteasytrack.constants.Request;
 import com.faiteasytrack.models.ContactModel;
 import com.faiteasytrack.models.RequestStatusModel;
 

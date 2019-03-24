@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.adapters.RequestAdapter;
-import com.faiteasytrack.enums.Error;
-import com.faiteasytrack.enums.Request;
+import com.faiteasytrack.constants.Error;
+import com.faiteasytrack.constants.Request;
 import com.faiteasytrack.helpers.FriendHelper;
 import com.faiteasytrack.listeners.FriendListener;
 import com.faiteasytrack.helpers.RequestHelper;

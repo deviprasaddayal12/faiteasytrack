@@ -1,6 +1,6 @@
 package com.faiteasytrack.utils;
 
-import com.faiteasytrack.enums.User;
+import com.faiteasytrack.constants.User;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

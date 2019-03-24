@@ -1,6 +1,6 @@
 package com.faiteasytrack.listeners;
 
-import com.faiteasytrack.enums.Error;
+import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.models.UserModel;
 
 public interface PhoneAuthListener {

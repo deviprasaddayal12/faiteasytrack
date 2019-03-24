@@ -8,10 +8,6 @@
         <item name="fontFamily">@font/varela_round</item>
     </style>
 
-    <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar" >
-        <item name="android:windowBackground">@drawable/background_launcher</item>
-    </style>
-
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -23,6 +19,24 @@
         <item name="colorButtonNormal">@color/colorPrimaryDark</item>
         <item name="android:textAppearanceButton">@style/TextAppearance.AppCompat.Button.Custom</item>
     </style>
+
+    <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar" >
+        <item name="android:windowBackground">@drawable/background_launcher</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.TransparentTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="TransparentToolbar" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
     <style name="TextAppearance.AppCompat.Button.Custom">
         <item name="android:textColor">@color/colorPrimaryDark</item>
