@@ -4,15 +4,18 @@ public class PreferenceModel {
 
     private boolean doShareLocation;
     private int shareLocationTo;
-//    private String lastSavedPassword;
+    private boolean doShareProfilePicture;
+    private int storageForProfilePhoto;
 
     public PreferenceModel() {
 
     }
 
-    public PreferenceModel(boolean doShareLocation, int shareLocationTo) {
+    public PreferenceModel(boolean doShareLocation, int shareLocationTo, boolean doShareProfilePicture, int storageForProfilePhoto) {
         this.doShareLocation = doShareLocation;
         this.shareLocationTo = shareLocationTo;
+        this.doShareProfilePicture = doShareProfilePicture;
+        this.storageForProfilePhoto = storageForProfilePhoto;
     }
 
     public boolean isDoShareLocation() {
@@ -31,11 +34,19 @@ public class PreferenceModel {
         this.shareLocationTo = shareLocationTo;
     }
 
-//    public String getLastSavedPassword() {
-//        return lastSavedPassword;
-//    }
-//
-//    public void setLastSavedPassword(String lastSavedPassword) {
-//        this.lastSavedPassword = lastSavedPassword;
-//    }
+    public boolean isDoShareProfilePicture() {
+        return doShareProfilePicture;
+    }
+
+    public void setDoShareProfilePicture(boolean doShareProfilePicture) {
+        this.doShareProfilePicture = doShareProfilePicture;
+    }
+
+    public int getStorageForProfilePhoto() {
+        return storageForProfilePhoto;
+    }
+
+    public void setStorageForProfilePhoto(int storageForProfilePhoto) {
+        this.storageForProfilePhoto = storageForProfilePhoto;
+    }
 }

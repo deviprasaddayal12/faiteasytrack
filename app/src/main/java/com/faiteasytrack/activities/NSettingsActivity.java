@@ -4,15 +4,17 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.constants.Preferences;
 import com.faiteasytrack.models.PreferenceModel;
 import com.faiteasytrack.utils.SharePreferences;
-import com.faiteasytrack.utils.ViewUtils;
 import com.google.android.material.button.MaterialButton;
 
 import androidx.appcompat.widget.Toolbar;
@@ -21,14 +23,24 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
 
     public static final String TAG = "NSettingsActivity";
 
-    private MaterialButton btnChangePassword, btnShareLocationTo;
-    private Switch swtShareLocation;
+    private MaterialButton btnChangePassword;
+    private Switch swtShareLocation, swtShareProfilePhoto;
     private RadioGroup rgShareLocationTo;
+
+    private Spinner spinStorageProfilePhoto;
+    private ArrayAdapter<String> adapterStorageProfilePhoto;
+    private final String[] storages = {"Local", "Cloud"};
+
     private ProgressDialog progressDialog;
 
     private PreferenceModel lastPreferenceModel, changedPreferenceModel;
-    private int shareLocationTo;
-    private boolean doShareLocationChanged = false, doShareLocationToChanged = false, isChangedPreferencesSaved = false;
+
+    private int shareLocationTo, storageProfilePhoto;
+    private boolean isShareLocationChanged = false,
+            isSharePhotoChanged = false,
+            isPhotoStorageChanged = false,
+            isShareLocationToChanged = false,
+            isChangedPreferencesSaved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +60,17 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
     public void initUI() {
         progressDialog = new ProgressDialog(this);
 
-        btnShareLocationTo = findViewById(R.id.btn_share_location_to);
-        ViewUtils.hideViews(btnShareLocationTo);
-
-        btnChangePassword = findViewById(R.id.btn_change_password);
         swtShareLocation = findViewById(R.id.swt_share_location);
         rgShareLocationTo = findViewById(R.id.rg_location_pref);
+
+        swtShareProfilePhoto = findViewById(R.id.swt_share_photo);
+        spinStorageProfilePhoto = findViewById(R.id.spinner_storage_profilePhoto);
+
+        btnChangePassword = findViewById(R.id.btn_change_password);
     }
 
     @Override
     public void setUpListeners() {
-        btnShareLocationTo.setOnClickListener(this);
         btnChangePassword.setOnClickListener(this);
 
         swtShareLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -69,33 +81,42 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         });
+        swtShareProfilePhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (compoundButton.getId() == R.id.swt_share_photo) {
+                    onSharePhotoPreferenceChanged(b);
+                }
+            }
+        });
 
         rgShareLocationTo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        switch (checkedId) {
-                            case R.id.rb_pref_friends_only:
-                                shareLocationTo = Preferences.ShareLocation.TO_FRIENDS;
-                                break;
-                            case R.id.rb_pref_noone:
-                                shareLocationTo = Preferences.ShareLocation.TO_NO_ONE;
-                                break;
-                            case R.id.rb_pref_anyone:
-                                shareLocationTo = Preferences.ShareLocation.TO_ANYONE;
-                                break;
-                        }
-                        onShareLocationToPreferenceChanged();
-                    }
-                });
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_pref_friends_only:
+                        shareLocationTo = Preferences.ShareLocation.TO_FRIENDS;
+                        break;
+                    case R.id.rb_pref_noone:
+                        shareLocationTo = Preferences.ShareLocation.TO_NO_ONE;
+                        break;
+                    case R.id.rb_pref_anyone:
+                        shareLocationTo = Preferences.ShareLocation.TO_ANYONE;
+                        break;
+                }
+                onShareLocationToPreferenceChanged();
+            }
+        });
     }
 
     @Override
     public void setUpData() {
         changedPreferenceModel = new PreferenceModel();
-        shareLocationTo = lastPreferenceModel.getShareLocationTo();
 
+        shareLocationTo = lastPreferenceModel.getShareLocationTo();
         swtShareLocation.setChecked(lastPreferenceModel.isDoShareLocation());
-        switch (shareLocationTo){
+
+        switch (shareLocationTo) {
             case Preferences.ShareLocation.TO_FRIENDS:
                 rgShareLocationTo.check(R.id.rb_pref_friends_only);
                 break;
@@ -110,7 +131,26 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void setUpRecycler() {
+        adapterStorageProfilePhoto = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, storages);
+        spinStorageProfilePhoto.setAdapter(adapterStorageProfilePhoto);
 
+        spinStorageProfilePhoto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                storageProfilePhoto = i + 1;
+                onPhotoStoragePreferenceChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        swtShareProfilePhoto.setChecked(lastPreferenceModel.isDoShareProfilePicture());
+        storageProfilePhoto = lastPreferenceModel.getStorageForProfilePhoto();
+        spinStorageProfilePhoto.setSelection(storageProfilePhoto - 1, true);
     }
 
     @Override
@@ -125,10 +165,6 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_share_location_to: {
-                onShareLocationToPreferenceChanged();
-            }
-            break;
             case R.id.btn_change_password: {
                 onChangePasswordRequested();
             }
@@ -137,32 +173,33 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void onShareLocationPreferenceChanged(boolean b) {
-        if (lastPreferenceModel.isDoShareLocation() == b) {
-            doShareLocationChanged = false;
-        } else {
-            doShareLocationChanged = true;
-            changedPreferenceModel.setDoShareLocation(b);
-//            ViewUtils.makeToast(this, "Preferences updated.");
-        }
+        isShareLocationChanged = lastPreferenceModel.isDoShareLocation() != b;
     }
 
     private void onShareLocationToPreferenceChanged() {
-        if (lastPreferenceModel.getShareLocationTo() == shareLocationTo) {
-            doShareLocationToChanged = false;
-        } else {
-            doShareLocationToChanged = true;
-            changedPreferenceModel.setShareLocationTo(shareLocationTo);
-//            ViewUtils.makeToast(this, "Preferences updated.");
-        }
+        isShareLocationToChanged = lastPreferenceModel.getShareLocationTo() != shareLocationTo;
+    }
+
+    private void onSharePhotoPreferenceChanged(boolean b) {
+        isSharePhotoChanged = lastPreferenceModel.isDoShareProfilePicture() != b;
+    }
+
+    private void onPhotoStoragePreferenceChanged() {
+        isPhotoStorageChanged = lastPreferenceModel.getStorageForProfilePhoto() != storageProfilePhoto;
     }
 
     private void onChangePasswordRequested() {
         // todo : implement change password request
     }
 
+    private boolean isProfileUpdated(){
+        return isShareLocationChanged || isShareLocationToChanged
+                || isSharePhotoChanged || isPhotoStorageChanged;
+    }
+
     @Override
     public void onBackPressed() {
-        if ((doShareLocationChanged || doShareLocationToChanged) && !isChangedPreferencesSaved) {
+        if (isProfileUpdated() && !isChangedPreferencesSaved) {
             progressDialog.setMessage("Saving your preferences...");
             progressDialog.show();
 
@@ -179,10 +216,11 @@ public class NSettingsActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void saveChangedPreferences(OnPreferencesSaveListener listener) {
-        if (!doShareLocationToChanged && lastPreferenceModel.getShareLocationTo() == 0)
-            changedPreferenceModel.setShareLocationTo(Preferences.ShareLocation.TO_ANYONE);
-        if (!doShareLocationChanged)
-            changedPreferenceModel.setDoShareLocation(lastPreferenceModel.isDoShareLocation());
+        changedPreferenceModel.setDoShareProfilePicture(swtShareProfilePhoto.isChecked());
+        changedPreferenceModel.setStorageForProfilePhoto(storageProfilePhoto);
+        changedPreferenceModel.setDoShareLocation(swtShareLocation.isChecked());
+        changedPreferenceModel.setShareLocationTo(shareLocationTo);
+
         SharePreferences.savePreferenceModel(this, changedPreferenceModel);
         // todo : upload preferences to firebase database
 

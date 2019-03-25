@@ -46,11 +46,20 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-auth:16.2.0'
     implementation 'com.google.firebase:firebase-database:16.1.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
-    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+    implementation 'com.google.firebase:firebase-messaging:17.5.0'
+    implementation 'com.google.firebase:firebase-storage:16.1.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    annotationProcessor 'androidx.annotation:annotation:1.0.2'
+
+    implementation 'com.firebaseui:firebase-ui-storage:3.2.1'
+    implementation 'com.firebaseui:firebase-ui-database:4.3.1'
 
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
 

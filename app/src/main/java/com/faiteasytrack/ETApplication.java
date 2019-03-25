@@ -6,7 +6,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class EasytrackApplication extends Application {
+public class ETApplication extends Application {
 
     public static final String TAG = "EasytrackApplication";
 

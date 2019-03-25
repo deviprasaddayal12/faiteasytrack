@@ -1,7 +1,6 @@
 package com.faiteasytrack.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -9,21 +8,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.faiteasytrack.R;
 import com.faiteasytrack.adapters.DashboardAdapter;
+import com.faiteasytrack.constants.Preferences;
 import com.faiteasytrack.constants.User;
 import com.faiteasytrack.listeners.OnStatisticsFetchListener;
 import com.faiteasytrack.managers.DashboardManager;
 import com.faiteasytrack.models.DashboardModel;
+import com.faiteasytrack.models.PreferenceModel;
 import com.faiteasytrack.models.UserModel;
 import com.faiteasytrack.utils.AppPermissions;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.SharePreferences;
-import com.faiteasytrack.utils.ViewUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
@@ -51,15 +54,18 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
     private ArrayList<DashboardModel> dashboardModels;
 
     private FirebaseUser firebaseUser;
+    private StorageReference profilePhotosReference;
     private Handler handlerDashboardViewUpdates;
 
     private UserModel userModel;
+    private PreferenceModel preferenceModel;
 
     private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.SimpleDrawerListener() {
         @Override
         public void onDrawerOpened(View drawerView) {
             super.onDrawerOpened(drawerView);
 
+            drawerClosedRunnable = null;
             updateUserDetailsInNavView();
         }
 
@@ -79,7 +85,10 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        profilePhotosReference = FirebaseStorage.getInstance()
+                .getReference("images/profilePhotos").child(firebaseUser.getUid());
         userModel = SharePreferences.getUserModel(this);
+        preferenceModel = SharePreferences.getPreferenceModel(this);
         handlerDashboardViewUpdates = new Handler();
 
         setContentView(R.layout.activity_dashboard);
@@ -201,22 +210,18 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
 
     private void updateUserDetailsInNavView() {
         View navHeader = navigationView.getHeaderView(0);
-        final CircularImageView userProfilePic = navHeader.findViewById(R.id.nav_header_icon);
+
+        CircularImageView userProfilePic = navHeader.findViewById(R.id.nav_header_icon);
+        setUpImageToNavIcon(userProfilePic);
+
         final TextView userName = navHeader.findViewById(R.id.nav_header_title);
         final TextView userContactInfo = navHeader.findViewById(R.id.nav_header_subtitle);
+
         try {
-            final Uri photoUri = firebaseUser.getPhotoUrl();
             final String name = firebaseUser.getDisplayName();
             final String phoneNumber = firebaseUser.getPhoneNumber();
             final String email = firebaseUser.getEmail();
 
-            handlerDashboardViewUpdates.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (photoUri != null)
-                        userProfilePic.setImageURI(photoUri);
-                }
-            });
             handlerDashboardViewUpdates.post(new Runnable() {
                 @Override
                 public void run() {
@@ -241,12 +246,30 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
         }
     }
 
+    private void setUpImageToNavIcon(CircularImageView civProfilePic) {
+        PreferenceModel preferenceModel = SharePreferences.getPreferenceModel(this);
+        if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL) {
+            try{
+                civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
+            } catch (Exception e){
+                civProfilePic.setImageResource(R.drawable.user_1);
+            }
+
+        } else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD) {
+            try{
+                Glide.with(this).load(profilePhotosReference).into(civProfilePic)
+                        .onLoadFailed(getDrawable(R.drawable.user_1));
+            } catch (Exception e){
+                civProfilePic.setImageResource(R.drawable.user_1);
+            }
+        }
+    }
+
     private static final long NAV_DRAWER_CLOSE_WAIT_TIME = 300;
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        drawerClosedRunnable = null;
         drawerLayout.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
             case R.id.nav_dashboard: {

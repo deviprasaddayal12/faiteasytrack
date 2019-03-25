@@ -100,6 +100,7 @@
     <string name="action_admins">Admins</string>
     <string name="you_re_a_few_steps_away_from_an_amazing_experince">You\'re a few steps away from an amazing experience!</string>
     <string name="share_my_location">Share my location:</string>
+    <string name="share_my_photo">Share my photo:</string>
     <string name="share_my_location_to">Share my location to:</string>
     <string name="friends_only">Friends only</string>
     <string name="anyone">Anyone</string>
@@ -131,4 +132,5 @@
     <string name="search">Search</string>
     <string name="looking_for_statistics_report">Looking for statistics report...</string>
     <string name="add_child">Add child</string>
+    <string name="storage_for_profile_photo">Storage for profile photo:</string>
 </resources>

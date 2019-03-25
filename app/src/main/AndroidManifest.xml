@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:fullBackupContent="true"
         android:theme="@style/AppTheme.NoActionBar"
-        android:name=".EasytrackApplication">
+        android:name=".ETApplication">
 
         <activity
             android:name="com.faiteasytrack.activities.NSplashActivity"

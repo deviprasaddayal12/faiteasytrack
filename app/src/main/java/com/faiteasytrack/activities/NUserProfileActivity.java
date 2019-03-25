@@ -1,8 +1,8 @@
 package com.faiteasytrack.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,25 +20,36 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.faiteasytrack.BuildConfig;
 import com.faiteasytrack.R;
+import com.faiteasytrack.constants.Preferences;
+import com.faiteasytrack.models.PreferenceModel;
 import com.faiteasytrack.utils.AppPermissions;
 import com.faiteasytrack.utils.DateUtils;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.FileUtils;
+import com.faiteasytrack.utils.SharePreferences;
 import com.faiteasytrack.utils.Utils;
 import com.faiteasytrack.utils.ViewUtils;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,6 +71,9 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     private MaterialButton btnSkip;
 
     private FirebaseUser firebaseUser;
+    private StorageReference profilePhotosReference;
+
+    private PreferenceModel preferenceModel;
 
     private boolean isCalledFromAuth, isUploadingPic = false, isUpdatingName = false, isUpdatingEmail = false;
     private boolean isProfileUpdated = false;
@@ -74,9 +88,15 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        profilePhotosReference = FirebaseStorage.getInstance()
+                .getReference("images/profilePhotos").child(firebaseUser.getUid());
+        preferenceModel = SharePreferences.getPreferenceModel(this);
+
         isCalledFromAuth = getIntent().getIntExtra("CALLED_FROM",
                 CALLED_FROM_NAVIGATION) == CALLED_FROM_PHONE_AUTH;
+
         handlerProfileViewLoad = new Handler();
+
         setContentView(R.layout.activity_user_profile);
     }
 
@@ -148,14 +168,24 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         etUserPhone.setText(Utils.getValidString(firebaseUser.getPhoneNumber()));
         etUserPhone.setInputType(InputType.TYPE_NULL);
 
-        if (firebaseUser.getPhotoUrl() != null) {
-            Log.i(TAG, "setUpData:firebaseUser.getPhotoUrl = " + firebaseUser.getPhotoUrl());
-            handlerProfileViewLoad.post(new Runnable() {
-                @Override
-                public void run() {
-                    civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
-                }
-            });
+        setUpImageToImageView();
+    }
+
+    private void setUpImageToImageView() {
+        if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL) {
+            try{
+                civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
+            } catch (Exception e){
+                civProfilePic.setImageResource(R.drawable.user_1);
+            }
+
+        } else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD) {
+            try{
+                Glide.with(this).load(profilePhotosReference)
+                        .into(civProfilePic).onLoadFailed(getDrawable(R.drawable.user_1));
+            } catch (Exception e){
+                civProfilePic.setImageResource(R.drawable.user_1);
+            }
         }
     }
 
@@ -219,7 +249,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                 ex.printStackTrace();
             }
             if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                photoURI = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID
+                        + ".provider", photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(intent, REQUEST_FOR_CAMERA);
             }
@@ -295,7 +326,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_FOR_CAMERA) {
-                setUpImageToImageView(true);
+                uploadProfilePhoto();
             } else if (requestCode == REQUEST_FOR_GALLERY) {
                 attachFile(data);
             } else if (requestCode == REQUEST_FOR_FILE_BROWSER) {
@@ -306,7 +337,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void takePersistablePermissions(Intent intent) {
-        final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (intent.getData() != null)
             getContentResolver().takePersistableUriPermission(intent.getData(), takeFlags);
     }
@@ -328,7 +360,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                 if (!imagePath.equals(imagePathForProfilePic)) {
                     imagePathForProfilePic = imagePath;
                     photoURI = data.getData();
-                    setUpImageToImageView(false);
+                    uploadProfilePhoto();
 
                 } else {
                     Toast.makeText(this, "File already chosen.", Toast.LENGTH_SHORT).show();
@@ -337,12 +369,6 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void setUpImageToImageView(boolean isCameraClicked) {
-        civProfilePic.setImageBitmap(BitmapFactory.decodeFile(
-                /*(FileUtils.getCompressedFile(this, imagePathForProfilePic)).getAbsolutePath()*/ imagePathForProfilePic));
-        updateProfilePic();
     }
 
     private void updateName(String name) {
@@ -369,7 +395,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                         isProfileUpdated = true;
                         ViewUtils.hideViews(loader);
                         isUpdatingName = false;
-                        ViewUtils.makeToast(NUserProfileActivity.this, "Your name updated successfully.");
+                        ViewUtils.makeToast(NUserProfileActivity.this,
+                                "Your name updated successfully.");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -378,7 +405,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                         etUserName.setText(Utils.getValidString(firebaseUser.getDisplayName()));
                         ViewUtils.hideViews(loader);
                         isUpdatingName = false;
-                        DialogUtils.showSorryAlert(NUserProfileActivity.this, "" + e.getMessage(), null);
+                        DialogUtils.showSorryAlert(NUserProfileActivity.this, ""
+                                + e.getMessage(), null);
                     }
                 });
     }
@@ -404,7 +432,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                         isProfileUpdated = true;
                         ViewUtils.hideViews(loader);
                         isUpdatingEmail = false;
-                        ViewUtils.makeToast(NUserProfileActivity.this, "Your email updated successfully.");
+                        ViewUtils.makeToast(NUserProfileActivity.this,
+                                "Your email updated successfully.");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -413,12 +442,20 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                         etUserEmail.setText(Utils.getValidString(firebaseUser.getEmail()));
                         ViewUtils.hideViews(loader);
                         isUpdatingEmail = false;
-                        DialogUtils.showSorryAlert(NUserProfileActivity.this, "" + e.getMessage(), null);
+                        DialogUtils.showSorryAlert(NUserProfileActivity.this, ""
+                                + e.getMessage(), null);
                     }
                 });
     }
 
-    private void updateProfilePic() {
+    private void uploadProfilePhoto(){
+        if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL)
+            uploadImageToLocalStorage();
+        else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD)
+            uploadImageToCloudStorage();
+    }
+
+    private void uploadImageToLocalStorage() {
         ViewUtils.showViews(loader);
         isUploadingPic = true;
 
@@ -432,7 +469,10 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                         isProfileUpdated = true;
                         ViewUtils.hideViews(loader);
                         isUploadingPic = false;
-                        ViewUtils.makeToast(NUserProfileActivity.this, "Your profile photo updated successfully.");
+                        ViewUtils.makeToast(NUserProfileActivity.this,
+                                "Your profile photo updated successfully.");
+
+                        setUpImageToImageView();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -440,7 +480,51 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                     public void onFailure(@NonNull Exception e) {
                         ViewUtils.hideViews(loader);
                         isUploadingPic = false;
-                        DialogUtils.showSorryAlert(NUserProfileActivity.this, "" + e.getMessage(), null);
+                        DialogUtils.showSorryAlert(NUserProfileActivity.this, ""
+                                + e.getMessage(), null);
+                    }
+                });
+    }
+
+    private void uploadImageToCloudStorage() {
+        final ProgressDialog uploadProgress = new ProgressDialog(this);
+        uploadProgress.setCancelable(false);
+        uploadProgress.setTitle("Uploading profile photo");
+        uploadProgress.setMessage("Uploaded 0%");
+        uploadProgress.show();
+
+//        ViewUtils.showViews(loader);
+//        isUploadingPic = true;
+
+        profilePhotosReference.putFile(photoURI)
+                .addOnCanceledListener(new OnCanceledListener() {
+                    @Override
+                    public void onCanceled() {
+                        Snackbar snackbar = Snackbar.make(fabUploadPhoto,
+                                "Photo upload cancelled!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        uploadProgress.setMessage(String.format(Locale.getDefault(), "Uploaded %.2f%%", progress));
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        uploadProgress.setMessage("Photo uploaded successfully.");
+                        uploadProgress.setCancelable(true);
+                        setUpImageToImageView();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        uploadProgress.setMessage("Photo uploading failed.\n" + e.getMessage());
+                        uploadProgress.setCancelable(true);
                     }
                 });
     }
