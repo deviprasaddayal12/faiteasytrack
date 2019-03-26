@@ -66,7 +66,8 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
             super.onDrawerOpened(drawerView);
 
             drawerClosedRunnable = null;
-            updateUserDetailsInNavView();
+            if (!isNavViewInstantiated)
+                updateUserDetailsInNavView(false);
         }
 
         @Override
@@ -100,7 +101,7 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
             case R.id.navigation_header: {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 startActivityForResult(new Intent(this, NUserProfileActivity.class),
-                        AppPermissions.REQUESTS.REQUEST_FOR_UPDATE_USER_DETAILS);
+                        AppPermissions.REQUEST_FOR_UPDATE_USER_DETAILS);
             }
             break;
             case R.id.fab_lets_track: {
@@ -147,7 +148,8 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            updateUserDetailsInNavView();
+            if (!isNavViewInstantiated)
+                updateUserDetailsInNavView(false);
             handlerDashboardViewUpdates.post(new Runnable() {
                 @Override
                 public void run() {
@@ -202,17 +204,21 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == AppPermissions.REQUESTS.REQUEST_FOR_UPDATE_USER_DETAILS) {
-            if (resultCode == RESULT_OK)
-                updateUserDetailsInNavView();
+        if (requestCode == AppPermissions.REQUEST_FOR_UPDATE_USER_DETAILS) {
+            if (resultCode == RESULT_OK) {
+                Glide.get(this).clearDiskCache();
+                updateUserDetailsInNavView(true);
+            }
         }
     }
 
-    private void updateUserDetailsInNavView() {
+    private boolean isNavViewInstantiated = false;
+
+    private void updateUserDetailsInNavView(boolean refresh) {
         View navHeader = navigationView.getHeaderView(0);
 
         CircularImageView userProfilePic = navHeader.findViewById(R.id.nav_header_icon);
-        setUpImageToNavIcon(userProfilePic);
+        setUpImageToNavIcon(userProfilePic, refresh);
 
         final TextView userName = navHeader.findViewById(R.id.nav_header_title);
         final TextView userContactInfo = navHeader.findViewById(R.id.nav_header_subtitle);
@@ -241,26 +247,29 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         userContactInfo.setText(email);
                 }
             });
+            isNavViewInstantiated = true;
         } catch (Exception e1) {
             e1.printStackTrace();
         }
     }
 
-    private void setUpImageToNavIcon(CircularImageView civProfilePic) {
+    private void setUpImageToNavIcon(CircularImageView civProfilePic, boolean refresh) {
         PreferenceModel preferenceModel = SharePreferences.getPreferenceModel(this);
         if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL) {
-            try{
+            try {
                 civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
-            } catch (Exception e){
-                civProfilePic.setImageResource(R.drawable.user_1);
+            } catch (Exception e) {
+                e.printStackTrace();
+//                civProfilePic.setImageResource(R.drawable.user_1);
             }
 
         } else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD) {
-            try{
-                Glide.with(this).load(profilePhotosReference).into(civProfilePic)
-                        .onLoadFailed(getDrawable(R.drawable.user_1));
-            } catch (Exception e){
-                civProfilePic.setImageResource(R.drawable.user_1);
+            try {
+                Glide.with(this).load(profilePhotosReference)
+                        .into(civProfilePic);
+            } catch (Exception e) {
+                e.printStackTrace();
+//                civProfilePic.setImageResource(R.drawable.user_1);
             }
         }
     }
@@ -283,8 +292,6 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         startActivity(new Intent(NDashboardActivity.this, NAdminActivity.class));
                     }
                 };
-
-//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_vendors: {
@@ -294,8 +301,6 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         startActivity(new Intent(NDashboardActivity.this, NVendorActivity.class));
                     }
                 };
-
-//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_vehicles: {
@@ -305,8 +310,6 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         startActivity(new Intent(NDashboardActivity.this, NVehicleActivity.class));
                     }
                 };
-
-//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_drivers: {
@@ -316,8 +319,6 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         startActivity(new Intent(NDashboardActivity.this, NDriverActivity.class));
                     }
                 };
-
-//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_routes: {
@@ -327,8 +328,6 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         startActivity(new Intent(NDashboardActivity.this, NRouteActivity.class));
                     }
                 };
-
-//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_settings: {
@@ -338,8 +337,6 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
                         startActivity(new Intent(NDashboardActivity.this, NSettingsActivity.class));
                     }
                 };
-
-//                handlerDashboardViewUpdates.postDelayed(null, NAV_DRAWER_CLOSE_WAIT_TIME);
             }
             return true;
             case R.id.nav_logout: {

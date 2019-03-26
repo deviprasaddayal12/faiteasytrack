@@ -185,7 +185,7 @@ public class OContactsActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == AppPermissions.REQUESTS.ACCESS_READ_CONTACTS) {
+        if (requestCode == AppPermissions.ACCESS_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 contactsManager.startLoading();
             }

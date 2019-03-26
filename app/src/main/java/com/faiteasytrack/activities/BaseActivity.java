@@ -42,9 +42,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setUpListeners();
         setUpRecycler();
         setUpData();
-
-        if (AppPermissions.checkNetworkStateReceivePermission(this))
-            registerNetworkStateBroadcast();
     }
 
     public abstract void setUpActionBar();
@@ -59,22 +56,23 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public abstract void updateInternetError(boolean isOnline);
 
-    private void registerNetworkStateBroadcast() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkStateReceiver stateReceiver = new NetworkStateReceiver();
-            registerReceiver(stateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-
-        NetworkStateReceiver.bindListener(new NetworkStateReceiver.NetworkStateReceivedListener() {
-            @Override
-            public void onStateReceived(NetworkInfo.State state) {
-
-            }
-
-            @Override
-            public void onStateChanged(boolean isOnlineNow) {
-                updateInternetError(isOnlineNow);
-            }
-        });
-    }
+//    public void registerNetworkStateBroadcast() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            NetworkStateReceiver stateReceiver = new NetworkStateReceiver();
+//            registerReceiver(stateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
+//
+//        NetworkStateReceiver.bindListener(
+//                new NetworkStateReceiver.NetworkStateReceivedListener() {
+//            @Override
+//            public void onStateReceived(NetworkInfo.State state) {
+//
+//            }
+//
+//            @Override
+//            public void onStateChanged(boolean isOnlineNow) {
+//                updateInternetError(isOnlineNow);
+//            }
+//        });
+//    }
 }

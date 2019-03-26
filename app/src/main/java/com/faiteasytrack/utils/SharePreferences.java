@@ -390,8 +390,10 @@ public class SharePreferences {
             return gson.fromJson(getString(context, KEYS.PREFERENCE_MODEL), type);
         } catch (Exception e) {
             e.printStackTrace();
-            return new PreferenceModel(false, Preferences.ShareLocation.TO_ANYONE,
-                    true, Preferences.Storage.CLOUD);
+            PreferenceModel defaultPreferenceModel = new PreferenceModel(false,
+                    Preferences.ShareLocation.TO_ANYONE, true, Preferences.Storage.CLOUD);
+            savePreferenceModel(context, defaultPreferenceModel);
+            return defaultPreferenceModel;
         }
     }
 

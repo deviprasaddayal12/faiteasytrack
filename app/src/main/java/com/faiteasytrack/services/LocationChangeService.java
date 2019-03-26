@@ -205,7 +205,6 @@ public class LocationChangeService extends Service {
      */
     public void requestLocationUpdates() {
 //        Log.i(TAG, "Requesting location updates");
-        startService(new Intent(getApplicationContext(), LocationChangeService.class));
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         } catch (SecurityException unlikely) {

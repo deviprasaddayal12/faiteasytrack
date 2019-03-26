@@ -2,7 +2,9 @@ package com.faiteasytrack.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,7 +63,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     public static final int CALLED_FROM_PHONE_AUTH = 0;
     public static final int CALLED_FROM_NAVIGATION = 1;
 
-    public static final int REQUEST_FOR_CAMERA = 201, REQUEST_FOR_GALLERY = 202, REQUEST_FOR_FILE_BROWSER = 203;
+    public static final int REQUEST_FOR_CAMERA = 201, REQUEST_FOR_GALLERY = 202,
+            REQUEST_FOR_FILE_BROWSER = 203, REQUEST_FOR_CROP = 204;
 
     private FloatingActionButton fabUploadPhoto;
     private EditText etUserName, etUserEmail, etUserPhone;
@@ -168,23 +171,24 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         etUserPhone.setText(Utils.getValidString(firebaseUser.getPhoneNumber()));
         etUserPhone.setInputType(InputType.TYPE_NULL);
 
-        setUpImageToImageView();
+        setUpImageToImageView(false);
     }
 
-    private void setUpImageToImageView() {
+    private void setUpImageToImageView(boolean refresh) {
         if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL) {
-            try{
+            try {
                 civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
-            } catch (Exception e){
-                civProfilePic.setImageResource(R.drawable.user_1);
+            } catch (Exception e) {
+                e.printStackTrace();
+//                civProfilePic.setImageResource(R.drawable.user_1);
             }
 
         } else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD) {
-            try{
-                Glide.with(this).load(profilePhotosReference)
-                        .into(civProfilePic).onLoadFailed(getDrawable(R.drawable.user_1));
-            } catch (Exception e){
-                civProfilePic.setImageResource(R.drawable.user_1);
+            try {
+                Glide.with(this).load(profilePhotosReference).into(civProfilePic);
+            } catch (Exception e) {
+                e.printStackTrace();
+//                civProfilePic.setImageResource(R.drawable.user_1);
             }
         }
     }
@@ -233,7 +237,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     private void requestCamera() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (AppPermissions.checkCameraPermission(this))
+            if (AppPermissions.checkCameraPermission(this, true))
                 startCamera();
         } else
             startCamera();
@@ -261,7 +265,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     private void requestGallery() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (AppPermissions.checkGalleryPermission(this))
+            if (AppPermissions.checkGalleryPermission(this, true))
                 startGallery();
         } else
             startGallery();
@@ -280,7 +284,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     private void requestFileBrowser() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (AppPermissions.checkFileBrowserPermission(this))
+            if (AppPermissions.checkFileBrowserPermission(this, true))
                 startFileBrowser();
         } else
             startFileBrowser();
@@ -306,32 +310,73 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         return image;
     }
 
+    private void cropImageShot() {
+        try {
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+
+            cropIntent.setDataAndType(photoURI, "image/*");
+            cropIntent.putExtra("crop", true);
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            cropIntent.putExtra("outputX", 128);
+            cropIntent.putExtra("outputY", 128);
+            cropIntent.putExtra("return-data", true);
+            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(cropIntent, REQUEST_FOR_CROP);
+        }
+        catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            String errorMessage = "Whoops - your device doesn't support the cropping!";
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionsResult: ");
+//        for (int i = 0; i < permissions.length; i++) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (requestCode == AppPermissions.ACCESS_CAMERA) {
+                    startCamera();
+                } else if (requestCode == AppPermissions.ACCESS_GALLERY) {
+                    startGallery();
+                } else if (requestCode == AppPermissions.ACCESS_FILE_BROWSER) {
+                    startFileBrowser();
+                }
+            } else {
+                Log.i(TAG, "onRequestPermissionsResult: " + permissions[0] + " permission denied.");
+                AppPermissions.showAllowPermissionDialog(this, permissions,
+                        new AppPermissions.OnPermissionChangeListener() {
+                            @Override
+                            public void onAllowPermission(String[] permissions) {
 
-        if (grantResults.length > 0) {
-            if (requestCode == REQUEST_FOR_FILE_BROWSER) {
-                startFileBrowser();
-            } else if (requestCode == REQUEST_FOR_GALLERY) {
-                startGallery();
-            } else if (requestCode == REQUEST_FOR_CAMERA) {
-                startCamera();
+                            }
+
+                            @Override
+                            public void onPermissionDenied() {
+
+                            }
+                        });
             }
-        } else
-            ViewUtils.makeToast(this, "Please grant permissions to enjoy more features.");
+//        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_FOR_CAMERA) {
-                uploadProfilePhoto();
+                cropImageShot();
             } else if (requestCode == REQUEST_FOR_GALLERY) {
                 attachFile(data);
             } else if (requestCode == REQUEST_FOR_FILE_BROWSER) {
                 takePersistablePermissions(data);
                 attachFile(data);
+            } else if (requestCode == REQUEST_FOR_CROP){
+                if (data != null) {
+                    Log.i(TAG, "onActivityResult: photoUri = " + photoURI);
+                    photoURI = data.getData();
+                    Log.i(TAG, "onActivityResult: cropPhotoUri = " + photoURI);
+                    uploadProfilePhoto();
+                }
             }
         }
     }
@@ -448,7 +493,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                 });
     }
 
-    private void uploadProfilePhoto(){
+    private void uploadProfilePhoto() {
         if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL)
             uploadImageToLocalStorage();
         else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD)
@@ -472,7 +517,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                         ViewUtils.makeToast(NUserProfileActivity.this,
                                 "Your profile photo updated successfully.");
 
-                        setUpImageToImageView();
+                        Glide.get(NUserProfileActivity.this).clearDiskCache();
+                        setUpImageToImageView(true);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -515,16 +561,18 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        uploadProgress.setMessage("Photo uploaded successfully.");
-                        uploadProgress.setCancelable(true);
-                        setUpImageToImageView();
+                        uploadProgress.dismiss();
+                        String message = "Photo uploaded successfully.";
+                        setUpImageToImageView(true);
+                        DialogUtils.showCheersAlert(NUserProfileActivity.this, message, null);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        uploadProgress.setMessage("Photo uploading failed.\n" + e.getMessage());
-                        uploadProgress.setCancelable(true);
+                        uploadProgress.dismiss();
+                        String message = "Photo uploading failed.\n" + e.getMessage();
+                        DialogUtils.showCheersAlert(NUserProfileActivity.this, message, null);
                     }
                 });
     }

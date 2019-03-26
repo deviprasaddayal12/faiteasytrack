@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.text.InputFilter;
 import android.util.Log;
@@ -62,7 +61,7 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
 
     private void registerListener() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, AppPermissions.REQUESTS.ACCESS_MESSAGE_READ_REQUEST);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, AppPermissions.ACCESS_READ_MESSAGE);
         } else {
             phoneAuthManager.registerSMSBroadcast();
         }
@@ -302,39 +301,37 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == AppPermissions.REQUESTS.ACCESS_MESSAGE_READ_REQUEST) {
+        if (requestCode == AppPermissions.ACCESS_READ_MESSAGE) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(NPhoneAuthActivity.this,
-                        new String[]{Manifest.permission.RECEIVE_SMS}, AppPermissions.REQUESTS.ACCESS_MESSAGE_READ_REQUEST);
+                        new String[]{Manifest.permission.RECEIVE_SMS}, AppPermissions.ACCESS_READ_MESSAGE);
             } else
                 registerListener();
         }
     }
 
-    private Handler handlerUIThread = new Handler();
     private boolean isOnline = true;
-
     @Override
     public void updateInternetError(boolean isOnlineNow) {
         isOnline = isOnlineNow;
-        String message = isOnlineNow ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
-        int backgroundColor = isOnlineNow ? getResources().getColor(android.R.color.holo_green_dark)
-                : getResources().getColor(android.R.color.holo_red_dark);
-
-        tvNetworkInfo.setText(message);
-        tvNetworkInfo.setBackgroundColor(backgroundColor);
-
-        if (tvNetworkInfo.getVisibility() == View.GONE)
-            ViewUtils.showViews(tvNetworkInfo);
-
-        if (isOnlineNow) {
-            handlerUIThread.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    ViewUtils.hideViews(tvNetworkInfo);
-                }
-            }, 2000);
-        }
+//        String message = isOnlineNow ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
+//        int backgroundColor = isOnlineNow ? getResources().getColor(android.R.color.holo_green_dark)
+//                : getResources().getColor(android.R.color.holo_red_dark);
+//
+//        tvNetworkInfo.setText(message);
+//        tvNetworkInfo.setBackgroundColor(backgroundColor);
+//
+//        if (tvNetworkInfo.getVisibility() == View.GONE)
+//            ViewUtils.showViews(tvNetworkInfo);
+//
+//        if (isOnlineNow) {
+//            handlerUIThread.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ViewUtils.hideViews(tvNetworkInfo);
+//                }
+//            }, 2000);
+//        }
     }
 
     private boolean isRequestValid() {

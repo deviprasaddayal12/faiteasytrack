@@ -211,25 +211,25 @@ public class ODashboardActivity extends BaseActivity
         });
     }
 
-    private void registerNetworkStateBroadcast() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkStateReceiver stateReceiver = new NetworkStateReceiver();
-            registerReceiver(stateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-
-        NetworkStateReceiver.bindListener(new NetworkStateReceiver.NetworkStateReceivedListener() {
-            @Override
-            public void onStateReceived(NetworkInfo.State state) {
-
-            }
-
-            @Override
-            public void onStateChanged(boolean isOnlineNow) {
-                isOnline = isOnlineNow;
-                updateInternetError(isOnlineNow);
-            }
-        });
-    }
+//    private void registerNetworkStateBroadcast() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            NetworkStateReceiver stateReceiver = new NetworkStateReceiver();
+//            registerReceiver(stateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
+//
+//        NetworkStateReceiver.bindListener(new NetworkStateReceiver.NetworkStateReceivedListener() {
+//            @Override
+//            public void onStateReceived(NetworkInfo.State state) {
+//
+//            }
+//
+//            @Override
+//            public void onStateChanged(boolean isOnlineNow) {
+//                isOnline = isOnlineNow;
+//                updateInternetError(isOnlineNow);
+//            }
+//        });
+//    }
 
     @Override
     public void initUI() {
@@ -309,24 +309,24 @@ public class ODashboardActivity extends BaseActivity
 
     @Override
     public void setUpData() {
-        if (AppPermissions.checkNetworkStateReceivePermission(this))
-            registerNetworkStateBroadcast();
+//        if (AppPermissions.checkNetworkStateReceivePermission(this, true))
+//            registerNetworkStateBroadcast();
     }
 
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == AppPermissions.REQUESTS.ACCESS_LOCATION_REQUEST) {
+        if (requestCode == AppPermissions.ACCESS_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (AppPermissions.checkLocationPermission(this)) {
+                if (AppPermissions.checkLocationPermission(this, false)) {
                     if (checkGPSEnabled() && locationService != null) {
                         locationService.requestLocationUpdates();
                     }
                 }
             }
-        } else if (requestCode == AppPermissions.REQUESTS.ACCESS_NETWORK_STATE_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                registerNetworkStateBroadcast();
-            }
+        } else if (requestCode == AppPermissions.ACCESS_NETWORK_STATE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                registerNetworkStateBroadcast();
+//            }
         }
     }
 
@@ -334,7 +334,7 @@ public class ODashboardActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_TURN_ON_GPS) {
             if (resultCode == RESULT_OK) {
-                if (AppPermissions.checkLocationPermission(this)) {
+                if (AppPermissions.checkLocationPermission(this, false)) {
                     if (checkGPSEnabled() && locationService != null) {
                         locationService.requestLocationUpdates();
                     }
@@ -379,7 +379,7 @@ public class ODashboardActivity extends BaseActivity
         mMap = googleMap;
         ViewUtils.hideViews(loader);
         isMapReady = true;
-        if (AppPermissions.checkLocationPermission(this) && !isStartedFromNotification) {
+        if (AppPermissions.checkLocationPermission(this, false) && !isStartedFromNotification) {
             if (checkGPSEnabled() && locationService != null) {
                 locationService.requestLocationUpdates();
             } /*else {
@@ -979,7 +979,7 @@ public class ODashboardActivity extends BaseActivity
 //                else if (locationSettingsStates.isLocationPresent())
 //                    ViewUtils.makeToast("Using Location");
 
-                if (AppPermissions.checkLocationPermission(ODashboardActivity.this)) {
+                if (AppPermissions.checkLocationPermission(ODashboardActivity.this, false)) {
                     if (checkGPSEnabled()) {
                         locationService.requestLocationUpdates();
                     }

@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,9 +43,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.maps.android.SphericalUtil;
@@ -63,14 +62,14 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
     private static final String TAG = "NMapActivity";
     private static final int REQUEST_TURN_ON_GPS = 568;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog mapPreparingDialog;
 
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
     private FloatingActionButton fabMyLocation;
 
     private boolean isStartedFromNotification = false;
-    private Handler handler;
+    private Handler handlerMapUiUpdates;
 
     private FirebaseUser firebaseUser;
 
@@ -85,8 +84,6 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
             LocationChangeService.LocalBinder binder = (LocationChangeService.LocalBinder) service;
             locationChangeService = binder.getService();
 
-//            updateMapPromptDialog("Location service ready.");
-            startLocationUpdates();
             isServiceBound = true;
         }
 
@@ -97,29 +94,95 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
         }
     };
 
+    private boolean isMapReady = false, isLocationPermitted = false, isGPSEnabled = false, isFirstLocationReceived = false;
+
+    private boolean isMapPreparingDialogRunning = false;
+    private Runnable runnableShowMapPreparingDialog = new Runnable() {
+        @Override
+        public void run() {
+            mapPreparingDialog = new ProgressDialog(NMapActivity.this);
+            mapPreparingDialog.setTitle("Preparing map");
+            mapPreparingDialog.setMessage("Just a while....be patient.");
+            mapPreparingDialog.setCancelable(false);
+
+            mapPreparingDialog.show();
+            isMapPreparingDialogRunning = true;
+        }
+    };
+
+    private Runnable runnableDismissMapPreparingDialog = new Runnable() {
+        @Override
+        public void run() {
+            if (mapPreparingDialog.isShowing()) {
+                mapPreparingDialog.dismiss();
+                isMapPreparingDialogRunning = false;
+            }
+        }
+    };
+
+    private Snackbar gpsSnackBar = Snackbar.make(fabMyLocation, "GPS off.", Snackbar.LENGTH_INDEFINITE)
+            .setAction("Turn On", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showEnableGpsDialog();
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        handler = new Handler();
-        isStartedFromNotification = getIntent().getBooleanExtra(LocationChangeService.EXTRA_STARTED_FROM_NOTIFICATION, false);
-
+        handlerMapUiUpdates = new Handler();
         locationChangeReceiver = new LocationChangeReceiver();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        isStartedFromNotification = getIntent()
+                .getBooleanExtra(LocationChangeService.EXTRA_STARTED_FROM_NOTIFICATION, false);
 
         setContentView(R.layout.activity_maps);
+    }
 
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null)
-            mapFragment.getMapAsync(this);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(this, LocationChangeService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(LocationChangeService.ACTION_BROADCAST);
+        LocalBroadcastManager.getInstance(this).registerReceiver(locationChangeReceiver, intentFilter);
+
+        if (!AppPermissions.checkLocationPermission(this, false))
+            AppPermissions.checkLocationPermission(this, true);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationChangeReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        if (isServiceBound) {
+            unbindService(serviceConnection);
+            isServiceBound = false;
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (!SharePreferences.isTracingOngoing(this) && !SharePreferences.isTrackingOngoing(this))
+            SharePreferences.setRequestingLocationUpdates(this, false);
+        super.onDestroy();
     }
 
     @Override
     public void initUI() {
-        showMapPreparingPromptDialog();
-
         fabMyLocation = findViewById(R.id.fab_my_location);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
     }
 
     @Override
@@ -129,6 +192,9 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
     @Override
     public void setUpListeners() {
+        if (mapFragment != null)
+            mapFragment.getMapAsync(this);
+
         locationChangeReceiver.bindListener(new OnLocationChangedListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -141,27 +207,9 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
     }
 
     @Override
-    public void setUpData() {
-
-    }
-
-    @Override
-    public void setUpRecycler() {
-
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
-//        updateMapPromptDialog("Map ready.");
-
-        startLocationUpdates();
-    }
-
-    @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.fab_my_location:{
+        switch (v.getId()) {
+            case R.id.fab_my_location: {
                 gotoMyCurrentLocation();
             }
             break;
@@ -169,66 +217,94 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        bindService(new Intent(this, LocationChangeService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(locationChangeReceiver,
-                new IntentFilter(LocationChangeService.ACTION_BROADCAST));
-    }
+    public void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (permissions == AppPermissions.permissionLocation) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkGpsEnabled();
+            } else {
+                AppPermissions.showAllowPermissionDialog(this,
+                        "We cannot proceed further with location permissions.",
+                        permissions,
+                        new AppPermissions.OnPermissionChangeListener() {
+                            @Override
+                            public void onAllowPermission(String[] permissions) {
 
-    private String preparationMessage;
-    private void showMapPreparingPromptDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Preparing map for you...");
+                            }
 
-        preparationMessage = "It may take a while....please be patient.";
-
-        progressDialog.setMessage(preparationMessage);
-        progressDialog.setCancelable(false);
-
-        progressDialog.show();
-    }
-
-    private void updateMapPromptDialog(String message){
-        preparationMessage = "\n" + message;
-        progressDialog.setMessage(preparationMessage);
-    }
-
-    private boolean isMapPromptDialogDismissed = false;
-    private void dismissMapPromptDialog(){
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-            isMapPromptDialogDismissed = true;
-        }
-    }
-
-    private void startLocationUpdates(){
-        if (AppPermissions.checkLocationPermission(this) && !isStartedFromNotification) {
-            if (checkGPSEnabled() && locationChangeService != null) {
-                locationChangeService.requestLocationUpdates();
+                            @Override
+                            public void onPermissionDenied() {
+                                finish();
+                            }
+                        });
             }
         }
     }
 
-    private void gotoMyCurrentLocation(){
+    private void checkGpsEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null && !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showEnableGpsDialog();
+        }
+    }
+
+    private void showEnableGpsDialog() {
+        if (locationChangeService == null)
+            return;
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationChangeService.mLocationRequest);
+        builder.setAlwaysShow(true);
+
+        Task<LocationSettingsResponse> resultTask = LocationServices.getSettingsClient(this)
+                .checkLocationSettings(builder.build());
+
+        resultTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    try {
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(NMapActivity.this, REQUEST_TURN_ON_GPS);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        sendEx.printStackTrace();
+                    }
+                }
+            }
+        });
+        resultTask.addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                if (!gpsSnackBar.isShown())
+                    gpsSnackBar.show();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_TURN_ON_GPS) {
+                if (gpsSnackBar.isShown())
+                    gpsSnackBar.dismiss();
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private void gotoMyCurrentLocation() {
         shouldRecenter = true;
         updateNonTracingCurrentPosition(myLastLocation);
     }
 
-    private boolean isTracing = false;
     private Location myLastLocation;
 
-    private void onNewLocationReceived(){
-        if (!isMapPromptDialogDismissed)
-            dismissMapPromptDialog();
-
-        if (!isTracing)
-            updateNonTracingCurrentPosition(myLastLocation);
+    private void onNewLocationReceived() {
+        updateNonTracingCurrentPosition(myLastLocation);
     }
 
     private static final int ZOOM_LEVEL = 18;
@@ -237,10 +313,13 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
     private boolean shouldRecenter = true;
 
     private void updateNonTracingCurrentPosition(Location location) {
+        if (googleMap == null)
+            return;
+
         final LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         float accuracy = location.getAccuracy();
 
-        if (circleIndicatingAccuracy == null){
+        if (circleIndicatingAccuracy == null) {
             CircleOptions circleOptions = new CircleOptions();
             circleOptions.center(currentLatLng);
             circleOptions.radius(accuracy);
@@ -250,21 +329,19 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
             circleIndicatingAccuracy = googleMap.addCircle(circleOptions);
         }
-        if (markerIndicatingPosition == null){
+        if (markerIndicatingPosition == null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(currentLatLng);
 
-            try{
+            try {
                 View markerIconView = getLayoutInflater().inflate(R.layout.layout_map_marker, null);
 
                 Bitmap thumbnail = FileUtils.getThumbnail(this, firebaseUser.getPhotoUrl());
                 ((CircularImageView) markerIconView.findViewById(R.id.iv_marker_image)).setImageBitmap(thumbnail);
-
-//                ((CircularImageView) markerIconView.findViewById(R.id.iv_marker_image)).setImageURI(firebaseUser.getPhotoUrl());
                 ((TextView) markerIconView.findViewById(R.id.tv_marker_title)).setText(firebaseUser.getDisplayName());
 
                 markerOptions.icon(MapUtils.getMarkerFromView(markerIconView));
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "exception: markerIconView = " + e.getMessage());
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_foreground));
             }
@@ -296,9 +373,8 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
         builder.include(targetSouthWest);
 
         final LatLngBounds latLngBounds = builder.build();
-//        googleMap.setLatLngBoundsForCameraTarget(latLngBounds);
 
-        handler.post(new Runnable() {
+        handlerMapUiUpdates.post(new Runnable() {
             @Override
             public void run() {
                 if (MapUtils.areBoundsTooSmall(latLngBounds, 400)) {
@@ -311,121 +387,20 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
             }
         });
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationChangeReceiver);
-        super.onPause();
-    }
+    public void setUpData() {
 
-    @Override
-    protected void onStop() {
-        if (isServiceBound) {
-            unbindService(serviceConnection);
-            isServiceBound = false;
-        }
-
-        super.onStop();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void setUpRecycler() {
 
-        if (!SharePreferences.isTracingOngoing(this) && !SharePreferences.isTrackingOngoing(this))
-            SharePreferences.setRequestingLocationUpdates(this, false);
     }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (requestCode == AppPermissions.REQUESTS.ACCESS_LOCATION_REQUEST) {
-                startLocationUpdates();
-            }
-        }
-    }
-
-    private boolean checkGPSEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            displayEnableGPSDialog();
-            return false;
-        } else
-            return true;
-    }
-
-    private void displayEnableGPSDialog() {
-        if (locationChangeService == null)
-            return;
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationChangeService.mLocationRequest);
-        builder.setAlwaysShow(true);
-
-        Task<LocationSettingsResponse> resultTask = LocationServices.getSettingsClient(this)
-                .checkLocationSettings(builder.build());
-
-        resultTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "LocationSettingsResponse.onFailure: ");
-
-                if (e instanceof ResolvableApiException) {
-                    try {
-                        ResolvableApiException resolvable = (ResolvableApiException) e;
-                        resolvable.startResolutionForResult(NMapActivity.this, REQUEST_TURN_ON_GPS);
-                    } catch (IntentSender.SendIntentException sendEx) {
-                        // Ignore the error.
-                    }
-                }
-            }
-        });
-        resultTask.addOnCanceledListener(new OnCanceledListener() {
-            @Override
-            public void onCanceled() {
-                Log.d(TAG, "LocationSettingsResponse.onCanceled: ");
-            }
-        });
-        resultTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                Log.d(TAG, "LocationSettingsResponse.onSuccess: ");
-
-                startLocationUpdates();
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_TURN_ON_GPS) {
-                startLocationUpdates();
-            }
-        }
-    }
-
-    private boolean isOnline = false;
 
     @Override
     public void updateInternetError(boolean isOnlineNow) {
-        isOnline = isOnlineNow;
-        String message = isOnlineNow ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
-        int backgroundColor = isOnlineNow ? getResources().getColor(android.R.color.holo_green_dark)
-                : getResources().getColor(android.R.color.holo_red_dark);
 
-//        tvNetworkInfo.setText(message);
-//        tvNetworkInfo.setBackgroundColor(backgroundColor);
-
-//        if (tvNetworkInfo.getVisibility() == View.GONE)
-//            ViewUtils.showViews(tvNetworkInfo);
-//
-//        if (isOnlineNow) {
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ViewUtils.hideViews(tvNetworkInfo);
-//                }
-//            }, 2000);
-//        }
     }
 }

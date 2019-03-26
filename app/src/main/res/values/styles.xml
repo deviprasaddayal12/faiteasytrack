@@ -43,7 +43,13 @@
     </style>
 
     <style name="AlertDialogCustom" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="AlertWarning" parent="AlertDialogCustom">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:windowBackground">@drawable/bg_warning_dialog</item>
+    </style>
+
 
 </resources>

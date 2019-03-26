@@ -242,9 +242,9 @@ public class NTrackingMapActivity extends BaseActivity
 
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == AppPermissions.REQUESTS.ACCESS_LOCATION_REQUEST) {
+        if (requestCode == AppPermissions.ACCESS_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (AppPermissions.checkLocationPermission(this)) {
+                if (AppPermissions.checkLocationPermission(this, false)) {
                     if (checkGPSEnabled() && locationChangeService != null) {
                         locationChangeService.requestLocationUpdates();
                     }
@@ -339,7 +339,7 @@ public class NTrackingMapActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_TURN_ON_GPS) {
             if (resultCode == RESULT_OK) {
-                if (AppPermissions.checkLocationPermission(this)) {
+                if (AppPermissions.checkLocationPermission(this, false)) {
                     if (checkGPSEnabled() && locationChangeService != null) {
                         locationChangeService.requestLocationUpdates();
                     }
@@ -387,7 +387,7 @@ public class NTrackingMapActivity extends BaseActivity
         this.googleMap = googleMap;
         ViewUtils.hideViews(loader);
         isMapReady = true;
-        if (AppPermissions.checkLocationPermission(this) && !isStartedFromNotification) {
+        if (AppPermissions.checkLocationPermission(this, true) && !isStartedFromNotification) {
             if (checkGPSEnabled() && locationChangeService != null) {
                 locationChangeService.requestLocationUpdates();
             }
@@ -838,7 +838,7 @@ public class NTrackingMapActivity extends BaseActivity
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                 Log.d(TAG, "LocationSettingsResponse.onSuccess: ");
 
-                if (AppPermissions.checkLocationPermission(NTrackingMapActivity.this)) {
+                if (AppPermissions.checkLocationPermission(NTrackingMapActivity.this, false)) {
                     if (checkGPSEnabled()) {
                         locationChangeService.requestLocationUpdates();
                     }

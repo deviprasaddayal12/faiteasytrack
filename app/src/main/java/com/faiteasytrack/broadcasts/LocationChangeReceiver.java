@@ -26,7 +26,7 @@ public class LocationChangeReceiver extends BroadcastReceiver {
         if (intent.getAction() != null && intent.getAction().equals(LocationChangeService.ACTION_BROADCAST)){
             Location location = intent.getParcelableExtra(LocationChangeService.EXTRA_LOCATION);
 
-            if (onLocationChangedListener != null)
+            if (onLocationChangedListener != null && location != null)
                 onLocationChangedListener.onLocationChanged(location);
         }
     }
