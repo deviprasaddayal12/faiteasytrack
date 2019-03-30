@@ -36,10 +36,10 @@ public class AppPermissions {
     public static final String[] permissionFileBrowser = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     public static boolean checkReadContactsPermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+        if (ContextCompat.checkSelfPermission(context, permissionReadContact[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.READ_CONTACTS)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionReadContact[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Read Contact Access Needed")
                             .setMessage("Easytrack needs to read the contacts of your phonebook.")
@@ -60,10 +60,10 @@ public class AppPermissions {
     }
 
     public static boolean checkNetworkStateReceivePermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_NETWORK_STATE)
+        if (ContextCompat.checkSelfPermission(context, permissionNetworkState[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.ACCESS_NETWORK_STATE)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionNetworkState[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Network State Access Needed")
                             .setMessage("Easytrack needs to access the states of network.")
@@ -84,10 +84,10 @@ public class AppPermissions {
     }
 
     public static boolean checkMessagePermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_SMS)
+        if (ContextCompat.checkSelfPermission(context, permissionReadMessage[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.READ_SMS)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionReadMessage[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Read Message Permission Needed")
                             .setMessage("Easytrack needs to detect and read OTP sent while verification, automatically.")
@@ -108,10 +108,10 @@ public class AppPermissions {
     }
 
     public static boolean checkInternetPermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET)
+        if (ContextCompat.checkSelfPermission(context, permissionInternet[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.INTERNET)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionInternet[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Data Use Needed")
                             .setMessage("Easytrack will use data to communicate with server.")
@@ -132,10 +132,10 @@ public class AppPermissions {
     }
 
     public static boolean checkLocationPermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(context, permissionLocation[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionLocation[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Location Permission Needed")
                             .setMessage("Easytrack needs to access your location.")
@@ -157,10 +157,10 @@ public class AppPermissions {
 
     public static boolean checkCameraPermission(final Activity context, boolean showDialog) {
         Log.i(TAG, "checkCameraPermission: ");
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+        if (ContextCompat.checkSelfPermission(context, permissionCamera[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.CAMERA)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionCamera[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Camera Permission Needed")
                             .setMessage("Easytrack needs to access your camera.")
@@ -181,10 +181,10 @@ public class AppPermissions {
     }
 
     public static boolean checkGalleryPermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(context, permissionGallery[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionGallery[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("Gallery Permission Needed")
                             .setMessage("Easytrack needs to access your gallery.")
@@ -205,10 +205,10 @@ public class AppPermissions {
     }
 
     public static boolean checkFileBrowserPermission(final Activity context, boolean showDialog) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(context, permissionFileBrowser[0])
                 != PackageManager.PERMISSION_GRANTED) {
             if (showDialog){
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, permissionFileBrowser[0])) {
                     new AlertDialog.Builder(context)
                             .setTitle("File Browser Permission Needed")
                             .setMessage("Easytrack needs to access your file browser.")

@@ -78,7 +78,6 @@ public class DialogUtils {
                             }
                         }
                     });
-
                 }
                 dialog.show();
             }
@@ -120,7 +119,6 @@ public class DialogUtils {
                             }
                         }
                     });
-
                 }
                 dialog.show();
             }
@@ -155,7 +153,7 @@ public class DialogUtils {
 
     public static AlertDialog showFileSourceChooserDialog(Context context, final String[] sourceTitles,
                                                           final onListDialogClickListener listener) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogCustom);
         builder.setTitle("Choose source:");
         builder.setItems(sourceTitles, new DialogInterface.OnClickListener() {
             @Override
@@ -164,6 +162,7 @@ public class DialogUtils {
                     listener.onItemSelected(i, sourceTitles[i]);
             }
         });
+        builder.setNegativeButton("Cancel", null);
         builder.setCancelable(true);
         return builder.create();
     }

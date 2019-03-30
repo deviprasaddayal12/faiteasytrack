@@ -120,13 +120,16 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
         }
     };
 
-    private Snackbar gpsSnackBar = Snackbar.make(fabMyLocation, "GPS off.", Snackbar.LENGTH_INDEFINITE)
-            .setAction("Turn On", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showEnableGpsDialog();
-                }
-            });
+    private Snackbar gpsSnackBar;
+    private void initGpsSnackBar(){
+        gpsSnackBar = Snackbar.make(fabMyLocation, "GPS off.", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Turn On", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showEnableGpsDialog();
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +138,8 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
         handlerMapUiUpdates = new Handler();
         locationChangeReceiver = new LocationChangeReceiver();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        isStartedFromNotification = getIntent()
-                .getBooleanExtra(LocationChangeService.EXTRA_STARTED_FROM_NOTIFICATION, false);
+        isStartedFromNotification = getIntent().getBooleanExtra
+                (LocationChangeService.EXTRA_STARTED_FROM_NOTIFICATION, false);
 
         setContentView(R.layout.activity_maps);
     }
@@ -183,6 +186,8 @@ public class NMapActivity extends BaseActivity implements OnMapReadyCallback, Vi
     public void initUI() {
         fabMyLocation = findViewById(R.id.fab_my_location);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+        initGpsSnackBar();
     }
 
     @Override

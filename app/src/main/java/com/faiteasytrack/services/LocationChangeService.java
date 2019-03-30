@@ -68,6 +68,11 @@ public class LocationChangeService extends Service {
     private static final float SMALLEST_DISPLACEMENT = 1.0f;
 
     /**
+     * The minimum accuracy to be checked, while tracking.
+     */
+    private static final int MINIMUM_ACCURACY = 10;
+
+    /**
      * The identifier for the notification displayed for the foreground service.
      */
     private static final int NOTIFICATION_ID = 12345678;
@@ -103,7 +108,8 @@ public class LocationChangeService extends Service {
      */
     private Location mLocation;
 
-    public LocationChangeService() {}
+    public LocationChangeService() {
+    }
 
     @Override
     public void onCreate() {
@@ -236,11 +242,11 @@ public class LocationChangeService extends Service {
 
         boolean ongoingTripExists = SharePreferences.isTracingOngoing(this);
 
-        if (ongoingTripExists && location.getAccuracy() < 10) {
+        if (ongoingTripExists) {
+            if (location.getAccuracy() < MINIMUM_ACCURACY)
+                mLocation = location;
+        } else
             mLocation = location;
-        }
-        if (mLocation == null)
-            getLastLocation();
 
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);

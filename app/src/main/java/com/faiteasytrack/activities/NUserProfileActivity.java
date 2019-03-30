@@ -211,7 +211,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     private AlertDialog fileSourceChooserDialog;
 
     private void showFileSourcePickerDialog() {
-        String[] sourceList = {"Camera", "Gallery", "File Manager", "Cancel"};
+        String[] sourceList = {"Camera", "Gallery", "File Manager"};
         fileSourceChooserDialog = DialogUtils.showFileSourceChooserDialog(this, sourceList,
                 new DialogUtils.onListDialogClickListener() {
                     @Override
@@ -226,8 +226,6 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
                                 break;
                             case 2:
                                 requestFileBrowser();
-                                break;
-                            default:
                                 break;
                         }
                     }
