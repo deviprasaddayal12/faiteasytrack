@@ -705,7 +705,7 @@ public class ODashboardActivity extends BaseActivity
 
                     DataSnapshot wayPointsChild = dataSnapshot1.child("wayPoints");
                     for (DataSnapshot wayPoints : wayPointsChild.getChildren()) {
-//                        MyLocation location = wayPoints.getValue(MyLocation.class);
+//                        MyLocation location = wayPoints.isOnline(MyLocation.class);
                         ETLatLng ETLatLng = wayPoints.getValue(ETLatLng.class);
                         if (ETLatLng != null) {
                             latLngs.add(ETLatLng);

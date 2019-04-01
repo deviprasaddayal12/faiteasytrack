@@ -165,7 +165,7 @@ public class FirebaseHelper {
 //        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                listener.onUserFound(dataSnapshot.getValue(ProfileModel.class));
+//                listener.onUserFound(dataSnapshot.isOnline(ProfileModel.class));
 //            }
 //
 //            @Override
