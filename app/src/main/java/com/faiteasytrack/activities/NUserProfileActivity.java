@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.faiteasytrack.BuildConfig;
 import com.faiteasytrack.R;
 import com.faiteasytrack.constants.Preferences;
@@ -31,6 +36,7 @@ import com.faiteasytrack.utils.AppPermissions;
 import com.faiteasytrack.utils.DateUtils;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.FileUtils;
+import com.faiteasytrack.utils.FirebaseUtils;
 import com.faiteasytrack.utils.SharePreferences;
 import com.faiteasytrack.utils.Utils;
 import com.faiteasytrack.utils.ViewUtils;
@@ -56,6 +62,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 public class NUserProfileActivity extends BaseActivity implements View.OnClickListener {
 
@@ -69,6 +76,8 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     private FloatingActionButton fabUploadPhoto;
     private EditText etUserName, etUserEmail, etUserPhone;
     private CircularImageView civProfilePic;
+
+    private ContentLoadingProgressBar pbProfilePicLoader;
 
     private View loader;
     private MaterialButton btnSkip;
@@ -91,8 +100,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        profilePhotosReference = FirebaseStorage.getInstance()
-                .getReference("images/profilePhotos").child(firebaseUser.getUid());
+        profilePhotosReference = FirebaseUtils.getProfilePhotoReference();
         preferenceModel = SharePreferences.getPreferenceModel(this);
 
         isCalledFromAuth = getIntent().getIntExtra("CALLED_FROM",
@@ -111,6 +119,9 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void initUI() {
+        pbProfilePicLoader = findViewById(R.id.pb_position_loader);
+        pbProfilePicLoader.hide();
+
         ViewStub viewStubLoader = findViewById(R.id.vs_loader);
         loader = viewStubLoader.inflate();
         loader.setOnClickListener(this);
@@ -127,8 +138,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
 
         btnSkip = findViewById(R.id.btn_skip);
 
-        if (!isCalledFromAuth)
-            ViewUtils.hideViews(btnSkip);
+        if (!isCalledFromAuth) ViewUtils.hideViews(btnSkip);
     }
 
     @Override
@@ -175,20 +185,40 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void setUpImageToImageView(boolean refresh) {
+        pbProfilePicLoader.show();
         if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL) {
             try {
                 civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
+                pbProfilePicLoader.hide();
             } catch (Exception e) {
                 e.printStackTrace();
 //                civProfilePic.setImageResource(R.drawable.user_1);
+                pbProfilePicLoader.hide();
             }
 
         } else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD) {
             try {
-                Glide.with(this).load(profilePhotosReference).into(civProfilePic);
+                Glide.with(this)
+                        .load(profilePhotosReference)
+                        .thumbnail(FileUtils.THUMBNAIL_MULTIPLIER)
+                        .addListener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                pbProfilePicLoader.hide();
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                pbProfilePicLoader.hide();
+                                return false;
+                            }
+                        })
+                        .into(civProfilePic);
             } catch (Exception e) {
                 e.printStackTrace();
 //                civProfilePic.setImageResource(R.drawable.user_1);
+                pbProfilePicLoader.hide();
             }
         }
     }
@@ -576,7 +606,7 @@ public class NUserProfileActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

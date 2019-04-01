@@ -1,17 +1,84 @@
 package com.faiteasytrack.utils;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.faiteasytrack.R;
+import com.faiteasytrack.constants.Preferences;
+import com.faiteasytrack.models.PreferenceModel;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.util.Locale;
+
+import androidx.annotation.Nullable;
 
 public class MapUtils {
     public static final String TAG = MapUtils.class.getSimpleName();
+
+    public static String getAccuracyText(float accuracy){
+        return String.format(Locale.getDefault(), "Your location is accurate to %d meters", (int) accuracy);
+    }
+
+    public static CircleOptions createAccuracyCircle(Activity activity, LatLng latLng, float accuracy){
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(latLng);
+        circleOptions.radius(accuracy);
+        circleOptions.strokeColor(activity.getResources().getColor(R.color.colorAccent));
+        circleOptions.strokeWidth(2);
+        circleOptions.fillColor(activity.getResources().getColor(R.color.colorMapOverLayAccent));
+
+        return circleOptions;
+    }
+
+    public static MarkerOptions createPositionMarker(Activity activity, LatLng latLng, String title){
+//        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//        PreferenceModel preferenceModel = SharePreferences.getPreferenceModel(activity);
+//        boolean isCloud = preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD;
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+
+        try {
+            View markerIconView = activity.getLayoutInflater().inflate(R.layout.layout_map_marker, null);
+//            CircularImageView profilePicView = markerIconView.findViewById(R.id.iv_marker_image);
+//            if (isCloud){
+//                StorageReference profilePicReference = FirebaseUtils.getProfilePhotoReference();
+//                profilePicView.setImageResource(R.drawable.user_1);
+//            } else {
+//                Bitmap bitmapThumbnail = FileUtils.getThumbnail(activity, firebaseUser.getPhotoUrl());
+//                profilePicView.setImageBitmap(bitmapThumbnail);
+//            }
+            ((TextView) markerIconView.findViewById(R.id.tv_marker_title)).setText(title);
+            markerOptions.icon(getMarkerFromView(markerIconView));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_foreground));
+        }
+
+        return markerOptions;
+    }
 
     public static BitmapDescriptor getMarkerFromView(View view){
         if (view.getMeasuredHeight() <= 0) {

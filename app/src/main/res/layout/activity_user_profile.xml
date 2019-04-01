@@ -59,6 +59,14 @@
                     android:tint="@color/colorPrimary"
                     android:id="@+id/fab_upload_photo"
                     android:layout_margin="@dimen/margin_32"/>
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_gravity="top|start"
+                    android:id="@+id/pb_position_loader"
+                    android:layout_margin="@dimen/margin_24"/>
             </FrameLayout>
 
             <EditText

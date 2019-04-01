@@ -33,6 +33,13 @@ import id.zelory.compressor.Compressor;
 
 public class FileUtils {
     public static final String TAG = "FileUtils";
+
+    public static final float THUMBNAIL_MULTIPLIER = 0.1f; // 0 < THUMBNAIL_MULTIPLIER < 1
+
+    public static final int RESOLUTION_SMALL = 0;
+    public static final int RESOLUTION_MEDIUM = 1;
+    public static final int RESOLUTION_HIGH = 2;
+
     private static final int THUMBNAIL_SIZE = 64;
 
     public static String getFileRealName(String filepath) {

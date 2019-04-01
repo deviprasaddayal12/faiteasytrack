@@ -25,7 +25,7 @@
         android:name=".ETApplication">
 
         <activity
-            android:name="com.faiteasytrack.activities.NSplashActivity"
+            android:name=".activities.NSplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
@@ -37,38 +37,38 @@
         </activity>
 
         <activity
-            android:name="com.faiteasytrack.activities.OSignInPromptActivity"
+            android:name=".activities.OSignInPromptActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name="com.faiteasytrack.activities.NUserProfileActivity"
+            android:name=".activities.NUserProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name="com.faiteasytrack.activities.ODashboardActivity"
+            android:name=".activities.ODashboardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
-            android:name="com.faiteasytrack.activities.OPhoneAuthActivity"
+            android:name=".activities.OPhoneAuthActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name="com.faiteasytrack.activities.OContactsActivity"
+        <activity android:name=".activities.OContactsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name="com.faiteasytrack.activities.ORequestActivity"
+        <activity android:name=".activities.ORequestActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name="com.faiteasytrack.activities.OFriendsActivity"
+        <activity android:name=".activities.OFriendsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name="com.faiteasytrack.activities.NIAmActivity"
+        <activity android:name=".activities.NIAmActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
@@ -152,21 +152,26 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name="com.faiteasytrack.services.LocationChangeService" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
+
+        <service android:name=".services.LocationService" />
+
+        <service android:name=".services.LocationChangeService" />
 
         <service android:name=".services.PushService"
             tools:ignore="ExportedService">
@@ -174,19 +179,24 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".services.LocationService" />
 
-        <receiver android:name="com.faiteasytrack.broadcasts.OneTimePasswordReceiver"
+        <receiver android:name=".broadcasts.OneTimePasswordReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.faiteasytrack.broadcasts.NetworkStateReceiver" >
+        <receiver android:name=".broadcasts.NetworkStatusReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcasts.GpsStatusReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PROVIDER_CHANGED" />
             </intent-filter>
         </receiver>
 

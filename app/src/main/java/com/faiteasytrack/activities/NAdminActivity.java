@@ -183,7 +183,7 @@ public class NAdminActivity extends BaseActivity implements View.OnClickListener
     };
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

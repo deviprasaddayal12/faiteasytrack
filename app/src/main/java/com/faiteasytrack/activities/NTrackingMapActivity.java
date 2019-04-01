@@ -210,7 +210,7 @@ public class NTrackingMapActivity extends BaseActivity
 
         isOnline = checkInternetEnabled();
         if (!isOnline)
-            updateInternetError(false);
+            updateInternetStatus(false);
 
     }
 
@@ -848,9 +848,9 @@ public class NTrackingMapActivity extends BaseActivity
     }
 
     @Override
-    public void updateInternetError(boolean isOnlineNow) {
-        String message = isOnlineNow ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
-        int backgroundColor = isOnlineNow ? getResources().getColor(android.R.color.holo_green_dark)
+    public void updateInternetStatus(boolean online) {
+        String message = online ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
+        int backgroundColor = online ? getResources().getColor(android.R.color.holo_green_dark)
                 : getResources().getColor(android.R.color.holo_red_dark);
 
         tvNetworkInfo.setText(message);
@@ -859,7 +859,7 @@ public class NTrackingMapActivity extends BaseActivity
         if (tvNetworkInfo.getVisibility() == View.GONE)
             ViewUtils.showViews(tvNetworkInfo);
 
-        if (isOnlineNow) {
+        if (online) {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

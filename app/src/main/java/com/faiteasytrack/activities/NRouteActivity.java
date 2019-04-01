@@ -101,7 +101,7 @@ public class NRouteActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

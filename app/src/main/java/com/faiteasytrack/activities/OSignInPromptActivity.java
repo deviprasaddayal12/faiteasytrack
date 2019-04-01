@@ -168,7 +168,7 @@ public class OSignInPromptActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

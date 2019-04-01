@@ -30,6 +30,13 @@
         android:layout_margin="@dimen/margin_8"
         app:fabSize="mini"
         android:src="@drawable/round_my_location_white_24"
-        android:id="@+id/fab_my_location" />
+        android:id="@+id/fab_current_location" />
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_gravity="center"
+        android:id="@+id/pb_position_loader"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

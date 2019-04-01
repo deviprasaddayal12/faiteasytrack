@@ -312,8 +312,8 @@ public class NPhoneAuthActivity extends BaseActivity implements View.OnClickList
 
     private boolean isOnline = true;
     @Override
-    public void updateInternetError(boolean isOnlineNow) {
-        isOnline = isOnlineNow;
+    public void updateInternetStatus(boolean online) {
+        isOnline = online;
 //        String message = isOnlineNow ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
 //        int backgroundColor = isOnlineNow ? getResources().getColor(android.R.color.holo_green_dark)
 //                : getResources().getColor(android.R.color.holo_red_dark);

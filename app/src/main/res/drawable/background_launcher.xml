@@ -8,7 +8,7 @@
 
     <item
         android:gravity="center"
-        android:drawable="@drawable/ic_launcher"
+        android:drawable="@drawable/ic_app_icon"
         android:top="280dp"
         android:left="140dp"
         android:right="140dp"

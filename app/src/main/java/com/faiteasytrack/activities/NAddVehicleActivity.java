@@ -536,7 +536,7 @@ public class NAddVehicleActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

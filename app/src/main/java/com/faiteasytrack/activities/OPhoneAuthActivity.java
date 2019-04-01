@@ -644,7 +644,7 @@ public class OPhoneAuthActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

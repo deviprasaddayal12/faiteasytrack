@@ -210,12 +210,11 @@ public class LocationChangeService extends Service {
      * {@link SecurityException}.
      */
     public void requestLocationUpdates() {
-//        Log.i(TAG, "Requesting location updates");
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         } catch (SecurityException unlikely) {
             SharePreferences.setRequestingLocationUpdates(this, false);
-//            Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
+            unlikely.printStackTrace();
         }
     }
 
@@ -233,13 +232,11 @@ public class LocationChangeService extends Service {
                         }
                     });
         } catch (SecurityException unlikely) {
-            Log.e(TAG, "Lost location permission." + unlikely);
+            unlikely.printStackTrace();
         }
     }
 
     private void onNewLocation(Location location) {
-//        Log.i(TAG, "New location: " + location);
-
         boolean ongoingTripExists = SharePreferences.isTracingOngoing(this);
 
         if (ongoingTripExists) {
@@ -266,13 +263,12 @@ public class LocationChangeService extends Service {
      * {@link SecurityException}.
      */
     public void removeLocationUpdates() {
-//        Log.i(TAG, "Removing location updates");
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             stopSelf();
         } catch (SecurityException unlikely) {
             SharePreferences.setRequestingLocationUpdates(this, true);
-//            Log.e(TAG, "Lost location permission. Could not removeChildListeners updates. " + unlikely);
+            unlikely.printStackTrace();
         }
     }
 
@@ -287,7 +283,6 @@ public class LocationChangeService extends Service {
         // Called when a client (NMapActivity in this case) comes to the foreground
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.
-//        Log.i(TAG, "in onBind()");
         stopForeground(true);
         mChangingConfiguration = false;
 
@@ -299,7 +294,6 @@ public class LocationChangeService extends Service {
         // Called when a client (NMapActivity in this case) returns to the foreground
         // and binds once again with this service. The service should cease to be a foreground
         // service when that happens.
-//        Log.i(TAG, "in onRebind()");
         stopForeground(true);
         mChangingConfiguration = false;
 
@@ -308,14 +302,10 @@ public class LocationChangeService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-//        Log.i(TAG, "Last client unbound from service" + SharePreferences.requestingLocationUpdates(this));
-
         // Called when the last client (NMapActivity in this case) unbinds from this
         // service. If this method is called due to a configuration change in MainActivity, we
         // do nothing. Otherwise, we make this service a foreground service.
         if (!mChangingConfiguration && SharePreferences.requestingLocationUpdates(this)) {
-//            Log.i(TAG, "Starting foreground service");
-
             startForeground(NOTIFICATION_ID, getNotification());
         }
 

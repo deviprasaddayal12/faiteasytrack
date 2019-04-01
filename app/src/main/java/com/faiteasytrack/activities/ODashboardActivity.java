@@ -15,7 +15,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.broadcasts.NetworkStateReceiver;
 import com.faiteasytrack.constants.Error;
 import com.faiteasytrack.helpers.FirebaseHelper;
 import com.faiteasytrack.helpers.RequestHelper;
@@ -225,8 +223,8 @@ public class ODashboardActivity extends BaseActivity
 //
 //            @Override
 //            public void onStateChanged(boolean isOnlineNow) {
-//                isOnline = isOnlineNow;
-//                updateInternetError(isOnlineNow);
+//                isTracing = isOnlineNow;
+//                updateInternetStatus(isOnlineNow);
 //            }
 //        });
 //    }
@@ -259,7 +257,7 @@ public class ODashboardActivity extends BaseActivity
 
         isOnline = checkInternetEnabled();
         if (!isOnline)
-            updateInternetError(false);
+            updateInternetStatus(false);
 
         requestHelper = new RequestHelper(this, requestListener);
         requestHelper.initRequestDatabases();
@@ -705,7 +703,7 @@ public class ODashboardActivity extends BaseActivity
 
                     DataSnapshot wayPointsChild = dataSnapshot1.child("wayPoints");
                     for (DataSnapshot wayPoints : wayPointsChild.getChildren()) {
-//                        MyLocation location = wayPoints.isOnline(MyLocation.class);
+//                        MyLocation location = wayPoints.isTracing(MyLocation.class);
                         ETLatLng ETLatLng = wayPoints.getValue(ETLatLng.class);
                         if (ETLatLng != null) {
                             latLngs.add(ETLatLng);
@@ -988,14 +986,14 @@ public class ODashboardActivity extends BaseActivity
         });
     }
 
-    public void updateInternetError(boolean isOnlineNow) {
-        String message = isOnlineNow ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
-        int backgroundColor = isOnlineNow ? Color.GREEN : Color.RED;
+    public void updateInternetStatus(boolean online) {
+        String message = online ? "Cheers! We are back." : "Sorry! Could not connect to internet.";
+        int backgroundColor = online ? Color.GREEN : Color.RED;
         tvNetworkInfo.setText(message);
         tvNetworkInfo.setBackgroundColor(backgroundColor);
         if (tvNetworkInfo.getVisibility() == View.GONE)
             ViewUtils.showViews(tvNetworkInfo);
-        if (isOnlineNow) {
+        if (online) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

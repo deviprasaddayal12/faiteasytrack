@@ -401,7 +401,7 @@ public class NDashboardActivity extends BaseActivity implements NavigationView.O
     }
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 

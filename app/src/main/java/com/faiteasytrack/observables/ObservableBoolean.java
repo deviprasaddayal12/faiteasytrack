@@ -15,6 +15,7 @@ public class ObservableBoolean {
 
         public void setReady(boolean ready) {
             this.isReady = ready;
+            setChanged();
             notifyObservers(ready);
         }
     }
@@ -28,11 +29,12 @@ public class ObservableBoolean {
 
         public void setBound(boolean bound) {
             this.isBound = bound;
+            setChanged();
             notifyObservers(bound);
         }
     }
 
-    public static class Location extends Observable{
+    public static class Position extends Observable{
         private boolean isReceived;
 
         public boolean isReceived() {
@@ -41,6 +43,7 @@ public class ObservableBoolean {
 
         public void setReceived(boolean received) {
             this.isReceived = received;
+            setChanged();
             notifyObservers(received);
         }
     }
@@ -54,6 +57,7 @@ public class ObservableBoolean {
 
         public void setOn(boolean on) {
             this.isOn = on;
+            setChanged();
             notifyObservers(on);
         }
     }
@@ -67,6 +71,7 @@ public class ObservableBoolean {
 
         public void setGranted(boolean granted) {
             this.isGranted = granted;
+            setChanged();
             notifyObservers(granted);
         }
     }
@@ -80,7 +85,44 @@ public class ObservableBoolean {
 
         public void setOnline(boolean online) {
             this.isOnline = online;
+            setChanged();
             notifyObservers(online);
+        }
+    }
+
+    public static class Tracking extends Observable{
+        private boolean isTracking;
+
+        public Tracking(boolean isTracking) {
+            this.isTracking = isTracking;
+        }
+
+        public boolean isTracking() {
+            return isTracking;
+        }
+
+        public void setTracking(boolean tracking) {
+            this.isTracking = tracking;
+            setChanged();
+            notifyObservers(tracking);
+        }
+    }
+
+    public static class Tracing extends Observable{
+        private boolean isTracing;
+
+        public Tracing(boolean isTracing) {
+            this.isTracing = isTracing;
+        }
+
+        public boolean isTracing() {
+            return isTracing;
+        }
+
+        public void setTracing(boolean tracing) {
+            this.isTracing = tracing;
+            setChanged();
+            notifyObservers(tracing);
         }
     }
 }

@@ -182,7 +182,7 @@ public class NVendorActivity extends BaseActivity implements View.OnClickListene
     };
 
     @Override
-    public void updateInternetError(boolean isOnline) {
+    public void updateInternetStatus(boolean online) {
 
     }
 
