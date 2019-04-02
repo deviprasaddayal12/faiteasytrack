@@ -12,7 +12,6 @@
         android:layout_margin="@dimen/margin_8"
         android:layout_gravity="center_vertical"
         android:id="@+id/iv_friend_pic"
-        android:background="@drawable/circle_image_dummy"
         android:elevation="10dp"/>
 
     <LinearLayout

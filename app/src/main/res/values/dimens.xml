@@ -49,4 +49,6 @@
     <dimen name="radius_8">8dp</dimen>
     <dimen name="elevate_4">4dp</dimen>
     <dimen name="radius_4">4dp</dimen>
+    <dimen name="height_layout_edit_text">40dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
 </resources>

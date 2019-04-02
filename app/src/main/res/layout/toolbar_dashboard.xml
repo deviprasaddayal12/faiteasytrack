@@ -8,7 +8,7 @@
     app:contentInsetEnd="@dimen/margin_8"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/app_bar_dashboard">
+    tools:showIn="@layout/content_dashboard">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:contentDescription="@null"
                 android:background="?attr/selectableItemBackground"
                 android:padding="@dimen/margin_8"
-                android:src="@drawable/ic_menu_black_24dp"
+                android:src="@drawable/ic_round_menu_24px"
                 android:tint="@color/colorGradientEnd"
                 android:id="@+id/iv_navigation"/>
 
@@ -48,7 +48,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:paddingTop="@dimen/margin_8"
                 android:paddingBottom="@dimen/margin_8"
-                android:src="@drawable/ic_search_black_24dp"
+                android:src="@drawable/ic_round_search_24px"
                 android:tint="@color/colorGradientEnd"
                 android:id="@+id/iv_search"/>
 
@@ -63,7 +63,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:paddingTop="@dimen/margin_8"
                     android:paddingBottom="@dimen/margin_8"
-                    android:src="@drawable/ic_notifications_none_black_24dp"
+                    android:src="@drawable/ic_round_notifications_none_24px"
                     android:tint="@color/colorGradientEnd"
                     android:id="@+id/iv_notifications" />
 

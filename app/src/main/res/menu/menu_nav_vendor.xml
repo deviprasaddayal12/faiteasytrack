@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/z_activity_dashboard_user">
+    tools:showIn="@layout/activity_dashboard">
 
     <group>
         <item
             android:id="@+id/nav_dashboard"
-            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:icon="@drawable/ic_round_chevron_right_24px"
             android:title="@string/action_dashboard" />
         <!--<item-->
             <!--android:id="@+id/nav_map"-->
@@ -14,15 +14,15 @@
             <!--android:title="@string/action_map" />-->
         <item
             android:id="@+id/nav_vehicles"
-            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:icon="@drawable/ic_round_chevron_right_24px"
             android:title="@string/action_vehicles" />
         <item
             android:id="@+id/nav_drivers"
-            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:icon="@drawable/ic_round_chevron_right_24px"
             android:title="@string/action_drivers" />
         <item
             android:id="@+id/nav_routes"
-            android:icon="@drawable/ic_chevron_right_black_24dp"
+            android:icon="@drawable/ic_round_chevron_right_24px"
             android:title="@string/action_routes" />
         <!--<item-->
             <!--android:id="@+id/nav_history"-->
@@ -38,11 +38,11 @@
         <menu>
             <item
                 android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_chevron_right_black_24dp"
+                android:icon="@drawable/ic_round_chevron_right_24px"
                 android:title="@string/action_settings" />
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_chevron_right_black_24dp"
+                android:icon="@drawable/ic_round_chevron_right_24px"
                 android:title="@string/action_logout" />
         </menu>
     </item>

@@ -14,7 +14,7 @@
             android:layout_width="@dimen/image_header_size"
             android:layout_height="@dimen/image_header_size"
             android:contentDescription="@null"
-            android:src="@drawable/round_error_outline_black_48"
+            android:src="@drawable/ic_round_error_outline_24px"
             android:tint="@color/colorPrimaryLight"
             android:layout_marginTop="@dimen/margin_16"/>
 

@@ -14,7 +14,7 @@
             android:layout_width="@dimen/image_header_size"
             android:layout_height="@dimen/image_header_size"
             android:contentDescription="@null"
-            android:src="@drawable/ic_baseline_smartphone_24px"
+            android:src="@drawable/ic_round_phone_android_24px"
             android:tint="@color/colorPrimaryLight"
             android:layout_marginTop="@dimen/margin_16"/>
 

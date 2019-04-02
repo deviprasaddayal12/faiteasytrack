@@ -1,51 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/ic_arrow_back_white_36dp"
-            app:title="Add Route"
-            app:titleTextColor="@color/colorWhite">
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
+
+        <!--<com.google.android.material.appbar.AppBarLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/colorToolbarTranslucent">-->
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:navigationIcon="@drawable/white_ic_round_back_24px"
+                app:title="Add Route"
+                app:titleTextColor="@color/colorWhite"
+                android:background="@color/colorMapOverLayToolbar">
+
+            </androidx.appcompat.widget.Toolbar>
+        <!--</com.google.android.material.appbar.AppBarLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/margin_16"
+            android:layout_marginEnd="@dimen/margin_16"
+            android:layout_marginTop="64dp">
 
-            <com.google.android.material.card.MaterialCardView
+            <com.google.android.material.button.MaterialButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:text="@string/add_a_source_to_route"
+                app:icon="@drawable/white_ic_round_add_24px"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
                 android:layout_marginBottom="@dimen/margin_8"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="@dimen/margin_8">
+                android:text="@string/add_a_destination_to_route"
+                app:icon="@drawable/white_ic_round_add_24px"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/margin_16"
+            android:layout_marginEnd="@dimen/margin_16">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end|center_vertical"
+                android:layout_gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_waypoints"
+                    android:padding="@dimen/margin_8"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fabSize="mini"
+                    android:src="@drawable/white_ic_round_add_24px"
+                    android:layout_margin="@dimen/margin_8"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_add_info_buttons">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_assign_driver"
+                    android:layout_margin="@dimen/margin_4" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_assign_vehicle"
+                    android:layout_margin="@dimen/margin_4"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/overlay_white_255"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:paddingTop="@dimen/margin_8"
+                android:paddingBottom="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_16"
+                android:elevation="@dimen/margin_8">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="@dimen/margin_4">
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_4">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -55,16 +137,18 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vendor's Name:"
-                            android:padding="@dimen/margin_8"/>
+                            android:paddingStart="@dimen/margin_8"
+                            android:paddingEnd="@dimen/margin_8"
+                            android:text="Vehicle:"/>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/margin_8"
+                            android:paddingEnd="@dimen/margin_8"
+                            android:text="OR-05-AB-2075"
                             android:textStyle="bold"
-                            android:textColor="@color/colorPrimary"
-                            android:padding="@dimen/margin_8"
-                            android:id="@+id/tv_vendor_name"/>
+                            android:id="@+id/tv_route_assigned_vehicle"/>
 
                     </LinearLayout>
 
@@ -76,259 +160,48 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vendor's Phone:"
-                            android:padding="@dimen/margin_8"/>
+                            android:paddingStart="@dimen/margin_8"
+                            android:paddingEnd="@dimen/margin_8"
+                            android:text="Driver:"/>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/margin_8"
+                            android:paddingEnd="@dimen/margin_8"
+                            android:text="Chandrabhan"
                             android:textStyle="bold"
-                            android:textColor="@color/colorPrimary"
-                            android:padding="@dimen/margin_8"
-                            android:id="@+id/tv_vendor_phone"/>
+                            android:id="@+id/tv_route_assigned_driver"/>
 
                     </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_route_name"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Route Name"
-                    android:inputType="textCapWords"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="Add Source"
-                android:id="@+id/btn_add_source"
-                android:enabled="false"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_route_source"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Source"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="Add Destination"
-                android:id="@+id/btn_add_destination"
-                android:enabled="false"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_route_destination"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Destination"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:counterEnabled="true"
-                app:counterMaxLength="500">
+                    android:layout_height="1dp"
+                    android:background="@color/quantum_grey300"
+                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginEnd="@dimen/margin_16"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_8"/>
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_route_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Add Route Description"
+                    android:background="@android:color/transparent"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_4"
+                    android:paddingStart="@dimen/margin_8"
+                    android:paddingEnd="@dimen/margin_8"
+                    android:hint="@string/add_route_description"
                     android:inputType="textCapSentences|textMultiLine"
-                    android:minLines="3" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Add waypoints"
-                    android:textColor="@color/colorBlack"
-                    android:paddingStart="@dimen/margin_16"
-                    android:textSize="18sp" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab_add_route_waypoint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_8"
-                    android:src="@drawable/ic_add_white_24dp"
-                    app:fabSize="mini" />
+                    android:minLines="1"
+                    android:maxLines="3"
+                    android:textSize="14sp"/>
 
             </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8"
-                android:id="@+id/til_waypoint">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_route_waypoint"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Waypoint"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPersonName" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_route_waypoints"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="Assign Driver"
-                android:id="@+id/btn_assign_driver"
-                android:enabled="false"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/til_assigned_driver"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Assigned Driver"
-                    android:inputType="none"
-                    android:id="@+id/et_assigned_driver"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="Assign Vehicle"
-                android:id="@+id/btn_assign_vehicle"
-                android:enabled="false"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/til_assigned_vehicle"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Assigned Vehicle"
-                    android:inputType="none"
-                    android:id="@+id/et_assigned_vehicle"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_route"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="@dimen/margin_16"
-                android:text="Add Route" />
-
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
-    <ViewStub
-        android:id="@+id/vs_loader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout="@layout/view_loader" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

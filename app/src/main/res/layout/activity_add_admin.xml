@@ -9,11 +9,11 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:id="@+id/toolbar"
-            app:navigationIcon="@drawable/ic_arrow_back_white_36dp"
+            app:navigationIcon="@drawable/white_ic_round_back_24px"
             app:title="Add Admin"
             app:titleTextColor="@color/colorWhite">
 
@@ -30,154 +30,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/margin_8"
+            android:paddingBottom="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_16"
+            android:paddingEnd="@dimen/margin_16">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/til_admin_phone"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Registering Admin's Phone"
-                    android:inputType="none"
-                    android:id="@+id/et_reg_admin_phone"
-                    android:editable="false"
-                    android:maxLines="1"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/til_admin_name"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Registering Admin's Name"
-                    android:inputType="none"
-                    android:id="@+id/et_reg_admin_name"
-                    android:editable="false"
-                    android:maxLines="1"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/til_phone"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Admin's Phone"
-                    android:inputType="phone"
-                    android:id="@+id/et_admin_phone"
-                    android:maxLines="1"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/til_name"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Admin's Name"
-                    android:inputType="textPersonName"
-                    android:id="@+id/et_admin_name"
-                    android:maxLines="1"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/til_code"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Create Admin Code"
-                    android:inputType="textCapCharacters"
-                    android:id="@+id/et_admin_code"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/til_password"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginBottom="@dimen/margin_8"
-                app:passwordToggleEnabled="true"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
-                app:boxBackgroundMode="filled">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Add Security Password"
-                    android:inputType="textPassword"
-                    android:id="@+id/et_admin_password"
-                    android:maxLines="1"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_admin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="@dimen/margin_16"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="Add Admin" />
+            <include layout="@layout/layout_adding_user_basic_info" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_admin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="@string/add_admin" />
 
     <ViewStub
         android:layout_width="match_parent"

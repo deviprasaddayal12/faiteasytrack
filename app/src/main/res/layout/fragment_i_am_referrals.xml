@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/margin_16"
+    android:paddingStart="@dimen/margin_16"
+    android:paddingEnd="@dimen/margin_16">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/registered_referrals_found"
+        android:textAllCaps="true"
+        android:paddingTop="@dimen/margin_16"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/margin_16"
+        android:background="@color/quantum_grey300" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rg_i_am">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbtn_admin"
+            android:text="@string/admin"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbtn_vendor"
+            android:text="@string/vendor"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbtn_driver"
+            android:text="@string/driver"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbtn_parent"
+            android:text="@string/parent"/>
+    </RadioGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_8"
+        android:id="@+id/btn_verify"
+        style="@style/OutlinedButton.AccentStroke"
+        android:text="@string/verify"/>
+</LinearLayout>

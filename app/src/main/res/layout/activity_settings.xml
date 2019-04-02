@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/toolbar"
-            app:navigationIcon="@drawable/ic_arrow_back_white_36dp"
+            app:navigationIcon="@drawable/white_ic_round_back_24px"
             app:title="Settings"
             app:titleTextColor="@color/colorWhite"
             app:layout_scrollFlags="scroll|enterAlways">

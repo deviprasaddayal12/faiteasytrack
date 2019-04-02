@@ -19,11 +19,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.faiteasytrack.R;
-import com.faiteasytrack.activities.NMapActivity;
-import com.faiteasytrack.helpers.FirebaseHelper;
-import com.faiteasytrack.helpers.TracingHelper;
-import com.faiteasytrack.customclasses.ETLatLng;
-import com.faiteasytrack.models.TripModel;
+import com.faiteasytrack.activities.MapActivity;
 import com.faiteasytrack.utils.SharePreferences;
 import com.faiteasytrack.utils.Utils;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -154,7 +150,7 @@ public class LocationChangeService extends Service {
         // The PendingIntent that leads to a call to onStartCommand() in this service.
         PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent activityIntent = new Intent(this, NMapActivity.class);
+        Intent activityIntent = new Intent(this, MapActivity.class);
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
         activityIntent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
         // The PendingIntent that leads to a call to onStartCommand() in this service.
@@ -162,8 +158,8 @@ public class LocationChangeService extends Service {
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .addAction(R.drawable.ic_launch_black_18dp, getString(R.string.launch_activity), activityPendingIntent)
-                .addAction(R.drawable.ic_close_black_18dp, getString(R.string.remove_location_updates), servicePendingIntent)
+                .addAction(R.drawable.ic_round_launch_24px, getString(R.string.launch_activity), activityPendingIntent)
+                .addAction(R.drawable.ic_round_close_24px, getString(R.string.remove_location_updates), servicePendingIntent)
                 .setContentTitle(Utils.getLocationTitle(this))
                 .setContentText(text)
                 .setOngoing(true)

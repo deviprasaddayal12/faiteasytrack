@@ -25,7 +25,7 @@
         android:name=".ETApplication">
 
         <activity
-            android:name=".activities.NSplashActivity"
+            android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
@@ -37,117 +37,90 @@
         </activity>
 
         <activity
-            android:name=".activities.OSignInPromptActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
-            android:name=".activities.NUserProfileActivity"
+            android:name=".activities.UserProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity
-            android:name=".activities.ODashboardActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
-
-        <activity
-            android:name=".activities.OPhoneAuthActivity"
+        <activity android:name=".activities.IAmActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.OContactsActivity"
+        <activity android:name=".activities.MapActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.ORequestActivity"
+        <activity android:name=".activities.ContactsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.OFriendsActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-
-        <activity android:name=".activities.NIAmActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-
-        <activity android:name=".activities.NMapActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-
-        <activity android:name=".activities.NContactsActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-
-        <activity android:name=".activities.NPhoneAuthActivity"
+        <activity android:name=".activities.PhoneAuthActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
 
-        <activity android:name=".activities.NSettingsActivity"
+        <activity android:name=".activities.SettingsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NDashboardActivity"
+        <activity android:name=".activities.DashboardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddDriverActivity"
+        <activity android:name=".activities.AddDriverActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddParentActivity"
+        <activity android:name=".activities.AddParentActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddChildActivity"
+        <activity android:name=".activities.AddChildActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddRouteActivity"
+        <activity android:name=".activities.AddRouteActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddVehicleActivity"
+        <activity android:name=".activities.AddVehicleActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddVendorActivity"
+        <activity android:name=".activities.AddVendorActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NDriverActivity"
+        <activity android:name=".activities.DriverActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NRouteActivity"
+        <activity android:name=".activities.RouteActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NVehicleActivity"
+        <activity android:name=".activities.VehicleActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NVendorActivity"
+        <activity android:name=".activities.VendorActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NFriendsActivity"
+        <activity android:name=".activities.FriendsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NHistoryActivity"
+        <activity android:name=".activities.HistoryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NRequestsActivity"
+        <activity android:name=".activities.RequestsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".activities.NAddAdminActivity"
+        <activity android:name=".activities.AddAdminActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name=".activities.NAdminActivity" />
+        <activity android:name=".activities.AdminActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -168,8 +141,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-
-        <service android:name=".services.LocationService" />
 
         <service android:name=".services.LocationChangeService" />
 

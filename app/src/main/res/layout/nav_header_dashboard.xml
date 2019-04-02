@@ -13,7 +13,7 @@
         android:layout_height="@dimen/image_nav_size"
         android:layout_marginTop="@dimen/status_bar_height_plus_16"
         android:layout_marginStart="@dimen/margin_16"
-        android:src="@drawable/ic_person_black_24dp"
+        android:src="@drawable/user_1"
         android:tint="@color/colorGradientStart"
         app:civ_border="true"
         app:civ_border_color="#98b1bc"

@@ -21,7 +21,7 @@
     </style>
 
     <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar" >
-        <item name="android:windowBackground">@drawable/background_launcher</item>
+        <item name="android:windowBackground">@drawable/bg_launcher</item>
     </style>
 
     <style name="AppTheme.NoActionBar.TransparentTheme">
@@ -48,8 +48,11 @@
 
     <style name="AlertWarning" parent="AlertDialogCustom">
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:windowBackground">@drawable/bg_warning_dialog</item>
+        <item name="android:windowBackground">@drawable/dialog_warning</item>
     </style>
 
+    <style name="OutlinedButton.AccentStroke" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/colorAccent</item>
+    </style>
 
 </resources>

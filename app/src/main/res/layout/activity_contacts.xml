@@ -30,7 +30,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_back_black_36dp"
+                        android:src="@drawable/ic_round_back_24px"
                         android:paddingTop="@dimen/margin_8"
                         android:paddingBottom="@dimen/margin_8"
                         android:paddingStart="@dimen/margin_4"
@@ -51,7 +51,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_search_black_24dp"
+                        android:src="@drawable/ic_round_search_24px"
                         android:paddingTop="@dimen/margin_8"
                         android:paddingBottom="@dimen/margin_8"
                         android:paddingStart="@dimen/margin_4"

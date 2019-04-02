@@ -155,26 +155,6 @@ public class ContactsHelper implements ContactsListener {
         }
     }
 
-    public void syncContactWithApp(final ContactModel contactModel) {
-        UserHelper userHelper = new UserHelper(context);
-        userHelper.setOnFindUserListener(new UserListener.onFindUserListener() {
-            @Override
-            public void onUserFound(boolean exists, String u_id) {
-                Log.e(TAG, "onUserFound: " + u_id);
-                appContactModels.add(contactModel);
-                for (OnContactsSyncListener onContactsSyncListener : onContactsSyncListeners)
-                    onContactsSyncListener.onFoundOnServer(contactModel, exists);
-            }
-
-            @Override
-            public void onUserNotFound(Error.ErrorType errorType) {
-                for (OnContactsSyncListener onContactsSyncListener : onContactsSyncListeners)
-                    onContactsSyncListener.onNotFoundOnServer(errorType);
-            }
-        });
-        userHelper.checkUserExists(contactModel);
-    }
-
     private RequestStatusModel getDefaultRequestModels() {
 
         return Request.Status.getRequestStatusModel(-1);

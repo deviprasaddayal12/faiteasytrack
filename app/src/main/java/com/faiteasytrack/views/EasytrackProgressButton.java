@@ -49,7 +49,7 @@ public class EasytrackProgressButton extends FrameLayout {
         textView = viewRoot.findViewById(R.id.textView);
         progressBar = viewRoot.findViewById(R.id.progressBar);
 
-        setBackgroundResource(R.drawable.background_fill_easytrack_button);
+        setBackgroundResource(R.drawable.bg_easytrack_progress_button);
         hide(progressBar);
     }
 

@@ -48,20 +48,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         RequestModel requestModel = requestModels.get(position);
 
         RequestItemView itemView = (RequestItemView) holder;
-        itemView.tvRequesteeName.setText(requestModel.getRequesteeName());
-        itemView.tvRequestTime.setText(Utils.getTimeInString(requestModel.getRequestedAtMillis()));
+//        itemView.tvRequesteeName.setText(requestModel.getRequesteeName());
+//        itemView.tvRequestTime.setText(Utils.getTimeInString(requestModel.getRequestedAtMillis()));
 
-        if (requestModel.getRequestStatusModel().getStatus() != Request.REQUEST_SENT) {
-            itemView.llRequestAction.setVisibility(View.GONE);
-        } else {
-            if (requestModel.getRequestStatusModel().getStatus() == Request.REQUEST_ACCEPTED) {
-                itemView.tvStatus.setTextColor(Color.GREEN);
-                itemView.tvStatus.setText("Cheers! You are friends now!");
-            } else {
-                itemView.tvStatus.setTextColor(Color.RED);
-                itemView.tvStatus.setText("Sorry! You are denied!");
-            }
-        }
+//        if (requestModel.getRequestStatusModel().getStatus() != Request.REQUEST_SENT) {
+//            itemView.llRequestAction.setVisibility(View.GONE);
+//        } else {
+//            if (requestModel.getRequestStatusModel().getStatus() == Request.REQUEST_ACCEPTED) {
+//                itemView.tvStatus.setTextColor(Color.GREEN);
+//                itemView.tvStatus.setText("Cheers! You are friends now!");
+//            } else {
+//                itemView.tvStatus.setTextColor(Color.RED);
+//                itemView.tvStatus.setText("Sorry! You are denied!");
+//            }
+//        }
     }
 
     @Override

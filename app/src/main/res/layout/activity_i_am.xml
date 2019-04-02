@@ -6,16 +6,42 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_16">
 
-        <androidx.appcompat.widget.Toolbar
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:id="@+id/toolbar"
-            app:title="I AM"
-            app:titleTextColor="@color/colorWhite">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_32"
+            android:gravity="bottom"
+            android:drawableStart="@drawable/ic_round_person_white_24px"
+            android:drawablePadding="@dimen/margin_16"
+            android:id="@+id/tv_name"
+            android:textColor="@color/colorWhite"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
+            app:layout_scrollFlags="scroll|enterAlways"/>
 
-        </androidx.appcompat.widget.Toolbar>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_scrollFlags="snap|exitUntilCollapsed">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/who_are_you"
+                android:textColor="@color/colorWhite"
+                style="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/who_are_you_prompt"
+                android:textColor="@color/colorText"
+                style="@style/TextAppearance.MaterialComponents.Caption"/>
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -24,59 +50,42 @@
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/vp_i_am"
             android:orientation="vertical">
 
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_16"
-                android:id="@+id/rg_i_am">
-
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="I am:"-->
-                    <!--android:textSize="16sp"-->
-                    <!--android:textColor="@color/colorBlack"-->
-                    <!--android:textStyle="bold"/>-->
-
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rbtn_admin"
-                    android:text="Admin"/>
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rbtn_vendor"
-                    android:text="Vendor"/>
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rbtn_driver"
-                    android:text="Driver"/>
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rbtn_parent"
-                    android:text="Parent"
-                    android:checked="true"/>
-            </RadioGroup>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_verify_me"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_margin="@dimen/fab_margin"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="@string/verify"/>
-
-        </LinearLayout>
+        </androidx.viewpager.widget.ViewPager>
     </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/as_user_prompt"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_8"
+            android:layout_marginEnd="@dimen/margin_8"
+            android:layout_marginBottom="@dimen/margin_8"
+            android:id="@+id/btn_skip"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            app:icon="@drawable/ic_round_near_me_24px"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/margin_16"
+            android:text="@string/as_user"/>
+    </LinearLayout>
 
     <ViewStub
         android:layout_width="match_parent"
@@ -84,4 +93,10 @@
         android:layout="@layout/view_loader"
         android:id="@+id/vs_loader" />
 
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_gravity="center"
+        android:id="@+id/pb_loader"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
