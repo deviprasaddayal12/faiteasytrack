@@ -69,7 +69,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
             default: {
                 return new EmptyView(LayoutInflater.from(context)
-                        .inflate(R.layout.row_looking_for_stats, parent, false));
+                        .inflate(R.layout.layout_loader_statistics, parent, false));
             }
         }
     }

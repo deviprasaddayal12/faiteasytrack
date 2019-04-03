@@ -50,13 +50,20 @@
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.viewpager.widget.ViewPager
+        <!--<androidx.viewpager.widget.ViewPager-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/vp_i_am"-->
+            <!--android:orientation="vertical">-->
+
+        <!--</androidx.viewpager.widget.ViewPager>-->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/vp_i_am"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/fl_fragment_container">
 
-        </androidx.viewpager.widget.ViewPager>
+        </FrameLayout>
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout

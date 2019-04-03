@@ -17,7 +17,7 @@ public class IAmReferralsFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_i_am_referrals, container);
+        return inflater.inflate(R.layout.fragment_i_am_referrals, container, false);
     }
 
     @Override

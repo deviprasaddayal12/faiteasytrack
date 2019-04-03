@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.faiteasytrack.R;
 import com.faiteasytrack.firebase.FirebaseKeys;
 import com.faiteasytrack.firebase.FirebaseUtils;
+import com.faiteasytrack.fragments.IAmAccountsFragment;
+import com.faiteasytrack.fragments.IAmReferralsFragment;
+import com.faiteasytrack.fragments.IAmTypeFragment;
 import com.faiteasytrack.models.UserModel;
 import com.faiteasytrack.utils.DialogUtils;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,15 +27,26 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class IAmActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = IAmActivity.class.getSimpleName();
 
     private ContentLoadingProgressBar pbLoader;
-    private boolean isBusy = false;
-
     private TextView tvName;
+
+//    private ViewPager viewPager;
+//    private ViewPagerAdapter adapterViewPager;
+
+    private FragmentManager fragmentManager;
+    private IAmTypeFragment typeFragment;
+    private IAmAccountsFragment accountsFragment;
+    private IAmReferralsFragment referralsFragment;
+
+    private boolean isBusy = false;
 
     private FirebaseUser firebaseUser;
     private DatabaseReference userReference;
@@ -68,6 +82,31 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
             DialogUtils.showSorryAlert(IAmActivity.this, "" + databaseError.getMessage(), null);
 
             queryUserAccounts.removeEventListener(listenerUserAccountsQuery);
+        }
+    };
+
+    private ValueEventListener addNewUserEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            Log.i(TAG, "addNewUserEventListener.onDataChange: " + dataSnapshot);
+
+            hideProgressDialog();
+            DialogUtils.showCheersAlert(IAmActivity.this, "Your information was saved successfully.",
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            gotoDashboard();
+                        }
+                    });
+
+            userReference.removeEventListener(addNewUserEventListener);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Log.e(TAG, "addNewUserEventListener.onCancelled: " + databaseError.getMessage());
+
+            userReference.removeEventListener(addNewUserEventListener);
         }
     };
 
@@ -115,6 +154,38 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         pbLoader.hide();
 
         tvName = findViewById(R.id.tv_name);
+
+//        setUpViewPager();
+        setUpFragments();
+    }
+
+    private void setUpViewPager(){
+//        typeFragment = new IAmTypeFragment();
+//        accountsFragment = new IAmAccountsFragment();
+//        referralsFragment = new IAmReferralsFragment();
+//
+//        viewPager = findViewById(R.id.vp_i_am);
+//
+//        adapterViewPager = new ViewPagerAdapter(getSupportFragmentManager());
+//        adapterViewPager.addFragment(accountsFragment, "Accounts");
+//        adapterViewPager.addFragment(typeFragment, "Type");
+//        adapterViewPager.addFragment(referralsFragment, "Referrals");
+//
+//        viewPager.setAdapter(adapterViewPager);
+//
+//        viewPager.setCurrentItem(1, true);
+    }
+
+    private void setUpFragments() {
+        fragmentManager = getSupportFragmentManager();
+
+        typeFragment = new IAmTypeFragment();
+        accountsFragment = new IAmAccountsFragment();
+        referralsFragment = new IAmReferralsFragment();
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.fl_fragment_container, typeFragment, IAmTypeFragment.TAG);
+        transaction.commit();
     }
 
     @Override
@@ -137,30 +208,21 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    private ValueEventListener addNewUserEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            Log.i(TAG, "addNewUserEventListener.onDataChange: " + dataSnapshot);
+    public void switchFragments(boolean toLeft){
+        Fragment fragment = toLeft ? accountsFragment : referralsFragment;
+        String TAG = toLeft ? IAmAccountsFragment.TAG : IAmReferralsFragment.TAG;
 
-            hideProgressDialog();
-            DialogUtils.showCheersAlert(IAmActivity.this, "Your information was saved successfully.",
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            gotoDashboard();
-                        }
-                    });
+        int pushEnter = toLeft ? R.anim.enter_from_left : R.anim.enter_from_right;
+        int pushExit = toLeft ? R.anim.exit_to_right : R.anim.exit_to_left;
+        int popEnter = toLeft ? R.anim.enter_from_right : R.anim.enter_from_left;
+        int popExit = toLeft ? R.anim.exit_to_left : R.anim.exit_to_right;
 
-            userReference.removeEventListener(addNewUserEventListener);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.e(TAG, "addNewUserEventListener.onCancelled: " + databaseError.getMessage());
-
-            userReference.removeEventListener(addNewUserEventListener);
-        }
-    };
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(pushEnter, pushExit, popEnter, popExit);
+        transaction.replace(R.id.fl_fragment_container, fragment);
+        transaction.addToBackStack(TAG);
+        transaction.commit();
+    }
 
     private void userDoesNotExist(){
 

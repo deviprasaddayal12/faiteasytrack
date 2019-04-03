@@ -10,6 +10,13 @@
     android:id="@+id/ll_no_stats_layout"
     android:visibility="visible">
 
+    <ImageView
+        android:layout_width="152dp"
+        android:layout_height="152dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@null"
+        android:src="@drawable/img_no_data_available"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +41,4 @@
         android:textColor="@color/colorPrimary"
         android:id="@+id/tv_no_stats_sub_header"/>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="48dp" />
 </LinearLayout>

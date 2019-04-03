@@ -42,7 +42,7 @@
         android:layout="@layout/view_loader"
         android:id="@+id/vs_loader" />
 
-    <include layout="@layout/row_looking_for_stats"
+    <include layout="@layout/layout_loader_statistics"
         android:id="@+id/layout_found_nothing"
         android:visibility="gone"/>
 

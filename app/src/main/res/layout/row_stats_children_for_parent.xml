@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/margin_8">
 
-        <include layout="@layout/layout_dashboard_no_statistics" />
+        <include layout="@layout/layout_no_statistics" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_stats_child"

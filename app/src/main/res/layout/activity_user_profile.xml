@@ -42,7 +42,7 @@
                     android:id="@+id/civ_profile_pic"
                     android:layout_margin="@dimen/margin_8"
                     android:padding="@dimen/margin_8"
-                    android:src="@drawable/user_1"
+                    android:src="@drawable/img_user"
                     app:civ_border="true"
                     app:civ_border_color="#98b1bc"
                     app:civ_border_width="@dimen/margin_8"
