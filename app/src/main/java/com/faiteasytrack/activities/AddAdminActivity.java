@@ -12,6 +12,7 @@ import com.faiteasytrack.firebase.FirebaseKeys;
 import com.faiteasytrack.firebase.FirebaseUtils;
 import com.faiteasytrack.models.AdminModel;
 import com.faiteasytrack.models.VendorModel;
+import com.faiteasytrack.utils.Constants;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.Utils;
 import com.google.android.material.button.MaterialButton;
@@ -27,16 +28,36 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 public class AddAdminActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final String TAG = AddAdminActivity.class.getSimpleName();
+    public static final String TAG = AddAdminActivity.class.getCanonicalName();
+
+    private ContentLoadingProgressBar progressBar;
 
     private TextInputEditText etPhone, etName, etCode, etPassword;
     private MaterialButton btnAddAdmin;
 
     private FirebaseUser firebaseUser;
     private DatabaseReference adminReference, userReference;
+
+    private TextWatcher phoneTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 10) checkIfAdminExists();
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,15 +71,6 @@ public class AddAdminActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_add_admin:
-                if (isAddAdminValid()) addNewAdmin();
-                break;
-        }
-    }
-
-    @Override
     public void setUpActionBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,15 +78,17 @@ public class AddAdminActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void initUI() {
+        progressBar = findViewById(R.id.pb_loading_prompt);
+
         etPhone = findViewById(R.id.et_phone);
         etName = findViewById(R.id.et_name);
         etCode = findViewById(R.id.et_code);
         etPassword = findViewById(R.id.et_password);
 
-        etName.setFilters(Utils.getLengthFilter(30));
-        etPhone.setFilters(Utils.getLengthFilter(10));
-        etCode.setFilters(Utils.getLengthFilter(10));
-        etPassword.setFilters(Utils.getLengthFilter(10));
+        etName.setFilters(Utils.getLengthFilter(Constants.MAX_LENGTH_NAME));
+        etPhone.setFilters(Utils.getLengthFilter(Constants.MAX_LENGTH_PHONE));
+        etCode.setFilters(Utils.getLengthFilter(Constants.MAX_LENGTH_CODE));
+        etPassword.setFilters(Utils.getLengthFilter(Constants.MAX_LENGTH_PASSWORD));
 
         btnAddAdmin = findViewById(R.id.btn_add_admin);
     }
@@ -82,22 +96,26 @@ public class AddAdminActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void setUpListeners() {
         btnAddAdmin.setOnClickListener(this);
-        etPhone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        etPhone.addTextChangedListener(phoneTextWatcher);
+    }
 
-            }
+    @Override
+    public void setUpData() {
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
 
-            }
+    @Override
+    public void setUpRecycler() {
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 10) checkIfAdminExists();
-            }
-        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_add_admin:
+                if (isAddAdminValid()) addNewAdmin();
+                break;
+        }
     }
 
     private void checkIfAdminExists() {
@@ -211,16 +229,6 @@ public class AddAdminActivity extends BaseActivity implements View.OnClickListen
 
         adminReference.addValueEventListener(addAdminEventListener);
         adminReference.push().setValue(adminModel);
-    }
-
-    @Override
-    public void setUpData() {
-
-    }
-
-    @Override
-    public void setUpRecycler() {
-
     }
 
     @Override

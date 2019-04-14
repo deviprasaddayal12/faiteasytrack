@@ -23,6 +23,7 @@ import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.SharePreferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -42,7 +43,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DashboardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener {
 
-    public static final String TAG = "NDashboardActivity";
+    public static final String TAG = DashboardActivity.class.getCanonicalName();
     public static final int REQUEST_FOR_TRACKING = 1;
 
     private DrawerLayout drawerLayout;
@@ -80,6 +81,10 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
     };
 
     private Runnable drawerClosedRunnable;
+
+    private Snackbar snackbarIndefinite;
+    private boolean isSnackbarIndefiniteBusy = false;
+    private Runnable runnableSnackbarIndefinite;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -191,11 +196,19 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
                     }
                 });
                 break;
-            default:
+            case User.TYPE_PARENT:
                 handlerDashboardViewUpdates.post(new Runnable() {
                     @Override
                     public void run() {
                         navigationView.inflateMenu(R.menu.menu_nav_parent);
+                    }
+                });
+                break;
+            default:
+                handlerDashboardViewUpdates.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        navigationView.inflateMenu(R.menu.menu_nav_guest);
                     }
                 });
                 break;
@@ -330,6 +343,57 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
                 };
             }
             return true;
+            case R.id.nav_contacts: {
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+//                        startActivity(new Intent(DashboardActivity.this, RouteActivity.class));
+                        if (!isSnackbarIndefiniteBusy) {
+                            runnableSnackbarIndefinite = getRunnableSnackbarIndefinite();
+                            snackbarIndefinite = getSnackbarIndefinite("Implementing soon...", "Dismiss");
+                            snackbarIndefinite.show();
+                        }
+                    }
+                };
+            }
+            return true;
+            case R.id.nav_share: {
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+//                        startActivity(new Intent(DashboardActivity.this, RouteActivity.class));
+                        if (!isSnackbarIndefiniteBusy) {
+                            runnableSnackbarIndefinite = getRunnableSnackbarIndefinite();
+                            snackbarIndefinite = getSnackbarIndefinite("Implementing soon...", "Dismiss");
+                            snackbarIndefinite.show();
+                        }
+                    }
+                };
+            }
+            return true;
+            case R.id.nav_feedback: {
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+//                        startActivity(new Intent(DashboardActivity.this, RouteActivity.class));
+                        if (!isSnackbarIndefiniteBusy) {
+                            runnableSnackbarIndefinite = getRunnableSnackbarIndefinite();
+                            snackbarIndefinite = getSnackbarIndefinite("Implementing soon...", "Dismiss");
+                            snackbarIndefinite.show();
+                        }
+                    }
+                };
+            }
+            return true;
+            case R.id.nav_account: {
+                drawerClosedRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(DashboardActivity.this, IAmActivity.class));
+                    }
+                };
+            }
+            return true;
             case R.id.nav_settings: {
                 drawerClosedRunnable = new Runnable() {
                     @Override
@@ -400,34 +464,36 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
         dashboardManager.getStatisticsReport();
     }
 
+    private Runnable getRunnableSnackbarIndefinite(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                isSnackbarIndefiniteBusy = false;
+                snackbarIndefinite.dismiss();
+            }
+        };
+    }
+
+    private Snackbar getSnackbarIndefinite(@NonNull String message, @Nullable String action){
+        snackbarIndefinite = null;
+
+        Snackbar snackbar = Snackbar.make(fabLetsTrack, message, Snackbar.LENGTH_INDEFINITE);
+        if (action != null){
+            snackbar.setAction(action, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    runnableSnackbarIndefinite.run();
+                }
+            });
+        }
+
+        isSnackbarIndefiniteBusy = true;
+        return snackbar;
+    }
+
     @Override
     public void updateInternetStatus(boolean online) {
 
-    }
-
-    private void getDashboardModels() {
-        switch (userModel.getI_am()) {
-            case User.TYPE_ADMIN: {
-                // todo: getAdminStatisticsModels
-            }
-            break;
-            case User.TYPE_VENDOR: {
-                // todo: getVendorStatisticsModels
-            }
-            break;
-            case User.TYPE_DRIVER: {
-                // todo: getDriverStatisticsModels
-            }
-            break;
-            case User.TYPE_PARENT: {
-                // todo: getParentStatisticsModels
-            }
-            break;
-            case User.TYPE_USER: {
-                // todo: getUserStatisticsModels
-            }
-            break;
-        }
     }
 
     @Override

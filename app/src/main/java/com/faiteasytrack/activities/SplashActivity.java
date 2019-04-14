@@ -47,8 +47,10 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
         if (isUserLoggedIn) {
             onUserLoggedIn();
+            FirebaseUtils.initialise();
         } else if (isUserVerified){
             gotoSigningIn();
+            FirebaseUtils.initialise();
         } else {
             gotoVerification();
         }

@@ -2,20 +2,16 @@
 <com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<com.google.android.material.appbar.AppBarLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@android:color/transparent">-->
-        <!---->
-        <!--<androidx.appcompat.widget.Toolbar-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:navigationIcon="@drawable/ic_arrow_back_24px">-->
-            <!---->
-        <!--</androidx.appcompat.widget.Toolbar>-->
-    <!--</com.google.android.material.appbar.AppBarLayout>-->
+    <requestFocus />
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/pd_photo_uploader"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -64,40 +60,83 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/progressBarStyleLarge"
-                    android:layout_gravity="top|start"
-                    android:id="@+id/pb_position_loader"
-                    android:layout_margin="@dimen/margin_24"/>
+                    android:layout_gravity="center"
+                    android:id="@+id/pb_photo_loader" />
             </FrameLayout>
 
-            <EditText
-                android:layout_width="280dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:hint="@string/add_your_name_here"
-                android:inputType="textCapWords"
-                android:imeOptions="actionGo"
-                android:id="@+id/et_name"/>
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical">
 
-            <EditText
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:hint="@string/add_your_email_here"
-                android:inputType="textEmailAddress"
-                android:imeOptions="actionGo"
-                android:id="@+id/et_email"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="280dp"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="@dimen/width_edittextOutlined"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_your_name_here"
+                        android:inputType="textCapWords"
+                        android:imeOptions="actionGo"
+                        android:id="@+id/et_name" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--<com.google.android.material.button.MaterialButton-->
+                    <!--android:layout_width="@dimen/width_buttonIconOutlined"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:contentDescription="@null"-->
+                    <!--style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"-->
+                    <!--app:icon="@drawable/ic_round_edit_24px"-->
+                    <!--android:id="@+id/btn_edit_name"/>-->
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:hint="@string/add_your_phone_here"
-                android:inputType="phone"
-                android:imeOptions="actionGo"
-                android:id="@+id/et_phone"/>
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="@dimen/width_edittextOutlined"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_your_email_here"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionGo"
+                        android:id="@+id/et_email" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--<com.google.android.material.button.MaterialButton-->
+                <!--android:layout_width="@dimen/width_buttonIconOutlined"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:contentDescription="@null"-->
+                <!--style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"-->
+                <!--app:icon="@drawable/ic_round_edit_24px"-->
+                <!--android:id="@+id/btn_edit_name"/>-->
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="@dimen/width_edittextOutlined"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_your_phone_here"
+                        android:inputType="phone"
+                        android:imeOptions="actionGo"
+                        android:id="@+id/et_phone" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

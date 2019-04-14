@@ -8,7 +8,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
-import com.faiteasytrack.utils.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,7 +22,7 @@ import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 
 
 public class MultiPartRequest extends Request<String> {
-    public static final String TAG = "MultiPartRequest";
+    public static final String TAG = MultiPartRequest.class.getCanonicalName();
 
     private Response.Listener<String> mListener;
     private HttpEntity mHttpEntity;
@@ -37,13 +36,13 @@ public class MultiPartRequest extends Request<String> {
         this.context = context;
         this.params = params;
         switch (callType) {
-            case Constants.MultiPartRequest.CallType.REQUISITION_FILES_UPLOAD:
+            case Keys.CallType.REQUISITION_FILES_UPLOAD:
                 mHttpEntity = buildRequisitionMultipartEntity(file);
                 break;
-            case Constants.MultiPartRequest.CallType.DAILY_ISSUE_FILES_UPLOAD:
+            case Keys.CallType.DAILY_ISSUE_FILES_UPLOAD:
                 mHttpEntity = buildDailyIssueMultipartEntity(file);
                 break;
-            case Constants.MultiPartRequest.CallType.MRN_ADD_FILES_UPLOAD:
+            case Keys.CallType.MRN_ADD_FILES_UPLOAD:
                 mHttpEntity = buildMRNMultipartEntity(file);
                 break;
         }
@@ -53,9 +52,9 @@ public class MultiPartRequest extends Request<String> {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         for (int i = 0; i < file.size(); i++) {
             FileBody fileBody = new FileBody(file.get(i));
-            builder.addPart(Constants.MultiPartRequest.Query.KEY_FILES, fileBody);
+            builder.addPart(Keys.Query.KEY_FILES, fileBody);
         }
-        builder.addTextBody(Constants.MultiPartRequest.Query.KEY_REQUISITION_ID, params.get("id"));
+        builder.addTextBody(Keys.Query.KEY_REQUISITION_ID, params.get("id"));
         return builder.build();
     }
 
@@ -65,28 +64,28 @@ public class MultiPartRequest extends Request<String> {
         if (files.get(0) != null){
             FileBody fileBody1 = new FileBody(files.get(0));
             Log.i(TAG, "buildDailyIssueMultipartEntity: " + files.get(0).getAbsolutePath());
-            builder.addPart(Constants.MultiPartRequest.Query.KEY_FILES, fileBody1);
+            builder.addPart(Keys.Query.KEY_FILES, fileBody1);
         }
 
         if (files.size() > 1 && files.get(1) != null){
             FileBody fileBody2 = new FileBody(files.get(1));
             Log.i(TAG, "buildDailyIssueMultipartEntity: " + files.get(1).getAbsolutePath());
-            builder.addPart(Constants.MultiPartRequest.Query.KEY_FILES, fileBody2);
+            builder.addPart(Keys.Query.KEY_FILES, fileBody2);
         }
 
-        builder.addTextBody(Constants.MultiPartRequest.Query.KEY_REQUEST_TYPE, params.get("request_type"));
-        builder.addTextBody(Constants.MultiPartRequest.Query.KEY_DAILY_ISSUE_ID, params.get("id"));
+        builder.addTextBody(Keys.Query.KEY_REQUEST_TYPE, params.get("request_type"));
+        builder.addTextBody(Keys.Query.KEY_DAILY_ISSUE_ID, params.get("id"));
         return builder.build();
     }
 
     private HttpEntity buildMRNMultipartEntity(ArrayList<File> file) {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 //        FileBody fileBody1 = new FileBody(file.get(0));
-//        builder.addPart(Constants.MultiPartRequest.Query.KEY_FILES, fileBody1);
+//        builder.addPart(Constants.Keys.Query.KEY_FILES, fileBody1);
         FileBody fileBody2 = new FileBody(file.get(file.size() - 1));
-        builder.addPart(Constants.MultiPartRequest.Query.KEY_FILE, fileBody2);
-        builder.addTextBody(Constants.MultiPartRequest.Query.KEY_REQUEST_TYPE, params.get("request_type"));
-        builder.addTextBody(Constants.MultiPartRequest.Query.KEY_MRN_ADD_ID, params.get("id"));
+        builder.addPart(Keys.Query.KEY_FILE, fileBody2);
+        builder.addTextBody(Keys.Query.KEY_REQUEST_TYPE, params.get("request_type"));
+        builder.addTextBody(Keys.Query.KEY_MRN_ADD_ID, params.get("id"));
         return builder.build();
     }
 
@@ -134,5 +133,28 @@ public class MultiPartRequest extends Request<String> {
             return "";
         }
         return extension;
+    }
+
+    public interface Keys {
+
+        interface CallType {
+            int REQUISITION_FILES_UPLOAD = 580;
+            int DAILY_ISSUE_FILES_UPLOAD = 581;
+            int MRN_ADD_FILES_UPLOAD = 582;
+        }
+
+        interface Query {
+            String KEY_REQUEST_TYPE = "REQUEST_TYPE_SENT";
+            String KEY_FILES = "files[]";
+            String KEY_REQUISITION_ID = "requisition_id";
+            String KEY_DAILY_ISSUE_ID = "issue_slip_id";
+            String KEY_MRN_ADD_ID = "mrn_id";
+            String KEY_FILE = "file";
+        }
+
+        interface VolleyRetryPolicy {
+            int SOCKET_TIMEOUT = 1000 * 500;
+            int RETRIES = 0;
+        }
     }
 }

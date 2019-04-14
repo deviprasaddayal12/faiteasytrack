@@ -49,10 +49,6 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:text="@string/add_admin" />
 
-    <ViewStub
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout="@layout/view_loader"
-        android:id="@+id/vs_loader" />
+    <include layout="@layout/layout_loader_prompt" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

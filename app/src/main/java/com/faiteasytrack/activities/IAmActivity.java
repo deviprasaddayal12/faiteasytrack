@@ -15,6 +15,8 @@ import com.faiteasytrack.fragments.IAmReferralsFragment;
 import com.faiteasytrack.fragments.IAmTypeFragment;
 import com.faiteasytrack.models.UserModel;
 import com.faiteasytrack.utils.DialogUtils;
+import com.faiteasytrack.utils.SharePreferences;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,13 +35,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class IAmActivity extends BaseActivity implements View.OnClickListener {
 
-    private static final String TAG = IAmActivity.class.getSimpleName();
+    private static final String TAG = IAmActivity.class.getCanonicalName();
 
     private ContentLoadingProgressBar pbLoader;
     private TextView tvName;
-
-//    private ViewPager viewPager;
-//    private ViewPagerAdapter adapterViewPager;
+    private MaterialButton btnContinueAsGuest;
 
     private FragmentManager fragmentManager;
     private IAmTypeFragment typeFragment;
@@ -51,7 +51,7 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
     private FirebaseUser firebaseUser;
     private DatabaseReference userReference;
 
-    private boolean isUserRegistered;
+    private boolean userExists;
     private ArrayList<UserModel> userModels;
 
     private Query queryUserAccounts;
@@ -60,17 +60,15 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             Log.i(TAG, "listenerUserAccountsQuery.onDataChange: " + dataSnapshot);
 
-            isUserRegistered = dataSnapshot.exists();
-            if (isUserRegistered) {
+            userExists = dataSnapshot.exists();
+            if (userExists) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     UserModel userModel = snapshot.getValue(UserModel.class);
                     userModels.add(userModel);
                 }
-                userExists();
-            } else {
-                userDoesNotExist();
             }
 
+            onUserChecked();
             queryUserAccounts.removeEventListener(listenerUserAccountsQuery);
         }
 
@@ -85,10 +83,10 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         }
     };
 
-    private ValueEventListener addNewUserEventListener = new ValueEventListener() {
+    private ValueEventListener addGuestEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            Log.i(TAG, "addNewUserEventListener.onDataChange: " + dataSnapshot);
+            Log.i(TAG, "addGuestEventListener.onDataChange: " + dataSnapshot);
 
             hideProgressDialog();
             DialogUtils.showCheersAlert(IAmActivity.this, "Your information was saved successfully.",
@@ -99,14 +97,14 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
                         }
                     });
 
-            userReference.removeEventListener(addNewUserEventListener);
+            userReference.removeEventListener(addGuestEventListener);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.e(TAG, "addNewUserEventListener.onCancelled: " + databaseError.getMessage());
+            Log.e(TAG, "addGuestEventListener.onCancelled: " + databaseError.getMessage());
 
-            userReference.removeEventListener(addNewUserEventListener);
+            userReference.removeEventListener(addGuestEventListener);
         }
     };
 
@@ -125,26 +123,10 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         userReference = FirebaseUtils.getUserReference();
 
         setContentView(R.layout.activity_i_am);
-        checkUserExists();
     }
 
     @Override
     public void setUpActionBar() {
-
-    }
-
-    private void checkUserExists() {
-        if (isBusy) return;
-
-        showProgressDialog();
-        userModels = new ArrayList<>();
-
-        queryUserAccounts = userReference.orderByChild(FirebaseKeys.PHONE_NUMBER)
-                .equalTo(firebaseUser.getPhoneNumber());
-        queryUserAccounts.addValueEventListener(listenerUserAccountsQuery);
-    }
-
-    private void userExists() {
 
     }
 
@@ -153,27 +135,11 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         pbLoader = findViewById(R.id.pb_loader);
         pbLoader.hide();
 
+        btnContinueAsGuest = findViewById(R.id.btn_continue_as_guest);
         tvName = findViewById(R.id.tv_name);
 
-//        setUpViewPager();
         setUpFragments();
-    }
-
-    private void setUpViewPager(){
-//        typeFragment = new IAmTypeFragment();
-//        accountsFragment = new IAmAccountsFragment();
-//        referralsFragment = new IAmReferralsFragment();
-//
-//        viewPager = findViewById(R.id.vp_i_am);
-//
-//        adapterViewPager = new ViewPagerAdapter(getSupportFragmentManager());
-//        adapterViewPager.addFragment(accountsFragment, "Accounts");
-//        adapterViewPager.addFragment(typeFragment, "Type");
-//        adapterViewPager.addFragment(referralsFragment, "Referrals");
-//
-//        viewPager.setAdapter(adapterViewPager);
-//
-//        viewPager.setCurrentItem(1, true);
+        checkUserExists();
     }
 
     private void setUpFragments() {
@@ -188,9 +154,25 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         transaction.commit();
     }
 
+    private void checkUserExists() {
+        if (isBusy) return;
+
+        showProgressDialog();
+        userModels = new ArrayList<>();
+
+        queryUserAccounts = userReference.orderByChild(FirebaseKeys.PHONE_NUMBER)
+                .equalTo(firebaseUser.getPhoneNumber());
+        queryUserAccounts.addValueEventListener(listenerUserAccountsQuery);
+    }
+
+    private void onUserChecked() {
+        // todo switch to proper mode of as a guest
+        btnContinueAsGuest.setEnabled(/*!userExists*/ true);
+    }
+
     @Override
     public void setUpListeners() {
-
+        btnContinueAsGuest.setOnClickListener(this);
     }
 
     @Override
@@ -205,7 +187,14 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.btn_continue_as_guest:{
+                // todo add new guest user to firebase
+                SharePreferences.saveUserModel(this, FirebaseUtils.getNewGuestModel());
+                gotoDashboard();
+            }
+            break;
+        }
     }
 
     public void switchFragments(boolean toLeft){
@@ -222,10 +211,6 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
         transaction.replace(R.id.fl_fragment_container, fragment);
         transaction.addToBackStack(TAG);
         transaction.commit();
-    }
-
-    private void userDoesNotExist(){
-
     }
 
     private void gotoDashboard() {
@@ -245,10 +230,6 @@ public class IAmActivity extends BaseActivity implements View.OnClickListener {
             pbLoader.hide();
 
         isBusy = false;
-    }
-
-    public interface OnCredentialsVerificationCompleteListener{
-        void onCredentialsVerified(boolean isSuccess);
     }
 
     @Override

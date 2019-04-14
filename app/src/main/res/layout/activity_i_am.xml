@@ -86,12 +86,12 @@
             android:layout_marginStart="@dimen/margin_8"
             android:layout_marginEnd="@dimen/margin_8"
             android:layout_marginBottom="@dimen/margin_8"
-            android:id="@+id/btn_skip"
             style="@style/Widget.MaterialComponents.Button.Icon"
             app:icon="@drawable/ic_round_near_me_24px"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/margin_16"
-            android:text="@string/as_user"/>
+            android:text="@string/as_user"
+            android:id="@+id/btn_continue_as_guest"/>
     </LinearLayout>
 
     <ViewStub

@@ -1,7 +1,6 @@
 package com.faiteasytrack.activities;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,14 +11,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import com.faiteasytrack.R;
 import com.faiteasytrack.constants.Preferences;
 import com.faiteasytrack.models.PreferenceModel;
 import com.faiteasytrack.utils.AppPermissions;
+import com.faiteasytrack.utils.Constants;
 import com.faiteasytrack.utils.DateUtils;
 import com.faiteasytrack.utils.DialogUtils;
 import com.faiteasytrack.utils.FileUtils;
@@ -45,7 +47,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -73,31 +77,60 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             REQUEST_FOR_FILE_BROWSER = 203, REQUEST_FOR_CROP = 204;
 
     private FloatingActionButton fabUploadPhoto;
-    private EditText etUserName, etUserEmail, etUserPhone;
+    private TextInputEditText etUserName, etUserEmail, etUserPhone;
     private CircularImageView civProfilePic;
-
-    private ContentLoadingProgressBar pbProfilePicLoader;
-
-    private View loader;
     private MaterialButton btnSkip;
+
+    private View detailsUploader;
+    private ContentLoadingProgressBar pbPhotoLoader, pbPhotoUploader;
+    private Snackbar snackBarInfo;
 
     private FirebaseUser firebaseUser;
     private StorageReference profilePhotosReference;
 
     private PreferenceModel preferenceModel;
 
-    private boolean isCalledFromAuth, isUploadingPic = false, isUpdatingName = false, isUpdatingEmail = false;
-    private boolean isProfileUpdated = false;
+    private boolean isCalledFromAuth, isNameSetAuto = true,
+            isProfileUpdated = false, isUploadingPic = false, isUpdatingName = false, isUpdatingEmail = false;
 
     private Uri photoURI;
-    private String imagePathForProfilePic;
+    private String imagePathForCamera;
 
-    private Handler handlerProfileViewLoad;
+    private TextWatcher nameTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (isNameSetAuto) {
+                isNameSetAuto = false;
+                return;
+            }
+
+            if (s.length() > 0) {
+                snackBarInfo.dismiss();
+                btnSkip.setText(getString(R.string.done_continue));
+                btnSkip.setEnabled(true);
+            } else {
+                showAddNamePrompt();
+            }
+        }
+    };
+
+    private Handler handler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        handler = new Handler();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         profilePhotosReference = FirebaseUtils.getProfilePhotoReference();
         preferenceModel = SharePreferences.getPreferenceModel(this);
@@ -105,39 +138,39 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         isCalledFromAuth = getIntent().getIntExtra("CALLED_FROM",
                 CALLED_FROM_NAVIGATION) == CALLED_FROM_PHONE_AUTH;
 
-        handlerProfileViewLoad = new Handler();
-
         setContentView(R.layout.activity_user_profile);
     }
 
     @Override
     public void setUpActionBar() {
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+
     }
 
     @Override
     public void initUI() {
-        pbProfilePicLoader = findViewById(R.id.pb_position_loader);
-        pbProfilePicLoader.hide();
+        pbPhotoLoader = findViewById(R.id.pb_photo_loader);
+        pbPhotoUploader = findViewById(R.id.pd_photo_uploader);
+        pbPhotoUploader.hide();
 
         ViewStub viewStubLoader = findViewById(R.id.vs_loader);
-        loader = viewStubLoader.inflate();
-        loader.setOnClickListener(this);
+        detailsUploader = viewStubLoader.inflate();
+        detailsUploader.setOnClickListener(this);
 
-        ViewUtils.hideViews(loader);
+        ViewUtils.hideViews(detailsUploader);
 
         civProfilePic = findViewById(R.id.civ_profile_pic);
 
         etUserName = findViewById(R.id.et_name);
+        etUserName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.MAX_LENGTH_NAME)});
         etUserEmail = findViewById(R.id.et_email);
         etUserPhone = findViewById(R.id.et_phone);
 
         fabUploadPhoto = findViewById(R.id.fab_upload_photo);
-
         btnSkip = findViewById(R.id.btn_skip);
 
         if (!isCalledFromAuth) ViewUtils.hideViews(btnSkip);
+
+        snackBarInfo = Snackbar.make(etUserPhone, "", Snackbar.LENGTH_SHORT);
     }
 
     @Override
@@ -145,6 +178,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         btnSkip.setOnClickListener(this);
         fabUploadPhoto.setOnClickListener(this);
 
+        etUserName.addTextChangedListener(nameTextWatcher);
         etUserName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -180,19 +214,29 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         etUserPhone.setText(Utils.getValidString(firebaseUser.getPhoneNumber()));
         etUserPhone.setInputType(InputType.TYPE_NULL);
 
-        setUpImageToImageView(false);
+        if (etUserName.getText().toString().isEmpty() && isCalledFromAuth) {
+            showAddNamePrompt();
+        }
+
+        setUpImageToImageView();
     }
 
-    private void setUpImageToImageView(boolean refresh) {
-        pbProfilePicLoader.show();
+    private void showAddNamePrompt() {
+        snackBarInfo.setText("Add name to continue");
+        snackBarInfo.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
+        snackBarInfo.show();
+        btnSkip.setText(getString(R.string.skip));
+        btnSkip.setEnabled(false);
+    }
+
+    private void setUpImageToImageView() {
         if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.LOCAL) {
             try {
                 civProfilePic.setImageURI(firebaseUser.getPhotoUrl());
-                pbProfilePicLoader.hide();
+                pbPhotoLoader.hide();
             } catch (Exception e) {
                 e.printStackTrace();
-//                civProfilePic.setImageResource(R.drawable.user_1);
-                pbProfilePicLoader.hide();
+                pbPhotoLoader.hide();
             }
 
         } else if (preferenceModel.getStorageForProfilePhoto() == Preferences.Storage.CLOUD) {
@@ -203,21 +247,20 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                         .addListener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                pbProfilePicLoader.hide();
+                                pbPhotoLoader.hide();
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                pbProfilePicLoader.hide();
+                                pbPhotoLoader.hide();
                                 return false;
                             }
                         })
                         .into(civProfilePic);
             } catch (Exception e) {
                 e.printStackTrace();
-//                civProfilePic.setImageResource(R.drawable.user_1);
-                pbProfilePicLoader.hide();
+                pbPhotoLoader.hide();
             }
         }
     }
@@ -333,7 +376,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         File image = File.createTempFile(prefix, ".jpg", storageFolder);
 
-        imagePathForProfilePic = image.getAbsolutePath();
+        imagePathForCamera = image.getAbsolutePath();
         return image;
     }
 
@@ -341,17 +384,12 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         try {
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
 
-            cropIntent.setDataAndType(photoURI, "image/*");
+            cropIntent.setDataAndType(Uri.parse(imagePathForCamera), "image/*");
             cropIntent.putExtra("crop", true);
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            cropIntent.putExtra("outputX", 128);
-            cropIntent.putExtra("outputY", 128);
             cropIntent.putExtra("return-data", true);
             cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(cropIntent, REQUEST_FOR_CROP);
-        }
-        catch (ActivityNotFoundException e) {
+        } catch (ActivityNotFoundException e) {
             e.printStackTrace();
             String errorMessage = "Whoops - your device doesn't support the cropping!";
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
@@ -360,31 +398,29 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        for (int i = 0; i < permissions.length; i++) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (requestCode == AppPermissions.ACCESS_CAMERA) {
-                    startCamera();
-                } else if (requestCode == AppPermissions.ACCESS_GALLERY) {
-                    startGallery();
-                } else if (requestCode == AppPermissions.ACCESS_FILE_BROWSER) {
-                    startFileBrowser();
-                }
-            } else {
-                Log.i(TAG, "onRequestPermissionsResult: " + permissions[0] + " permission denied.");
-                AppPermissions.showAllowPermissionDialog(this, permissions,
-                        new AppPermissions.OnPermissionChangeListener() {
-                            @Override
-                            public void onAllowPermission(String[] permissions) {
-
-                            }
-
-                            @Override
-                            public void onPermissionDenied() {
-
-                            }
-                        });
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == AppPermissions.ACCESS_CAMERA) {
+                startCamera();
+            } else if (requestCode == AppPermissions.ACCESS_GALLERY) {
+                startGallery();
+            } else if (requestCode == AppPermissions.ACCESS_FILE_BROWSER) {
+                startFileBrowser();
             }
-//        }
+        } else {
+            Log.i(TAG, "onRequestPermissionsResult: " + permissions[0] + " permission denied.");
+            AppPermissions.showAllowPermissionDialog(this, permissions,
+                    new AppPermissions.OnPermissionChangeListener() {
+                        @Override
+                        public void onAllowPermission(String[] permissions) {
+
+                        }
+
+                        @Override
+                        public void onPermissionDenied() {
+
+                        }
+                    });
+        }
     }
 
     @Override
@@ -397,11 +433,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             } else if (requestCode == REQUEST_FOR_FILE_BROWSER) {
                 takePersistablePermissions(data);
                 attachFile(data);
-            } else if (requestCode == REQUEST_FOR_CROP){
+            } else if (requestCode == REQUEST_FOR_CROP) {
                 if (data != null) {
-                    Log.i(TAG, "onActivityResult: photoUri = " + photoURI);
                     photoURI = data.getData();
-                    Log.i(TAG, "onActivityResult: cropPhotoUri = " + photoURI);
                     uploadProfilePhoto();
                 }
             }
@@ -429,8 +463,8 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                         return;
                     }
                 }
-                if (!imagePath.equals(imagePathForProfilePic)) {
-                    imagePathForProfilePic = imagePath;
+                if (!imagePath.equals(imagePathForCamera)) {
+                    imagePathForCamera = imagePath;
                     photoURI = data.getData();
                     uploadProfilePhoto();
 
@@ -444,7 +478,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void updateName(String name) {
-        if (/*!Pattern.compile("[a-zA-Z]").matcher(name).matches()*/ name.isEmpty()) {
+        if (name.isEmpty()) {
             etUserName.setError("Invalid name!");
             etUserName.requestFocus();
             return;
@@ -454,7 +488,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         etUserName.clearFocus();
         Utils.hideSoftKeyboard(this);
-        ViewUtils.showViews(loader);
+        ViewUtils.showViews(detailsUploader);
         isUpdatingName = true;
 
         UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
@@ -465,20 +499,27 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(Void aVoid) {
                         isProfileUpdated = true;
-                        ViewUtils.hideViews(loader);
+                        ViewUtils.hideViews(detailsUploader);
                         isUpdatingName = false;
-                        ViewUtils.makeToast(UserProfileActivity.this,
-                                "Your name updated successfully.");
+                        updateDoneInfoToUser("Your name updated successfully.", false);
+
+                        if (isCalledFromAuth) {
+                            btnSkip.setEnabled(true);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         etUserName.setText(Utils.getValidString(firebaseUser.getDisplayName()));
-                        ViewUtils.hideViews(loader);
+                        ViewUtils.hideViews(detailsUploader);
                         isUpdatingName = false;
-                        DialogUtils.showSorryAlert(UserProfileActivity.this, ""
-                                + e.getMessage(), null);
+                        updateRetryInfoToUser(e.getMessage(), new Runnable() {
+                            @Override
+                            public void run() {
+                                updateName(etUserName.getText().toString());
+                            }
+                        });
                     }
                 });
     }
@@ -494,7 +535,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         etUserEmail.clearFocus();
         Utils.hideSoftKeyboard(this);
-        ViewUtils.showViews(loader);
+        ViewUtils.showViews(detailsUploader);
         isUpdatingEmail = true;
 
         firebaseUser.updateEmail(email)
@@ -502,20 +543,23 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(Void aVoid) {
                         isProfileUpdated = true;
-                        ViewUtils.hideViews(loader);
+                        ViewUtils.hideViews(detailsUploader);
                         isUpdatingEmail = false;
-                        ViewUtils.makeToast(UserProfileActivity.this,
-                                "Your email updated successfully.");
+                        updateDoneInfoToUser("Your email updated successfully.", false);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         etUserEmail.setText(Utils.getValidString(firebaseUser.getEmail()));
-                        ViewUtils.hideViews(loader);
+                        ViewUtils.hideViews(detailsUploader);
                         isUpdatingEmail = false;
-                        DialogUtils.showSorryAlert(UserProfileActivity.this, ""
-                                + e.getMessage(), null);
+                        updateRetryInfoToUser(e.getMessage(), new Runnable() {
+                            @Override
+                            public void run() {
+                                updateEmail(etUserEmail.getText().toString());
+                            }
+                        });
                     }
                 });
     }
@@ -528,7 +572,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void uploadImageToLocalStorage() {
-        ViewUtils.showViews(loader);
         isUploadingPic = true;
 
         UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
@@ -539,69 +582,109 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(Void aVoid) {
                         isProfileUpdated = true;
-                        ViewUtils.hideViews(loader);
                         isUploadingPic = false;
-                        ViewUtils.makeToast(UserProfileActivity.this,
-                                "Your profile photo updated successfully.");
+                        updateDoneInfoToUser("Your profile photo updated successfully.", false);
 
-                        Glide.get(UserProfileActivity.this).clearDiskCache();
-                        setUpImageToImageView(true);
+                        setUpImageToImageView();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        ViewUtils.hideViews(loader);
                         isUploadingPic = false;
-                        DialogUtils.showSorryAlert(UserProfileActivity.this, ""
-                                + e.getMessage(), null);
+                        updateRetryInfoToUser(e.getMessage(), new Runnable() {
+                            @Override
+                            public void run() {
+                                uploadImageToLocalStorage();
+                            }
+                        });
                     }
                 });
     }
 
     private void uploadImageToCloudStorage() {
-        final ProgressDialog uploadProgress = new ProgressDialog(this);
-        uploadProgress.setCancelable(false);
-        uploadProgress.setTitle("Uploading profile photo");
-        uploadProgress.setMessage("Uploaded 0%");
-        uploadProgress.show();
-
-//        ViewUtils.showViews(loader);
-//        isUploadingPic = true;
+        pbPhotoUploader.show();
+        pbPhotoLoader.show();
 
         profilePhotosReference.putFile(photoURI)
                 .addOnCanceledListener(new OnCanceledListener() {
                     @Override
                     public void onCanceled() {
-                        Snackbar snackbar = Snackbar.make(fabUploadPhoto,
-                                "Photo upload cancelled!", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
+                        String message = "Photo upload cancelled!";
+                        updateDoneInfoToUser(message, false);
                     }
                 })
+
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                        uploadProgress.setMessage(String.format(Locale.getDefault(), "Uploaded %.2f%%", progress));
+                        String message = String.format(Locale.getDefault(), "Uploaded %.3f%%", progress);
+                        updateDoneInfoToUser(message, true);
+                        pbPhotoUploader.setProgress((int) progress);
                     }
                 })
+
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        uploadProgress.dismiss();
+                        pbPhotoUploader.hide();
                         String message = "Photo uploaded successfully.";
-                        setUpImageToImageView(true);
-                        DialogUtils.showCheersAlert(UserProfileActivity.this, message, null);
+                        updateDoneInfoToUser(message, false);
+
+                        updateDisplayImage();
                     }
                 })
+
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        uploadProgress.dismiss();
+                        pbPhotoUploader.hide();
                         String message = "Photo uploading failed.\n" + e.getMessage();
-                        DialogUtils.showCheersAlert(UserProfileActivity.this, message, null);
+                        updateRetryInfoToUser(message, new Runnable() {
+                            @Override
+                            public void run() {
+                                uploadImageToCloudStorage();
+                            }
+                        });
                     }
                 });
+    }
+
+    private void updateDisplayImage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(UserProfileActivity.this).clearDiskCache();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setUpImageToImageView();
+                    }
+                }, 5000);
+            }
+        }).start();
+    }
+
+    private void updateDoneInfoToUser(String message, boolean indefinite) {
+        snackBarInfo.setText(message);
+        if (indefinite)
+            snackBarInfo.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
+        else
+            snackBarInfo.setDuration(BaseTransientBottomBar.LENGTH_SHORT);
+        snackBarInfo.show();
+    }
+
+    private void updateRetryInfoToUser(String message, final Runnable retryRunnable) {
+        snackBarInfo.setText(message);
+        snackBarInfo.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
+        snackBarInfo.setAction("Retry", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (retryRunnable != null) retryRunnable.run();
+            }
+        });
+        snackBarInfo.show();
     }
 
     @Override

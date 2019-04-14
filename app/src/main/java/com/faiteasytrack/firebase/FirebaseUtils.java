@@ -1,5 +1,7 @@
 package com.faiteasytrack.firebase;
 
+import com.faiteasytrack.constants.User;
+import com.faiteasytrack.models.UserModel;
 import com.faiteasytrack.utils.FileUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -12,8 +14,14 @@ public class FirebaseUtils {
 
     public static final String TAG = FirebaseUtils.class.getSimpleName();
 
+    private static FirebaseUser firebaseUser = null;
+
+    public static synchronized void initialise(){
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
     public static FirebaseUser getUser(){
-        return FirebaseAuth.getInstance().getCurrentUser();
+        return firebaseUser;
     }
 
     public static DatabaseReference getUserReference(){
@@ -48,6 +56,24 @@ public class FirebaseUtils {
             location = location + "/medium";
 
         return FirebaseStorage.getInstance().getReference(location)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(firebaseUser.getUid());
+    }
+
+    public static UserModel getNewGuestModel(){
+        UserModel userModel = new UserModel();
+
+        userModel.setUid(firebaseUser.getUid());
+        userModel.setPhoneNumber(firebaseUser.getPhoneNumber());
+        userModel.setName(firebaseUser.getDisplayName());
+
+        userModel.setCode("");
+        userModel.setPassword("");
+        userModel.setI_am(User.TYPE_GUEST);
+
+        return userModel;
+    }
+
+    public static void reset(){
+        firebaseUser = null;
     }
 }

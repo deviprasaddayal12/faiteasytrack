@@ -9,7 +9,7 @@ public class UserModel extends BaseUserModel implements Parcelable {
 
     private String code;
     private String password;
-    private int i_am;
+    private String i_am;
 
     public UserModel() {
     }
@@ -30,11 +30,11 @@ public class UserModel extends BaseUserModel implements Parcelable {
         this.password = password;
     }
 
-    public int getI_am() {
+    public String getI_am() {
         return i_am;
     }
 
-    public void setI_am(int i_am) {
+    public void setI_am(String i_am) {
         this.i_am = i_am;
     }
 }

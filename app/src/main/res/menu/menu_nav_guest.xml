@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_dashboard">
+
+    <item
+        android:id="@+id/nav_contacts"
+        android:icon="@drawable/ic_round_chevron_right_24px"
+        android:title="@string/action_contacts" />
+    <item
+        android:id="@+id/nav_share"
+        android:icon="@drawable/ic_round_chevron_right_24px"
+        android:title="@string/action_share" />
+    <item
+        android:id="@+id/nav_feedback"
+        android:icon="@drawable/ic_round_chevron_right_24px"
+        android:title="@string/action_feedback" />
+
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_account"
+                android:icon="@drawable/ic_round_chevron_right_24px"
+                android:title="@string/action_accounts" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_round_chevron_right_24px"
+                android:title="@string/action_settings" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_round_chevron_right_24px"
+                android:title="@string/action_logout" />
+        </menu>
+    </item>
+</menu>

@@ -51,4 +51,8 @@
     <dimen name="radius_4">4dp</dimen>
     <dimen name="height_layout_edit_text">40dp</dimen>
     <dimen name="margin_12">12dp</dimen>
+    <dimen name="width_buttonIconOutlined">48dp</dimen>
+    <dimen name="width_edittextOutlined">280dp</dimen>
+    <dimen name="size_card_as_loader_small">33dp</dimen>
+    <dimen name="size_card_as_loader_large">45dp</dimen>
 </resources>

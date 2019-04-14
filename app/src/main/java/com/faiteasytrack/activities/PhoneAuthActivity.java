@@ -19,6 +19,7 @@ import android.widget.ViewSwitcher;
 
 import com.faiteasytrack.R;
 import com.faiteasytrack.constants.Error;
+import com.faiteasytrack.firebase.FirebaseUtils;
 import com.faiteasytrack.listeners.PhoneAuthListener;
 import com.faiteasytrack.managers.PhoneAuthManager;
 import com.faiteasytrack.models.UserModel;
@@ -170,6 +171,7 @@ public class PhoneAuthActivity extends BaseActivity implements View.OnClickListe
             break;
             case R.id.btn_lets_go: {
                 // current layout is : "Cheers!"
+                FirebaseUtils.initialise();
 
                 Intent profileIntent = new Intent(PhoneAuthActivity.this, UserProfileActivity.class);
                 profileIntent.putExtra("CALLED_FROM", UserProfileActivity.CALLED_FROM_PHONE_AUTH);

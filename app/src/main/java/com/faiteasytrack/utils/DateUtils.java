@@ -28,7 +28,7 @@ public class DateUtils {
         return String.format("VEH%s", millisNow);
     }
 
-    public static String generateCode(int type){
+    public static String generateCode(String type){
         switch (type){
             case User.TYPE_ADMIN:
                 return String.format(Locale.getDefault(), "%d", User.TYPE_ADMIN);

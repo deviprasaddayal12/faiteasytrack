@@ -6,11 +6,16 @@ import com.faiteasytrack.models.RequestStatusModel;
 import java.util.ArrayList;
 
 public class Constants {
-    public static final String TAG = Constants.class.getSimpleName();
+    public static final String TAG = Constants.class.getCanonicalName();
 
     public static final String CALLED_FROM = TAG + ".called_from";
     public static final String CALLED_FROM_WITH_ID = TAG + ".called_from_with_id";
     public static final String CALLED_FROM_WITH_NAME = TAG + ".called_from_with_name";
+
+    public static final int MAX_LENGTH_NAME = 30;
+    public static final int MAX_LENGTH_PHONE = 10;
+    public static final int MAX_LENGTH_CODE = 10;
+    public static final int MAX_LENGTH_PASSWORD = 10;
 
     public static class Intent {
         public static class Keys {
@@ -99,28 +104,5 @@ public class Constants {
         public static final int i = 2;
         public static final int v = 3;
         public static final int w = 4;
-    }
-
-    public interface MultiPartRequest {
-
-        interface CallType {
-            int REQUISITION_FILES_UPLOAD = 580;
-            int DAILY_ISSUE_FILES_UPLOAD = 581;
-            int MRN_ADD_FILES_UPLOAD = 582;
-        }
-
-        interface Query {
-            String KEY_REQUEST_TYPE = "REQUEST_TYPE_SENT";
-            String KEY_FILES = "files[]";
-            String KEY_REQUISITION_ID = "requisition_id";
-            String KEY_DAILY_ISSUE_ID = "issue_slip_id";
-            String KEY_MRN_ADD_ID = "mrn_id";
-            String KEY_FILE = "file";
-        }
-
-        interface VolleyRetryPolicy {
-            int SOCKET_TIMEOUT = 1000 * 500;
-            int RETRIES = 0;
-        }
     }
 }

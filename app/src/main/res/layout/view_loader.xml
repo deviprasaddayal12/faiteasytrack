@@ -11,17 +11,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:contentPadding="10dp"
-        app:cardCornerRadius="35dp"
-        app:cardElevation="15dp">
+        app:contentPadding="@dimen/margin_8"
+        app:cardCornerRadius="@dimen/size_card_as_loader_small"
+        app:cardElevation="@dimen/elevate_12">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <!--<androidx.core.widget.ContentLoadingProgressBar-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--style="?android:attr/progressBarStyleLarge"/>-->
+
             <ProgressBar
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
     </com.google.android.material.circularreveal.cardview.CircularRevealCardView>

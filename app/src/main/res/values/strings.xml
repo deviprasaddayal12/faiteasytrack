@@ -122,9 +122,9 @@
     <string name="whats_your_phone">What\'s your number?</string>
     <string name="send">Send</string>
     <string name="patience">Patience!</string>
-    <string name="add_your_name_here">Add your name here</string>
-    <string name="add_your_email_here">Add your email here</string>
-    <string name="add_your_phone_here">Add your phone here</string>
+    <string name="add_your_name_here">Name</string>
+    <string name="add_your_email_here">Email</string>
+    <string name="add_your_phone_here">Phone</string>
     <string name="prompt_no_stats_subheader">We don\'t have any further information or statistics.</string>
     <string name="prompt_no_vendor">You don\'t have any vendor registered. Add vendors and add your income.</string>
     <string name="prompt_no_stats_header">No statistics found.</string>
@@ -154,4 +154,8 @@
     <string name="look_for_referrals">Look for referrals</string>
     <string name="registered_accounts_found">Registered accounts found</string>
     <string name="registered_referrals_found">Registered referrals found</string>
+    <string name="action_accounts">Switch Account</string>
+    <string name="action_share">Share</string>
+    <string name="action_feedback">Feedback</string>
+    <string name="done_continue">Done. Continue...</string>
 </resources>
